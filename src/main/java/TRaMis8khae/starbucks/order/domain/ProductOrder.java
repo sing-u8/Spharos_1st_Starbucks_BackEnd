@@ -1,12 +1,11 @@
 package TRaMis8khae.starbucks.order.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class ProductOrder {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productOrderId;
     private Double productPrice;
     @Column(length = 50)

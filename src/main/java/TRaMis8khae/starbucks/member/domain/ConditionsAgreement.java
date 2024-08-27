@@ -1,12 +1,11 @@
 package TRaMis8khae.starbucks.member.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class ConditionsAgreement {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long conditionsListId;
     private Boolean marketingAgreementChecked;
 

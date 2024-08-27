@@ -1,14 +1,13 @@
 package TRaMis8khae.starbucks;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 public class Notice {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long noticeId;
     private LocalDateTime noticeTime;
     @Column(nullable = false, length = 50)

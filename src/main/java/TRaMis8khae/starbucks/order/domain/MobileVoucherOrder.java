@@ -1,9 +1,6 @@
 package TRaMis8khae.starbucks.order.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,6 +8,7 @@ import java.util.UUID;
 @Entity
 public class MobileVoucherOrder {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mobileGiftOrderId;
     @Column(columnDefinition = "binary(16)")
     private UUID memberUuid;

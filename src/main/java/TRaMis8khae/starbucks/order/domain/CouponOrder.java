@@ -8,6 +8,7 @@ import java.util.UUID;
 @Entity
 public class CouponOrder {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponOrderId;
     @Column(columnDefinition = "binary(16)")
     private UUID memverUuid;

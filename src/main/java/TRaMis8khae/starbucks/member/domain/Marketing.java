@@ -1,12 +1,11 @@
 package TRaMis8khae.starbucks.member.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Marketing {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long marketingAgreementId;
     @Column(nullable = false, length = 50)
     private String marketingAgreementName;

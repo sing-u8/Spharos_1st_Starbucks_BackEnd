@@ -1,14 +1,13 @@
 package TRaMis8khae.starbucks;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
 public class Wish {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wishId;
     @Column(columnDefinition = "binary(16)")
     private UUID memberUuid;

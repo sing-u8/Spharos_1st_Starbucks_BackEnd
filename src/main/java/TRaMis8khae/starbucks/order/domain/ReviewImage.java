@@ -1,12 +1,11 @@
 package TRaMis8khae.starbucks.order.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class ReviewImage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productReviewMediaId;
     private Integer imageOrder;
 

@@ -1,14 +1,13 @@
 package TRaMis8khae.starbucks.order.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 public class MobileVoucher {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mobileGiftId;
     @Column(length = 50)
     private String VoucherName;
