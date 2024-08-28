@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class productOptionCategory {
+public class ProductOptionCategory {
     @Id
     private Long productCategoryId;
     private Long subCategoryId;
