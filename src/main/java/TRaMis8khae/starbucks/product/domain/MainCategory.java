@@ -1,12 +1,11 @@
 package TRaMis8khae.starbucks.product.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class MainCategory {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mainCategoryId;
     @Column(nullable = false, length = 50)
     private String mainCategoryName;

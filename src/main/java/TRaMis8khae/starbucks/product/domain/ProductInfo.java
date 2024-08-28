@@ -6,10 +6,10 @@ import org.w3c.dom.Text;
 @Entity
 public class ProductInfo {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productInfoId;
-    private Text productInfo;
+    @Column(columnDefinition = "text")
+    private String productInfo;
     @Column(length = 20)
     private String productInfoType;
 }
