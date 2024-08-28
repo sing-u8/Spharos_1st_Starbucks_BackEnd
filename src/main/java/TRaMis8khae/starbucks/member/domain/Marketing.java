@@ -9,7 +9,7 @@ public class Marketing {
     private Long marketingAgreementId;
     @Column(nullable = false, length = 50)
     private String marketingAgreementName;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 500)
     private String marketingAgreementContent;
 
 }

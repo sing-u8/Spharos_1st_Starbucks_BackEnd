@@ -1,15 +1,13 @@
 package TRaMis8khae.starbucks.product.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
 public class ProductOption {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productOptionId;
     @Column(columnDefinition = "binary(16)")
     private UUID productUuid;

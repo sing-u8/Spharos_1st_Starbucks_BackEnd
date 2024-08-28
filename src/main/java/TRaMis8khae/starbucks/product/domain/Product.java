@@ -1,8 +1,6 @@
 package TRaMis8khae.starbucks.product.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -10,6 +8,7 @@ import java.util.UUID;
 @Entity
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @Column(nullable = false, length = 50)
     private String productName;

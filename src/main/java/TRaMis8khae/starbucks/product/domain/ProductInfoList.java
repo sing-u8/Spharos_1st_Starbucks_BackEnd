@@ -7,10 +7,8 @@ import java.util.UUID;
 @Entity
 public class ProductInfoList {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long productInfoId;
     @Column(columnDefinition = "binary(16)")
     private UUID productUuid;
