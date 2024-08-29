@@ -23,9 +23,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # 권한추가
+      - name: gradle 권한추가
+        run: chmod 400 ./gradlew
+
       # Spring Boot 어플리케이션 Build
       - name: Spring Boot Build
         run: ./gradlew build
+
 
       # DockerHub Login
       - name: docker login
