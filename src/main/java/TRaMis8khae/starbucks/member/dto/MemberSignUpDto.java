@@ -1,41 +1,42 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.domain.Member;
-import lombok.Builder;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+
+@Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberSignUpDto {
 
-    private Long member_id;
     private String name;
-    private String login_id;
+    private String loginId;
     private String password;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birth;
-    private String phone_number;
+    private String phoneNumber;
     private String email;
     private String nickname;
     private String address;
-    private String payment_password;
-    private Boolean member_status;
+    private String paymentPassword;
 
     public Member toEntity() {
         return Member.builder()
-                .member_id(member_id)
                 .name(name)
-                .login_id(login_id)
+                .login_id(loginId)
                 .password(password)
                 .birth(birth)
-                .phone_number(phone_number)
+                .phone_number(phoneNumber)
                 .email(email)
                 .nickname(nickname)
                 .address(address)
-                .payment_password(payment_password)
-                .member_status(member_status)
+                .payment_password(paymentPassword)
                 .build();
     }
-
 }
