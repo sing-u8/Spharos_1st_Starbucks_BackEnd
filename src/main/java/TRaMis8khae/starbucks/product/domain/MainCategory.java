@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class MainCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mainCategoryId;
+    private Integer mainCategoryId;
     @Column(nullable = false, length = 50)
     private String mainCategoryName;
     private Integer mainCategoryOrder;
