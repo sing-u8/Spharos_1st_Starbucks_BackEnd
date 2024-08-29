@@ -25,7 +25,7 @@ jobs:
 
       # 권한추가
       - name: gradle 권한추가
-        run: chmod -x gradlew
+        run: chmod +x gradlew
 
       # Spring Boot 어플리케이션 Build
       - name: Spring Boot Build
