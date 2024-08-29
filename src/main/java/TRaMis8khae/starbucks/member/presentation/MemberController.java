@@ -9,6 +9,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/member") // 임시
 public class MemberController {
 
-
-
 }

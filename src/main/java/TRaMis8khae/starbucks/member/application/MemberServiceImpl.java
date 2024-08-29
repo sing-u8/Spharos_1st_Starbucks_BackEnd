@@ -15,9 +15,9 @@ public class MemberServiceImpl {
     private final MemberRepository memberRepository;
 
     public void signUp(MemberSignUpDto memberSignUpDto) {
-        log.info("memberSignUpDto : {}", memberSignUpDto);
+//        log.info("memberSignUpDto : {}", memberSignUpDto);
         Member member = memberSignUpDto.toEntity();
-        log.info("member : {}", member);
+//        log.info("member : {}", member);
         memberRepository.save(member);
     }
 }
