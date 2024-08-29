@@ -18,5 +18,7 @@ public class Coupon {
     private String couponType;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
+
+    @Column(name = "`condition`", length = 50)  // condition은 예약어이므로 백틱으로 감싸줌
     private String condition;
 }
