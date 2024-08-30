@@ -17,7 +17,6 @@ public class MemberSignUpDto {
     private String name;
     private String loginId;
     private String password;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birth;
     private String phoneNumber;

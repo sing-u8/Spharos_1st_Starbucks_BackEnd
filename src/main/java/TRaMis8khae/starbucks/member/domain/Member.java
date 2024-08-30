@@ -72,6 +72,13 @@ public class Member implements UserDetails {
         this.memberStatus = member_status;
     }
 
+    @PrePersist // DB에 insert 되기 전에 실행, 엔티티가 영속화되기 전에 실행
+    public void prePersist() { // memberUuid가 null이면 UUID를 생성하여 저장
+        if (this.memberUuid == null) {
+            this.memberUuid = UUID.randomUUID();
+        }
+    }
+
     public void hashPassword(String password) {
         this.password = password;
     }
@@ -96,11 +103,5 @@ public class Member implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
-//    @Override
-//    public boolean isEnable() {
-//        return true;
-//    }
-
 }
 
