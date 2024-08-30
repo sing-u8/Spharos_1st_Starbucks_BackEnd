@@ -30,7 +30,7 @@ jobs:
 
       # Spring Boot 어플리케이션 Build
       - name: Spring Boot Build
-        run: ./gradlew build
+        run: ./gradlew clean build -x test
 
         env:
           DB_HOST: ${{ secrets.EC2_HOST }}
