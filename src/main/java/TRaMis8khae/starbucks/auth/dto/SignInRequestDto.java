@@ -1,18 +1,19 @@
-package TRaMis8khae.starbucks.member.dto;
+package TRaMis8khae.starbucks.auth.dto;
 
 import TRaMis8khae.starbucks.member.domain.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
 
-
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberSignUpDto {
+@Builder
+@ToString
+public class SignInRequestDto {
 
     private String name;
     private String loginId;
@@ -25,11 +26,11 @@ public class MemberSignUpDto {
     private String address;
     private String paymentPassword;
 
-    public Member toEntity() {
+    public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .name(name)
                 .login_id(loginId)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .birth(birth)
                 .phone_number(phoneNumber)
                 .email(email)

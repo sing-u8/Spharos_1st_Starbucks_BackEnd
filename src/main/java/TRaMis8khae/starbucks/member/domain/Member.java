@@ -4,20 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
-public class Member implements UserDetails {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
@@ -27,7 +20,7 @@ public class Member implements UserDetails {
     private String name;
     @Column(nullable = false, length = 50)
     private String loginId;
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 50)
     private String password;
     @Column(nullable = false, length = 50)
     private Date birth;
@@ -71,36 +64,5 @@ public class Member implements UserDetails {
         this.paymentPassword = payment_password;
         this.memberStatus = member_status;
     }
-
-    @PrePersist // DB에 insert 되기 전에 실행, 엔티티가 영속화되기 전에 실행
-    public void prePersist() { // memberUuid가 null이면 UUID를 생성하여 저장
-        if (this.memberUuid == null) {
-            this.memberUuid = UUID.randomUUID();
-        }
-    }
-
-    public void hashPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        //        List<GrantedAuthority> authorities = new ArrayList<>();
-        return List.of();
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
 }
+

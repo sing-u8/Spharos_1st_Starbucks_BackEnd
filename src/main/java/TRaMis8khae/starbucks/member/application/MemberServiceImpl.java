@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl {
+public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    @Override
     public void signUp(MemberSignUpDto memberSignUpDto) {
         log.info("memberSignUpDto : {}", memberSignUpDto);
         Member member = memberSignUpDto.toEntity();
