@@ -20,9 +20,9 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> {
-            return memberRepository.findByEmail(email).orElseThrow(
-                    () -> new IllegalArgumentException("해당 이메일을 가진 회원이 없습니다.")
+        return loginId -> {
+            return memberRepository.findByLoginId(loginId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
             );
         };
     }

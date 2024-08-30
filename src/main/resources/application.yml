@@ -16,6 +16,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
-#jwt:
-#  secret-key:
-#  assess-expire-time:
+jwt:
+  secret-key: "52368ef3889afbe4b7255e913c1ddc0190196659d7ebcc4286bc524d542f0757"
+  access-expire-time: 3600000 # 1 hour
+
