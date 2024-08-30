@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInResponseVo {
+public class LogInResponseVo {
 
     private String accessToken;
     private String refreshToken;

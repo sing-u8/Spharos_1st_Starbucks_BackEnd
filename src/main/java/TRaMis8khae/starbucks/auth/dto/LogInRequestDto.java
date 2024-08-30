@@ -5,15 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInResponseDto {
+public class LogInRequestDto {
 
-    private String accessToken;
-    private String name;
-    private UUID uuid;
+    private String loginId;
+    private String password;
 }

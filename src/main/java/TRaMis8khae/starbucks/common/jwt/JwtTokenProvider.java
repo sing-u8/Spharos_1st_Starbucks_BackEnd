@@ -39,7 +39,7 @@ public class JwtTokenProvider {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 
-        logger.info("Generated JWT Token: {}", token);
+        logger.info("Generated JWT AccessToken: {}", token);
         logger.info("Login ID: {}", claims.getSubject());
 
         return token;
@@ -56,13 +56,16 @@ public class JwtTokenProvider {
 
         Date expiration = new Date(now.getTime() + expirationTime);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 
+
+        logger.info("Generated JWT RefreshToken: {}", token);
+        return token;
     }
 
     public Key getSignKey() {
