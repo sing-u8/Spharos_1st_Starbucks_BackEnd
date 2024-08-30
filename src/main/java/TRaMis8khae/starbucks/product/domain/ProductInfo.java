@@ -1,9 +1,16 @@
 package TRaMis8khae.starbucks.product.domain;
 
 import jakarta.persistence.*;
-import org.w3c.dom.Text;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
