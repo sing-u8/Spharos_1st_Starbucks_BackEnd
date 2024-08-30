@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://${{secrets.EC2_HOST}}/starbucks-db
-    username: ${{secrets.DB_USER}}
-    password: ${{secrets.DB_PWD}}
+    url: jdbc:mysql://${EC2_HOST}/starbucks-db
+    username: ${DB_USER}
+    password: ${DB_PWD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

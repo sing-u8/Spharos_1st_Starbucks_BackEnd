@@ -31,6 +31,11 @@ jobs:
       - name: Spring Boot Build
         run: ./gradlew build
 
+        env:
+          DB_HOST: ${{ secrets.EC2_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PWD: ${{ secrets.DB_PWD }}
+
 
       # DockerHub Login
       - name: docker login
