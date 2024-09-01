@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @ToString
-public class SignUpRequestDto {
+public class SignInRequestDto {
 
     private String name;
     private String loginId;
