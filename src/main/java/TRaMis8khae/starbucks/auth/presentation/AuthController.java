@@ -6,6 +6,7 @@ import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
 import TRaMis8khae.starbucks.auth.vo.LogInRequestVo;
 import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
 import TRaMis8khae.starbucks.auth.vo.SignInRequestVo;
+import TRaMis8khae.starbucks.auth.vo.SignInResponseVo;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
@@ -14,11 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,43 +32,39 @@ public class AuthController {
 
     @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
-    public CommonResponseEntity<Void> signUp(
+    public CommonResponseEntity<SignInResponseVo> signIn(
             @RequestBody SignInRequestVo signUpRequestVo) {
-        authService.signIn(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
-        return new CommonResponseEntity<>(HttpStatus.OK, "true", CommonResponseMessage.SUCCESS.getMessage(), null);
+        ModelMapper modelMapper = new ModelMapper();
+        SignInRequestDto signInRequestDto = SignInRequestDto.builder().
+                loginId(signUpRequestVo.getLoginId()).
+                password(signUpRequestVo.getPassword()).
+                build();
+//        authService.signIn(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
+        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                signInResponseVo);
     }
 
-    @DeleteMapping("/signout/{memberUuid}")
-    public CommonResponseEntity<Void> deleteMemberByUuid(@PathVariable UUID memberUuid) {
-        authService.deleteMemberByUuid(memberUuid);
-        return new CommonResponseEntity<>(HttpStatus.OK, "true", "회원탈퇴가 완료되었습니다.", null);
-    }
-
-
+    @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
     @PostMapping("/login")
-    public CommonResponseEntity<LogInResponseVo> LogIn(
+    public CommonResponseEntity<LogInResponseVo> logIn(
             @RequestBody LogInRequestVo logInRequestVo) {
-//        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
         LogInRequestDto logInRequestDto = LogInRequestDto.builder().
                 loginId(logInRequestVo.getLoginId()).
                 password(logInRequestVo.getPassword()).
                 build();
 
-        Authentication authentication = authService.logIn(logInRequestDto);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-
-        LogInResponseVo logInResponseVo = LogInResponseVo.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        LogInResponseVo logInResponseVo = modelMapper.map(authService.logIn(logInRequestDto), LogInResponseVo.class);
         log.info("signInResponseVo : {}", logInResponseVo);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
-                "true",
+                true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 logInResponseVo);
     }
-
 }

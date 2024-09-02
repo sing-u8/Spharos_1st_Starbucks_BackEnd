@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonResponseEntity<T> {
-    private HttpStatus httpStatus;
-    private String isSuccess;
+    private HttpStatus HttpStatus;
+    private boolean isSuccess;
     private String message;
-    private T data;
+    private T res;
 }
