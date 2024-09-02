@@ -3,7 +3,7 @@ package TRaMis8khae.starbucks.order.domain;
 import jakarta.persistence.*;
 
 @Entity
-public class ReviewImage {
+public class ReviewMediaList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productReviewMediaId;

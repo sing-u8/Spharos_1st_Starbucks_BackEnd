@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "`order`")  // order는 예약어이므로 백틱으로 감싸줌
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Order {
     private String phoneNumber;
 
     @OneToOne
-    private OrderDeliveryAddress orderDeliveryAddress;
+    private OrderDeliveryAddressList orderDeliveryAddress;
     @OneToOne
     private ProductOrder productOrder;
 }

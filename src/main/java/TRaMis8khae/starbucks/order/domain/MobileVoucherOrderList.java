@@ -6,16 +6,17 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class CouponOrder {
+public class MobileVoucherOrderList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long couponOrderId;
+    private Long mobileGiftOrderId;
     @Column(columnDefinition = "binary(16)")
-    private UUID memverUuid;
+    private UUID memberUuid;
     @Column(columnDefinition = "binary(16)")
     private UUID productUuid;
     private LocalDateTime registerDate;
+    private Double usedPrice;
 
     @ManyToOne
-    private Coupon coupon;
+    private MobileVoucher mobileVoucher;
 }

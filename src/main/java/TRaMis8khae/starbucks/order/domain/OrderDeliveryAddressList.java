@@ -3,7 +3,7 @@ package TRaMis8khae.starbucks.order.domain;
 import jakarta.persistence.*;
 
 @Entity
-public class OrderDeliveryAddress {
+public class OrderDeliveryAddressList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderDeliveryAddressId;
