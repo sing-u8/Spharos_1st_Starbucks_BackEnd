@@ -10,4 +10,5 @@ public class StarbucksApplication {
 		SpringApplication.run(StarbucksApplication.class, args);
 	}
 	// 회원가입 기능 개발
+	// 로그인 기능 개발
 }
