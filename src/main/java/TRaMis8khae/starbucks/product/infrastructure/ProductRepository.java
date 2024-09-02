@@ -1,11 +1,13 @@
 package TRaMis8khae.starbucks.product.infrastructure;
 
 import TRaMis8khae.starbucks.product.domain.Product;
+import TRaMis8khae.starbucks.product.domain.ProductInfoList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-    Optional<Product> findByProductUuid(UUID productUuid);
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
+    Optional<Product> findByProductUuid(String productUuid);
+    List<ProductInfoList> findByProductInfoUuid(String productUuid);
 }

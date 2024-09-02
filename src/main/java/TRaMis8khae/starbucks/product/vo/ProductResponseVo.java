@@ -15,6 +15,6 @@ import java.util.UUID;
 public class ProductResponseVo {
     private String productName;
     private LocalDate date;
-    private UUID productUuid;
+    private String productUuid;
     private Integer productScore;
 }

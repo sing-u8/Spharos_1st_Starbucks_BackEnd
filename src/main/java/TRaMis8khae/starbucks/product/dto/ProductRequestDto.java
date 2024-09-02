@@ -11,10 +11,10 @@ import java.util.UUID;
 public class ProductRequestDto {
     private String productName;
     private LocalDate date;
-    private UUID productUuid;
+    private String productUuid;
     private Integer productScore;
 
-    public Product toEntity(UUID productUuid) {
+    public Product toEntity(String productUuid) {
         return Product.builder()
                 .productUuid(productUuid)
                 .date(date)
@@ -23,7 +23,7 @@ public class ProductRequestDto {
                 .build();
     }
     @Builder
-    public ProductRequestDto(String productName, LocalDate date, UUID productUuid, Integer productScore) {
+    public ProductRequestDto(String productName, LocalDate date, String productUuid, Integer productScore) {
         this.productName = productName;
         this.date = date;
         this.productUuid = productUuid;

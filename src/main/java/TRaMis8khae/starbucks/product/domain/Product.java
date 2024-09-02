@@ -21,7 +21,6 @@ public class Product {
     @Column(nullable = false, length = 50)
     private String productName;
     private LocalDate date;
-//    @Column(columnDefinition = "binary(16)")
-    private UUID productUuid;
+    private String productUuid;
     private Integer productScore;
 }

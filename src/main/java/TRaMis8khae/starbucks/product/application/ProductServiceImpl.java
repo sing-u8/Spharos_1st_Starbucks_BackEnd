@@ -5,10 +5,13 @@ import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -17,9 +20,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
-        UUID productUuid;
-        productUuid = UUID.randomUUID();
-
+        String productUuid = UUID.randomUUID().toString();
         productRepository.save(requestDto.toEntity(productUuid));
     }
 
@@ -32,16 +33,17 @@ public class ProductServiceImpl implements ProductService{
 
 
     @Override
-    public void deleteProduct(UUID productUuid) {
+    public void deleteProduct(String productUuid) {
         Product product = productRepository.findByProductUuid(productUuid)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
         productRepository.delete(product);
     }
 
     @Override
-    public ProductResponseDto getProduct(UUID productUuid) {
+    public ProductResponseDto getProduct(String productUuid) {
         Product product = productRepository.findByProductUuid(productUuid)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+        System.out.println(product.getProductName());
         return ProductResponseDto.builder()
                 .productName(product.getProductName())
                 .date(product.getDate())
@@ -51,7 +53,19 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponseDto getProductDetail(UUID productUuid) {
-        return null;
+    public List<ProductResponseDto> getProducts() {
+        List<Product> products = productRepository.findAll();
+
+        List<ProductResponseDto> productResponseDtoList = products.stream()
+                .map(product -> ProductResponseDto.builder()
+                        .productUuid(product.getProductUuid())
+                        .productName(product.getProductName())
+                        .productScore(product.getProductScore())
+                        .build())
+                .toList();
+
+        return List.of();
     }
+
+
 }

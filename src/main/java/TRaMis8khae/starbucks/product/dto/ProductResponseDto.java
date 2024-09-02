@@ -12,7 +12,7 @@ public class ProductResponseDto {
 
     private String productName;
     private LocalDate date;
-    private UUID productUuid;
+    private String productUuid;
     private Integer productScore;
 
     public ProductResponseVo toResponseVo() {
@@ -25,7 +25,7 @@ public class ProductResponseDto {
     }
 
     @Builder
-    public ProductResponseDto(String productName, LocalDate date, UUID productUuid, Integer productScore) {
+    public ProductResponseDto(String productName, LocalDate date, String productUuid, Integer productScore) {
         this.productName = productName;
         this.date = date;
         this.productUuid = productUuid;
