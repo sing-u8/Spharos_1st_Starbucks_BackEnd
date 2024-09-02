@@ -15,7 +15,7 @@ jobs:
       # github repository checkout
       - name: Checkout code
         uses: actions/checkout@v4
-      - run: cd ./src/main/resources/
+      - run: mkdir ./src/main/resources
       - run: echo "${{ secrets.APPLICATION_YML }}" > application.yml
       - run: cat ./src/main/resources/application.yml
 
