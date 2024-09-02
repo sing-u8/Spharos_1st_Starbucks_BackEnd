@@ -43,16 +43,7 @@ public class AuthController {
         return new CommonResponseEntity<>(HttpStatus.OK, "true", "회원탈퇴가 완료되었습니다.", null);
     }
 
-//    @DeleteMapping("/signout/{memberUuid}")
-//    public ResponseEntity<CommonResponseEntity<Void>> deleteMemberByUuid(@PathVariable UUID memberUuid) {
-//        authService.deleteMemberByUuid(memberUuid);
-//        return ResponseEntity.ok(new CommonResponseEntity<>(HttpStatus.OK, "true", "회원탈퇴가 완료되었습니다.", null));
-//    }
 
-
-
-
-    @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
     @PostMapping("/login")
     public CommonResponseEntity<LogInResponseVo> LogIn(
             @RequestBody LogInRequestVo logInRequestVo) {
@@ -69,7 +60,6 @@ public class AuthController {
         LogInResponseVo logInResponseVo = LogInResponseVo.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .nickname(logInRequestVo.getLoginId())
                 .build();
         log.info("signInResponseVo : {}", logInResponseVo);
 
@@ -80,21 +70,4 @@ public class AuthController {
                 logInResponseVo);
     }
 
-//    @Operation(summary = "SignIn API", description = "SignIn API", tags = {"Auth"})
-//    @PostMapping("/sign-in")
-//    public CommonResponseEntity<SignInResponseVo> signIn(
-//            @RequestBody SignInRequestVo signInRequestVo) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        SignInRequestDto signInRequestDto = SignInRequestDto.builder().
-//                loginId(signInRequestVo.getLoginId()).
-//                password(signInRequestVo.getPassword()).
-//                build();
-//        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
-//        log.info("signInResponseVo : {}", signInResponseVo);
-//
-//        return new CommonResponseEntity<>(
-//                HttpStatus.OK,
-//                CommonResponseMessage.SUCCESS.getMessage(),
-//                signInResponseVo);
-//    }
 }
