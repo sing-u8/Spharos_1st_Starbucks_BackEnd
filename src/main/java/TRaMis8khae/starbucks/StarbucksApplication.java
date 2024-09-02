@@ -9,5 +9,5 @@ public class StarbucksApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StarbucksApplication.class, args);
 	}
-
+	// 회원가입 기능 개발
 }
