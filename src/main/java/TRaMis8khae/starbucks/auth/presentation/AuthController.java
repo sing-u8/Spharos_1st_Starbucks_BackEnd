@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/auth") // 임시
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -33,13 +33,9 @@ public class AuthController {
     @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
     public CommonResponseEntity<SignInResponseVo> signIn(
-            @RequestBody SignInRequestVo signUpRequestVo) {
+            @RequestBody SignInRequestVo signInRequestVo) {
         ModelMapper modelMapper = new ModelMapper();
-        SignInRequestDto signInRequestDto = SignInRequestDto.builder().
-                loginId(signUpRequestVo.getLoginId()).
-                password(signUpRequestVo.getPassword()).
-                build();
-//        authService.signIn(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
+        SignInRequestDto signInRequestDto = modelMapper.map(signInRequestVo, SignInRequestDto.class);
         SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

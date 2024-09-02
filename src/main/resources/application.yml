@@ -22,7 +22,7 @@ spring:
 
 
 jwt:
-  secret-key: "52368ef3889afbe4b7255e913c1ddc0190196659d7ebcc4286bc524d542f0757"
+  secret-key: "44aa320150611671e6bebca28f9467dd4f94ab852d23c775f18d7a57c2025776"
   access-expire-time: 3600000 # 1 hour
   refresh-expire-time: 86400000 # 1 day
 
