@@ -50,8 +50,6 @@ public class AuthController {
 
         authService.signOut(memberUuid);
         return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
-
-
 //        String accessToken = token.replace("Bearer ", "");
 //        Claims claims = jwtTokenProvider.getClaims(accessToken);
 //
