@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # github repository checkout
       - name: Checkout code
         uses: actions/checkout@v4
       - run: echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml

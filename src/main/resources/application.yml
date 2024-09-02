@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://18.218.29.209/starbucks-db
+    url: jdbc:mysql://3.35.227.178/starbucks-db
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
