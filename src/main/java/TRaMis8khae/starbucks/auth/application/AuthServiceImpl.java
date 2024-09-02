@@ -3,16 +3,23 @@ package TRaMis8khae.starbucks.auth.application;
 import TRaMis8khae.starbucks.auth.dto.LogInRequestDto;
 import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
 import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
+import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
+import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
+import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
+import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,14 +32,43 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void signIn(SignInRequestDto signInRequestDto) {
+    public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
         Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
         authRepository.save(signInRequestDto.toEntity(passwordEncoder));
+
+        LogInRequestDto logInRequestDto = LogInRequestDto.builder()
+                .loginId(signInRequestDto.getLoginId())
+                .password(signInRequestDto.getPassword())
+                .build();
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signInRequestDto.getLoginId(),
+                        signInRequestDto.getPassword()
+                )
+        );
+
+        String accessToken = generateAccessToken(authentication, member.getMemberUuid());
+        String refreshToken = generateRefreshToken(authentication);
+
+        return SignInResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .nickname(signInRequestDto.getNickname())
+                .uuid(UUID.randomUUID().toString())
+                .build();
     }
 
+    @Override
+    public void signOut(UUID memberUuid) {
+        Member member = authRepository.findByMemberUuid(memberUuid).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+        );
+        authRepository.delete(member);
+    }
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
@@ -57,7 +93,7 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
 
-        String accessToken = generateAccessToken(authentication);
+        String accessToken = generateAccessToken(authentication, member.getMemberUuid());
         String refreshToken = generateRefreshToken(authentication);
 
         return LogInResponseDto.builder()
@@ -69,8 +105,8 @@ public class AuthServiceImpl implements AuthService{
     }
 
 
-    public String generateAccessToken(Authentication authentication) {
-        return jwtTokenProvider.generateAccessToken(authentication);
+    public String generateAccessToken(Authentication authentication, UUID memberUuid) {
+        return jwtTokenProvider.generateAccessToken(authentication, memberUuid);
     }
 
     public String generateRefreshToken(Authentication authentication) {

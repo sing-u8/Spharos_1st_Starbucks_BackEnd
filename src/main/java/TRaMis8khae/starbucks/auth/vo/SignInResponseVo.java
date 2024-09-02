@@ -5,11 +5,11 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class LogInResponseVo {
-
+@AllArgsConstructor
+public class SignInResponseVo {
     private String accessToken;
     private String refreshToken;
     private String uuid;
+    private String nickname;
 }

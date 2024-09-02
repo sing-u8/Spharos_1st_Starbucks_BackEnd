@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -21,16 +22,15 @@ public class JwtTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final Environment env;
 
-    public String generateAccessToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication, UUID memberUuid) {
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
         String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignKey())
+                .claim("memberUuid", claims.getSubject())
+                .issuedAt(expiration)
                 .compact();
 
         logger.info("Generated JWT AccessToken: {}", token);
@@ -42,19 +42,12 @@ public class JwtTokenProvider {
     public String generateRefreshToken(Authentication authentication) {
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
-        Long expirationTime = env.getProperty("jwt.refresh-expire-time", Long.class);
-
-        if (expirationTime == null) {
-            throw new IllegalArgumentException("JWT refresh expiration time must be defined in the environment.");
-        }
-
-        Date expiration = new Date(now.getTime() + expirationTime);
+//        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
         String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .signWith(getSignKey())
+                .claim("loginId", claims.getSubject())
+                .issuedAt(now)
                 .compact();
 
         logger.info("Generated JWT RefreshToken: {}", token);
@@ -62,10 +55,6 @@ public class JwtTokenProvider {
     }
 
     public Key getSignKey() {
-        String secretKey = env.getProperty("jwt.secret-key");
-        if (secretKey == null || secretKey.isEmpty()) {
-            throw new IllegalArgumentException("JWT secret key must be defined in the environment.");
-        }
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor( env.getProperty("jwt.secret-key").getBytes() );
     }
 }

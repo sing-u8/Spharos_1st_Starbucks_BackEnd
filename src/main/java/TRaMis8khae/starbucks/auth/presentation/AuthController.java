@@ -6,24 +6,25 @@ import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
 import TRaMis8khae.starbucks.auth.vo.LogInRequestVo;
 import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
 import TRaMis8khae.starbucks.auth.vo.SignInRequestVo;
+import TRaMis8khae.starbucks.auth.vo.SignInResponseVo;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/auth") // 임시
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -31,11 +32,35 @@ public class AuthController {
 
     @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
-    public CommonResponseEntity<Void> signUp(
-            @RequestBody SignInRequestVo signUpRequestVo) {
-        log.info("!!!!!!!!!signUpRequestVo : {}", signUpRequestVo);
-        authService.signIn(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
+    public CommonResponseEntity<SignInResponseVo> signIn(
+            @RequestBody SignInRequestVo signInRequestVo) {
+        ModelMapper modelMapper = new ModelMapper();
+        SignInRequestDto signInRequestDto = modelMapper.map(signInRequestVo, SignInRequestDto.class);
+        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                signInResponseVo);
+    }
+
+    @DeleteMapping("/signout/{memberUuid}")
+    public CommonResponseEntity<Void> signOut(@PathVariable UUID memberUuid,
+                                              @RequestHeader("Authorization") String token) {
+
+        authService.signOut(memberUuid);
         return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
+
+
+//        String accessToken = token.replace("Bearer ", "");
+//        Claims claims = jwtTokenProvider.getClaims(accessToken);
+//
+//        if (!claims.getSubject().equals(memberUuid.toString())) {
+//            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 토큰", null);
+//        }
+//
+//        authService.signOut(memberUuid);
+//        return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
     }
 
     @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
@@ -57,5 +82,8 @@ public class AuthController {
                 CommonResponseMessage.SUCCESS.getMessage(),
                 logInResponseVo);
     }
+
+//    @PostMapping("/do_user_exist")
+//    @PostMapping("/reset_password")
 
 }

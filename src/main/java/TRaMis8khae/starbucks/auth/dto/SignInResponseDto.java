@@ -1,15 +1,15 @@
-package TRaMis8khae.starbucks.auth.vo;
+package TRaMis8khae.starbucks.auth.dto;
 
 import lombok.*;
 
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class LogInResponseVo {
-
+@AllArgsConstructor
+public class SignInResponseDto {
     private String accessToken;
     private String refreshToken;
     private String uuid;
+    private String nickname;
 }

@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.common.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,8 +39,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwt = authHeader.substring(7);
 
-        loginId = Jwts.parser().verifyWith((SecretKey) jwtTokenProvider.getSignKey())
-                .build().parseSignedClaims(jwt).getPayload().get("email", String.class);
+        // ----------------------------------------------
+        Claims claims = Jwts.parser().setSigningKey(jwtTokenProvider.getSignKey())
+                .build().parseClaimsJws(jwt).getBody();
+
+        loginId = claims.getSubject();
+        // ----------------------------------------------
+
+//        loginId = Jwts.parser().verifyWith((SecretKey) jwtTokenProvider.getSignKey())
+//                .build().parseSignedClaims(jwt).getPayload().get("email", String.class);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
