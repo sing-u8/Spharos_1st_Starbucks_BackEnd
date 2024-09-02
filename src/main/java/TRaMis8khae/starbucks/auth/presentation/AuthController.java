@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-
     private final JwtTokenProvider jwtTokenProvider;
 
     @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
@@ -35,50 +34,28 @@ public class AuthController {
     public CommonResponseEntity<Void> signUp(
             @RequestBody SignInRequestVo signUpRequestVo) {
         log.info("!!!!!!!!!signUpRequestVo : {}", signUpRequestVo);
-        authService.signUp(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
-        return new CommonResponseEntity<>(HttpStatus.OK, CommonResponseMessage.SUCCESS.getMessage(), null);
+        authService.signIn(new ModelMapper().map(signUpRequestVo, SignInRequestDto.class));
+        return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
     }
 
     @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
     @PostMapping("/login")
-    public CommonResponseEntity<LogInResponseVo> LogIn(
+    public CommonResponseEntity<LogInResponseVo> logIn(
             @RequestBody LogInRequestVo logInRequestVo) {
-//        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
         LogInRequestDto logInRequestDto = LogInRequestDto.builder().
                 loginId(logInRequestVo.getLoginId()).
                 password(logInRequestVo.getPassword()).
                 build();
-        Authentication authentication = authService.logIn(logInRequestDto);
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-        LogInResponseVo logInResponseVo = LogInResponseVo.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .nickname(logInRequestVo.getLoginId())
-                .build();
+
+        LogInResponseVo logInResponseVo = modelMapper.map(authService.logIn(logInRequestDto), LogInResponseVo.class);
         log.info("signInResponseVo : {}", logInResponseVo);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 logInResponseVo);
     }
 
-//    @Operation(summary = "SignIn API", description = "SignIn API", tags = {"Auth"})
-//    @PostMapping("/sign-in")
-//    public CommonResponseEntity<SignInResponseVo> signIn(
-//            @RequestBody SignInRequestVo signInRequestVo) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        SignInRequestDto signInRequestDto = SignInRequestDto.builder().
-//                loginId(signInRequestVo.getLoginId()).
-//                password(signInRequestVo.getPassword()).
-//                build();
-//        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
-//        log.info("signInResponseVo : {}", signInResponseVo);
-//
-//        return new CommonResponseEntity<>(
-//                HttpStatus.OK,
-//                CommonResponseMessage.SUCCESS.getMessage(),
-//                signInResponseVo);
-//    }
 }

@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.auth.application;
 
 import TRaMis8khae.starbucks.auth.dto.LogInRequestDto;
+import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
 import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
@@ -24,7 +25,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void signUp(SignInRequestDto signInRequestDto) {
+    public void signIn(SignInRequestDto signInRequestDto) {
         Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
 
 
     @Override
-    public Authentication logIn(LogInRequestDto logInRequestDto) {
+    public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
         log.info("signInRequestDto : {}", logInRequestDto);
 
         // 로그인 아이디로 회원 조회
@@ -49,51 +50,30 @@ public class AuthServiceImpl implements AuthService{
         }
 
         // 인증 객체 생성 및 반환
-        return authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         member.getLoginId(),
                         logInRequestDto.getPassword()
                 )
         );
+
+        String accessToken = generateAccessToken(authentication);
+        String refreshToken = generateRefreshToken(authentication);
+
+        return LogInResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .nickname(member.getNickname())
+                .uuid(member.getMemberUuid())
+                .build();
     }
 
-//    @Override
-//    public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
-//
-//        log.info("signInRequestDto : {}", signInRequestDto);
-//
-//        // 로그인 아이디로 회원 조회
-//        Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElseThrow(
-//                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
-//        );
-//        log.info("member : {}", member);
-//
-//        // 비밀번호 검증
-//        if (!passwordEncoder.matches(signInRequestDto.getPassword(), member.getPassword())) {
-//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        try {
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            member.getLoginId(),
-//                            signInRequestDto.getPassword()
-//                    )
-//            );
-//
-//            // 성공 시 토큰 생성
-//            return SignInResponseDto.builder()
-//                    .accessToken(createToken(authentication))
-//                    .name(member.getName())
-//                    .uuid(member.getMemberUuid()).build();
-//        } catch (Exception e) {
-//            log.error("Authentication failed!!! Check log!!!", e);
-//            throw new IllegalArgumentException("로그인 실패");
-//        }
-//    }
 
-
-    private String createToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication) {
         return jwtTokenProvider.generateAccessToken(authentication);
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        return jwtTokenProvider.generateRefreshToken(authentication);
     }
 }
