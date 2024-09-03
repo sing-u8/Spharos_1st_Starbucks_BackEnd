@@ -1,8 +1,6 @@
-package TRaMis8khae.starbucks.order.domain;
+package TRaMis8khae.starbucks.order.entity;
 
 import jakarta.persistence.*;
-
-import java.util.UUID;
 
 @Entity
 public class CreditCardInfo {

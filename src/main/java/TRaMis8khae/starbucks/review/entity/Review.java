@@ -1,9 +1,8 @@
-package TRaMis8khae.starbucks.order.domain;
+package TRaMis8khae.starbucks.review.entity;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 public class Review {

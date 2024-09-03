@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.order.domain;
+package TRaMis8khae.starbucks.review.entity;
 
 import jakarta.persistence.*;
 
