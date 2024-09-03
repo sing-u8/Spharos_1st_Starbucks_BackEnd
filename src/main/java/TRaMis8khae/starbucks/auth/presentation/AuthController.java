@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/signout/{memberUuid}")
-    public CommonResponseEntity<Void> signOut(@PathVariable UUID memberUuid,
+    public CommonResponseEntity<Void> signOut(@PathVariable String memberUuid,
                                               @RequestHeader("Authorization") String token) {
 
         authService.signOut(memberUuid);

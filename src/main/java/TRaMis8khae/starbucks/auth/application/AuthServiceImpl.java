@@ -37,12 +37,15 @@ public class AuthServiceImpl implements AuthService{
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
-        authRepository.save(signInRequestDto.toEntity(passwordEncoder));
 
-        LogInRequestDto logInRequestDto = LogInRequestDto.builder()
-                .loginId(signInRequestDto.getLoginId())
-                .password(signInRequestDto.getPassword())
-                .build();
+        String Uuid = UUID.randomUUID().toString();
+        Member newMember = signInRequestDto.toEntity(passwordEncoder);
+        newMember.setMemberUUID(Uuid);
+
+        log.info("newMember: {}", newMember);
+
+//        authRepository.save(signInRequestDto.toEntity(passwordEncoder));
+        authRepository.save(newMember);
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,20 +54,23 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
 
-        String accessToken = generateAccessToken(authentication, member.getMemberUuid());
+        String accessToken = generateAccessToken(Uuid);
         String refreshToken = generateRefreshToken(authentication);
+
+        log.info("accessToken : {}", accessToken);
+        log.info("refreshToken : {}", refreshToken);
 
         return SignInResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .nickname(signInRequestDto.getNickname())
-                .uuid(UUID.randomUUID().toString())
+                .uuid(Uuid)
                 .build();
     }
 
     @Override
-    public void signOut(UUID memberUuid) {
-        Member member = authRepository.findByMemberUuid(memberUuid).orElseThrow(
+    public void signOut(String memberUUID) {
+        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
         authRepository.delete(member);
@@ -72,18 +78,18 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
-        log.info("signInRequestDto : {}", logInRequestDto);
 
         // 로그인 아이디로 회원 조회
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
         );
-        log.info("member : {}", member);
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(logInRequestDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+
+        log.info("member : {}", member);
 
         // 인증 객체 생성 및 반환
         Authentication authentication = authenticationManager.authenticate(
@@ -93,20 +99,23 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
 
-        String accessToken = generateAccessToken(authentication, member.getMemberUuid());
+        String accessToken = generateAccessToken(member.getMemberUUID());
         String refreshToken = generateRefreshToken(authentication);
+
+        log.info("accessToken : {}", accessToken);
+        log.info("refreshToken : {}", refreshToken);
 
         return LogInResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .nickname(member.getNickname())
-                .uuid(member.getMemberUuid())
+                .uuid(member.getMemberUUID())
                 .build();
     }
 
 
-    public String generateAccessToken(Authentication authentication, UUID memberUuid) {
-        return jwtTokenProvider.generateAccessToken(authentication, memberUuid);
+    public String generateAccessToken(String memberUuid) {
+        return jwtTokenProvider.generateAccessToken(memberUuid);
     }
 
     public String generateRefreshToken(Authentication authentication) {

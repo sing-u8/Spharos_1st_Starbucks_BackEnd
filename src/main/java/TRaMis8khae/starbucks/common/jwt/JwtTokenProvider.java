@@ -22,36 +22,43 @@ public class JwtTokenProvider {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final Environment env;
 
-    public String generateAccessToken(Authentication authentication, UUID memberUuid) {
-        Claims claims = Jwts.claims().subject(authentication.getName()).build();
+    public String generateAccessToken(String memberUUID) {
+        Claims claims = Jwts.claims().subject(memberUUID).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .signWith(getSignKey())
-                .claim("memberUuid", claims.getSubject())
+                .claim("email", claims.getSubject())
                 .issuedAt(expiration)
                 .compact();
 
-        logger.info("Generated JWT AccessToken: {}", token);
-        logger.info("Login ID: {}", claims.getSubject());
-
-        return token;
+        //        Claims claims = Jwts.claims().subject(authentication.getName()).build();
+//        Date now = new Date();
+//        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
+//
+//        String token = Jwts.builder()
+//                .signWith(getSignKey())
+//                .claim("memberUuid", claims.getSubject())
+//                .issuedAt(expiration)
+//                .compact();
+//
+//        logger.info("Generated JWT AccessToken: {}", token);
+//        logger.info("Login ID: {}", claims.getSubject());
+//
+//        return token;
     }
 
     public String generateRefreshToken(Authentication authentication) {
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
-//        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
+        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .signWith(getSignKey())
-                .claim("loginId", claims.getSubject())
-                .issuedAt(now)
+                .claim("email", claims.getSubject())
+                .issuedAt(expiration)
                 .compact();
-
-        logger.info("Generated JWT RefreshToken: {}", token);
-        return token;
     }
 
     public Key getSignKey() {

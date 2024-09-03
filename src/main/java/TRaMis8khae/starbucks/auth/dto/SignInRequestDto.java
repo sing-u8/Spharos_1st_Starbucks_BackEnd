@@ -25,6 +25,7 @@ public class SignInRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
+    private String uuid;
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
@@ -37,6 +38,7 @@ public class SignInRequestDto {
                 .nickname(nickname)
                 .address(address)
                 .payment_password(paymentPassword)
+                .member_uuid(uuid)
                 .build();
     }
 }

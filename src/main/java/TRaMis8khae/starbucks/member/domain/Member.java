@@ -21,8 +21,8 @@ public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
-    @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    @Column(nullable = false, length = 36)
+    private String memberUUID;
     @Column(nullable = false, length = 50)
     private String name;
     @Column(nullable = false, length = 50)
@@ -46,7 +46,7 @@ public class Member implements UserDetails {
     @Builder
     public Member(
             Long member_id,
-            UUID member_uuid,
+            String member_uuid,
             String name,
             String login_id,
             String password,
@@ -59,7 +59,7 @@ public class Member implements UserDetails {
             Boolean member_status
     ) {
         this.memberId = member_id;
-        this.memberUuid = member_uuid;
+        this.memberUUID = member_uuid;
         this.name = name;
         this.loginId = login_id;
         this.password = password;
@@ -72,12 +72,12 @@ public class Member implements UserDetails {
         this.memberStatus = member_status;
     }
 
-    @PrePersist // DB에 insert 되기 전에 실행, 엔티티가 영속화되기 전에 실행
-    public void prePersist() { // memberUuid가 null이면 UUID를 생성하여 저장
-        if (this.memberUuid == null) {
-            this.memberUuid = UUID.randomUUID();
-        }
-    }
+//    @PrePersist // DB에 insert 되기 전에 실행, 엔티티가 영속화되기 전에 실행
+//    public void prePersist() { // memberUuid가 null이면 UUID를 생성하여 저장
+//        if (this.memberUUID == null) {
+//            this.memberUUID = UUID.randomUUID().toString();
+//        }
+//    }
 
     public void hashPassword(String password) {
         this.password = password;
