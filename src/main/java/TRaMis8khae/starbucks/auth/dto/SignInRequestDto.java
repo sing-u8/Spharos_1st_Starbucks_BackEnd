@@ -1,6 +1,6 @@
 package TRaMis8khae.starbucks.auth.dto;
 
-import TRaMis8khae.starbucks.member.domain.Member;
+import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;

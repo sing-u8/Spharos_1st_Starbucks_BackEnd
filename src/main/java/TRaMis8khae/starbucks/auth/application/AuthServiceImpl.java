@@ -5,14 +5,10 @@ import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
 import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
 import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
-import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
-import TRaMis8khae.starbucks.member.domain.Member;
+import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,13 +35,13 @@ public class AuthServiceImpl implements AuthService{
         }
 
         String Uuid = UUID.randomUUID().toString();
-        Member newMember = signInRequestDto.toEntity(passwordEncoder);
-        newMember.setMemberUUID(Uuid);
+        Member addMember = signInRequestDto.toEntity(passwordEncoder);
+        addMember.setMemberUUID(Uuid);
 
-        log.info("newMember: {}", newMember);
+        log.info("newMember: {}", addMember);
 
 //        authRepository.save(signInRequestDto.toEntity(passwordEncoder));
-        authRepository.save(newMember);
+        authRepository.save(addMember);
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
