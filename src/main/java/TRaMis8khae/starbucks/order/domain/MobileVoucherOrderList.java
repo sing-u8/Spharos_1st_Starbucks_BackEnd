@@ -11,9 +11,9 @@ public class MobileVoucherOrderList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mobileGiftOrderId;
     @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUUID;
     @Column(columnDefinition = "binary(16)")
-    private UUID productUuid;
+    private String productUUID;
     private LocalDateTime registerDate;
     private Double usedPrice;
 

@@ -10,9 +10,9 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
-    private Long productOrderId;
+    private Long productOrderUUID;
     @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUUID;
     @Column(nullable = false, length = 50)
     private String loginId;
     private String memberMaskingId;

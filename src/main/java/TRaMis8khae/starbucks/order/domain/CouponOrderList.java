@@ -11,9 +11,9 @@ public class CouponOrderList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long couponOrderId;
     @Column(columnDefinition = "binary(16)")
-    private UUID memverUuid;
+    private String memberUUID;
     @Column(columnDefinition = "binary(16)")
-    private UUID productUuid;
+    private String productUUID;
     private LocalDateTime registerDate;
 
     @ManyToOne

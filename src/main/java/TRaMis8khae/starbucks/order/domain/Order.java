@@ -12,7 +12,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUUID;
     @Column(nullable = false, length = 50)
     private String serialNumber;
     @Column(nullable = false, length = 50)
