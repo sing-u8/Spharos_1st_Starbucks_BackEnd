@@ -1,32 +1,31 @@
 package TRaMis8khae.starbucks.product.dto;
 
-import TRaMis8khae.starbucks.product.domain.Product;
+import TRaMis8khae.starbucks.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 public class ProductRequestDto {
     private String productName;
     private LocalDate date;
-    private String productUuid;
+    private String productUUID;
     private Integer productScore;
 
-    public Product toEntity(String productUuid) {
+    public Product toEntity(String productUUID) {
         return Product.builder()
-                .productUuid(productUuid)
+                .productUUID(productUUID)
                 .date(date)
                 .productName(productName)
                 .productScore(productScore)
                 .build();
     }
     @Builder
-    public ProductRequestDto(String productName, LocalDate date, String productUuid, Integer productScore) {
+    public ProductRequestDto(String productName, LocalDate date, String productUUID, Integer productScore) {
         this.productName = productName;
         this.date = date;
-        this.productUuid = productUuid;
+        this.productUUID = productUUID;
         this.productScore = productScore;
     }
 }

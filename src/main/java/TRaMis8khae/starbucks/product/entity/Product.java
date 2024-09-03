@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -17,10 +16,10 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    private Long id;
     @Column(nullable = false, length = 50)
     private String productName;
     private LocalDate date;
-    private String productUuid;
+    private String productUUID;
     private Integer productScore;
 }

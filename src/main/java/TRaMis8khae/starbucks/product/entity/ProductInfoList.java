@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,15 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInfo {
+public class ProductInfoList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productInfoId;
-    @Column(columnDefinition = "text")
-    private String productInfo;
+    private Long id;
+    private String productUUID;
+    private Integer imageOrder;
     @Column(length = 20)
-    private String productInfoType;
+    private String imageType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductInfo productInfo;
 }

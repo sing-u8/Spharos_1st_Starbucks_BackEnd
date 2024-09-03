@@ -1,12 +1,12 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-public class ProductOptionEventInfo {
+public class ProductEventInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventInfoListId;
+    private Long id;
     private Integer infoOrder;
     private String infoType;
 

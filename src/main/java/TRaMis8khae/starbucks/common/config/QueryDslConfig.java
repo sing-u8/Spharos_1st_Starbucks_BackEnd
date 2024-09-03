@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.product.config;
+package TRaMis8khae.starbucks.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

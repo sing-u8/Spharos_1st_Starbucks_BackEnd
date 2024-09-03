@@ -5,30 +5,29 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 public class ProductResponseDto {
 
     private String productName;
     private LocalDate date;
-    private String productUuid;
+    private String productUUID;
     private Integer productScore;
 
     public ProductResponseVo toResponseVo() {
         return ProductResponseVo.builder()
                 .productName(productName)
                 .date(date)
-                .productUuid(productUuid)
+                .productUUID(productUUID)
                 .productScore(productScore)
                 .build();
     }
 
     @Builder
-    public ProductResponseDto(String productName, LocalDate date, String productUuid, Integer productScore) {
+    public ProductResponseDto(String productName, LocalDate date, String productUUID, Integer productScore) {
         this.productName = productName;
         this.date = date;
-        this.productUuid = productUuid;
+        this.productUUID = productUUID;
         this.productScore = productScore;
     }
 }

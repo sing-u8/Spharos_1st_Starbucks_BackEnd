@@ -1,6 +1,6 @@
 package TRaMis8khae.starbucks.product.application;
 
-import TRaMis8khae.starbucks.product.domain.Product;
+import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
@@ -20,51 +20,49 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
-        String productUuid = UUID.randomUUID().toString();
-        productRepository.save(requestDto.toEntity(productUuid));
+        String productUUID = UUID.randomUUID().toString();
+        productRepository.save(requestDto.toEntity(productUUID));
     }
 
     @Override
     public void updateProduct(ProductRequestDto requestDto) {
-        productRepository.findByProductUuid(requestDto.getProductUuid())
+        productRepository.findByProductUUID(requestDto.getProductUUID())
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-        productRepository.save(requestDto.toEntity(requestDto.getProductUuid()));
+        productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
+
     }
 
 
     @Override
-    public void deleteProduct(String productUuid) {
-        Product product = productRepository.findByProductUuid(productUuid)
+    public void deleteProduct(String productUUID) {
+        Product product = productRepository.findByProductUUID(productUUID)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
         productRepository.delete(product);
     }
 
     @Override
-    public ProductResponseDto getProduct(String productUuid) {
-        Product product = productRepository.findByProductUuid(productUuid)
+    public ProductResponseDto findProduct(String productUUID) {
+        Product product = productRepository.findByProductUUID(productUUID)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-        System.out.println(product.getProductName());
         return ProductResponseDto.builder()
                 .productName(product.getProductName())
                 .date(product.getDate())
-                .productUuid(productUuid)
+                .productUUID(productUUID)
                 .productScore(product.getProductScore())
                 .build();
     }
 
     @Override
-    public List<ProductResponseDto> getProducts() {
+    public List<ProductResponseDto> findProducts() {
         List<Product> products = productRepository.findAll();
 
-        List<ProductResponseDto> productResponseDtoList = products.stream()
+        return products.stream()
                 .map(product -> ProductResponseDto.builder()
-                        .productUuid(product.getProductUuid())
+                        .productUUID(product.getProductUUID())
                         .productName(product.getProductName())
                         .productScore(product.getProductScore())
                         .build())
                 .toList();
-
-        return List.of();
     }
 
 

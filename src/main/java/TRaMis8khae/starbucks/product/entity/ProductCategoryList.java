@@ -1,12 +1,12 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
 
 @Entity
-public class ProductOptionCategory {
+public class ProductCategoryList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productCategoryId;
+    private Integer id;
     private Long subCategoryId;
     private Long mainCategoryId;
 

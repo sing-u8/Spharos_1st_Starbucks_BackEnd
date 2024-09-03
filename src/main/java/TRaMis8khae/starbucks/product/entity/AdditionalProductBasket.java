@@ -1,20 +1,15 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
-
-import java.util.UUID;
 
 @Entity
 public class AdditionalProductBasket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long AdditionalBasketId;
+    private Long id;
     private Long additionalProductId;
-    @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUUID;
     private Integer count;
-    private Boolean billChecked;
-    private Boolean checked;
 
     @ManyToOne
     private ProductBasket productBasket;

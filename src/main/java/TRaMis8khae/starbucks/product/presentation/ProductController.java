@@ -38,8 +38,8 @@ public class ProductController {
     }
 
     @DeleteMapping
-    public CommonResponseEntity<Void> deleteProduct(@RequestBody String productUuid) {
-        productService.deleteProduct(productUuid);
+    public CommonResponseEntity<Void> deleteProduct(@RequestBody String productUUID) {
+        productService.deleteProduct(productUUID);
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "상품 삭제 성공",
@@ -54,8 +54,8 @@ public class ProductController {
 //    }
 
     @GetMapping("/{productUuid}")
-    public CommonResponseEntity<ProductResponseVo> getProduct(@PathVariable String productUuid) {
-        ProductResponseDto productResponseDto = productService.getProduct(productUuid);
+    public CommonResponseEntity<ProductResponseVo> getProduct(@PathVariable String productUUID) {
+        ProductResponseDto productResponseDto = productService.findProduct(productUUID);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -63,4 +63,5 @@ public class ProductController {
                 productResponseDto.toResponseVo()
                 );
     }
+
 }

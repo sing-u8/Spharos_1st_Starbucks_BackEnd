@@ -1,7 +1,6 @@
-package TRaMis8khae.starbucks.product.domain;
+package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
-import org.w3c.dom.Text;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +8,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventId;
+    private Long id;
     @Column(nullable = false, length = 50)
     private String eventName;
     private Integer discountRate;
