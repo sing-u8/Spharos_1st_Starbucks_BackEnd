@@ -6,9 +6,11 @@ import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
+import TRaMis8khae.starbucks.member.vo.MemberAddressRequestVo;
 import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,40 +25,37 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
     private final MemberAddressListRepository memberAddressListRepository;
 
     @Override
-    public DeliveryAddress addDeliveryAddress(String memberUUID, DeliveryAddressResponseDto deliveryAddressResponseDto) {
+    public void addDeliveryAddress(String memberUUID, MemberAddressRequestVo memberAddressRequestVo) {
         // 배송지 추가
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
-                .addressDetail(deliveryAddressResponseDto.getAddressDetail())
-                .deliveryMemo(deliveryAddressResponseDto.getDeliveryMemo())
-                .deliveryAddressNickname(deliveryAddressResponseDto.getDeliveryAddressNickname())
-                .recipient(deliveryAddressResponseDto.getRecipient())
-                .phone1(deliveryAddressResponseDto.getPhone1())
-                .phone2(deliveryAddressResponseDto.getPhone2())
+                .addressDetail(memberAddressRequestVo.getAddressDetail())
+                .deliveryMemo(memberAddressRequestVo.getDeliveryMemo())
+                .deliveryAddressNickname(memberAddressRequestVo.getDeliveryAddressNickname())
+                .recipient(memberAddressRequestVo.getRecipient())
+                .phone1(memberAddressRequestVo.getPhone1())
+                .phone2(memberAddressRequestVo.getPhone2())
                 .build();
 
         deliveryAddressRepository.save(deliveryAddress);
 
+        // 회원 배송지 목록 추가
         MemberAddressList memberAddressList = MemberAddressList.builder()
                 .memberUUID(memberUUID)
                 .deliveryAddress(deliveryAddress)
-                .addressDefaultCheck(deliveryAddressResponseDto.isAddressDefaultCheck())
+                .addressDefaultCheck(memberAddressRequestVo.isAddressDefaultCheck())
                 .build();
 
         memberAddressListRepository.save(memberAddressList);
-
-        log.info("Delivery address added: {}", deliveryAddress);
-        log.info("Member address list added: {}", memberAddressList);
-
-        return deliveryAddress;
     }
 
     @Override
-    public List<MemberAddressResponseVo> getMemberAddress(String memberUUID) {
+    public List<MemberAddressResponseVo> getMemberDeliveryAddress(String memberUUID) {
         List<MemberAddressList> memberAddressList = memberAddressListRepository.findByMemberUUID(memberUUID);
 
         return memberAddressList.stream().map(memberAddress -> {
             DeliveryAddress deliveryAddress = memberAddress.getDeliveryAddress();
             return MemberAddressResponseVo.builder()
+                    .deliveryAddressId(deliveryAddress.getDeliveryAddressId())
                     .memberAddressId(memberAddress.getMemberAddressId())
                     .memberUUID(memberAddress.getMemberUUID())
                     .addressDefaultCheck(memberAddress.getAddressDefaultCheck())
@@ -69,4 +68,11 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
                     .build();
         }).collect(Collectors.toList());
     }
+
+//    @Override
+//    public void deleteDeliveryAddress(String memberUUID, Long deliveryAddressId) {
+//        MemberAddressList memberAddressList = memberAddressListRepository.find
+//
+//    }
+
 }
