@@ -1,8 +1,6 @@
 package TRaMis8khae.starbucks.product.infrastructure;
 
-import TRaMis8khae.starbucks.product.entity.ProductInfoList;
-import TRaMis8khae.starbucks.product.entity.QProductInfo;
-import TRaMis8khae.starbucks.product.entity.QProductInfoList;
+import TRaMis8khae.starbucks.product.entity.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,12 +17,19 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     public List<ProductInfoList> getProductInfoWithProduct(String productUUID) {
 
         QProductInfoList productInfoList = QProductInfoList.productInfoList;
-        QProductInfo productInfo = QProductInfo.productInfo1;
 
         return jpaQueryFactory.selectFrom(productInfoList)
-                .innerJoin(productInfo)
                 .where(productInfoList.productUUID.eq(productUUID))
-//                        .and(productInfo.productInfoId.eq(productInfoList.productInfoId)))
+                .fetch();
+
+    }
+
+    @Override
+    public List<ProductOption> getProductOptionWithProduct(String productUUID) {
+        QProductOption productOption = QProductOption.productOption;
+
+        return jpaQueryFactory.selectFrom(productOption)
+                .where(productOption.productUUID.eq(productUUID))
                 .fetch();
     }
 }

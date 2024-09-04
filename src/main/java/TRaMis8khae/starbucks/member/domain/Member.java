@@ -13,7 +13,7 @@ import java.util.UUID;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private Long id;
     @Column(columnDefinition = "binary(16)")
     private UUID memberUuid;
     @Column(nullable = false, length = 50)
@@ -51,7 +51,7 @@ public class Member {
             String payment_password,
             Boolean member_status
     ) {
-        this.memberId = member_id;
+        this.id = member_id;
         this.memberUuid = member_uuid;
         this.name = name;
         this.loginId = login_id;

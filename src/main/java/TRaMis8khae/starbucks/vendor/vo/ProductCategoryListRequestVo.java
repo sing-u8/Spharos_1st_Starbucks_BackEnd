@@ -1,16 +1,17 @@
-package TRaMis8khae.starbucks.admin.vo;
+package TRaMis8khae.starbucks.vendor.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubCategoryRequestVo {
-    private String subCategoryName;
-    private Integer subCategoryOrder;
+public class ProductCategoryListRequestVo {
+    private Integer subCategoryId;
     private Integer mainCategoryId;
+    private Long productId;
+
 }

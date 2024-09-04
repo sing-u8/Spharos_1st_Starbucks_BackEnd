@@ -23,5 +23,5 @@ public interface CategoryService {
     SubCategoryResponseDto findSubCategoryByName(String SubCategoryName);
 
     List<MainCategoryResponseDto> findMainCategories();
-    List<SubCategoryResponseDto> findSubCategories();
+    List<SubCategoryResponseDto> findSubCategories(Integer mainCategoryId);
 }

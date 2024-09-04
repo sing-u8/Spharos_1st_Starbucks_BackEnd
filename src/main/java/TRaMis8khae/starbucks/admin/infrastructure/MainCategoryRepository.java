@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MainCategoryRepository extends JpaRepository<MainCategory, Integer> {
-    Optional<MainCategory> findByCategoryName(String CategoryName);
-    boolean existsByCategoryName(String categoryName);
+    Optional<MainCategory> findByMainCategoryName(String CategoryName);
+    boolean existsByMainCategoryName(String categoryName);
 }

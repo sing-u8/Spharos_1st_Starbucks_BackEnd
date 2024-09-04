@@ -25,11 +25,7 @@ public class ProductController {
     @PostMapping
     public CommonResponseEntity<Void> createProduct(@RequestBody ProductRequestVo productRequestVo) {
         log.info("productRequestVo : {}", productRequestVo);
-        ProductRequestDto productRequestDto = ProductRequestDto.builder()
-                .productName(productRequestVo.getProductName())
-                .date(productRequestVo.getDate())
-                .build();
-        productService.addProduct(productRequestDto);
+        productService.addProduct(ProductRequestDto.toDto(productRequestVo));
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "상품 등록 성공",
@@ -53,15 +49,26 @@ public class ProductController {
 //        return null;
 //    }
 
-    @GetMapping("/{productUuid}")
+    @GetMapping("/{productUUID}")
     public CommonResponseEntity<ProductResponseVo> getProduct(@PathVariable String productUUID) {
         ProductResponseDto productResponseDto = productService.findProduct(productUUID);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "상품 조회 성공",
-                productResponseDto.toResponseVo()
+                productResponseDto.toVo()
                 );
     }
+
+    @GetMapping("/productList")
+    public CommonResponseEntity<List<ProductResponseVo>> getProducts() {
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                "상품 리스트 조회 성공",
+                productService.findProducts().stream().map(ProductResponseDto::toVo).toList()
+        );
+    }
+
+
 
 }
