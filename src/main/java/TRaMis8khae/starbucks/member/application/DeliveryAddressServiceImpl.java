@@ -1,16 +1,18 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressDto;
-import TRaMis8khae.starbucks.member.dto.MemberAddressListDto;
+import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
+import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
+import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,15 +23,15 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
     private final MemberAddressListRepository memberAddressListRepository;
 
     @Override
-    public DeliveryAddress addDeliveryAddress(String memberUUID, DeliveryAddressDto deliveryAddressDto) {
+    public DeliveryAddress addDeliveryAddress(String memberUUID, DeliveryAddressResponseDto deliveryAddressResponseDto) {
         // 배송지 추가
         DeliveryAddress deliveryAddress = DeliveryAddress.builder()
-                .addressDetail(deliveryAddressDto.getAddressDetail())
-                .deliveryMemo(deliveryAddressDto.getDeliveryMemo())
-                .deliveryAddressNickname(deliveryAddressDto.getDeliveryAddressNickname())
-                .recipient(deliveryAddressDto.getRecipient())
-                .phone1(deliveryAddressDto.getPhone1())
-                .phone2(deliveryAddressDto.getPhone2())
+                .addressDetail(deliveryAddressResponseDto.getAddressDetail())
+                .deliveryMemo(deliveryAddressResponseDto.getDeliveryMemo())
+                .deliveryAddressNickname(deliveryAddressResponseDto.getDeliveryAddressNickname())
+                .recipient(deliveryAddressResponseDto.getRecipient())
+                .phone1(deliveryAddressResponseDto.getPhone1())
+                .phone2(deliveryAddressResponseDto.getPhone2())
                 .build();
 
         deliveryAddressRepository.save(deliveryAddress);
@@ -37,6 +39,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
         MemberAddressList memberAddressList = MemberAddressList.builder()
                 .memberUUID(memberUUID)
                 .deliveryAddress(deliveryAddress)
+                .addressDefaultCheck(deliveryAddressResponseDto.isAddressDefaultCheck())
                 .build();
 
         memberAddressListRepository.save(memberAddressList);
@@ -47,21 +50,23 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
         return deliveryAddress;
     }
 
+    @Override
+    public List<MemberAddressResponseVo> getMemberAddress(String memberUUID) {
+        List<MemberAddressList> memberAddressList = memberAddressListRepository.findByMemberUUID(memberUUID);
 
-//    @Override
-//    public Optional<DeliveryAddress> getDeliveryAddress(Long deliveryAddressId) {
-//        return deliveryAddressRepository.findById(deliveryAddressId);
-//    }
-
-//    @Override
-//    public MemberAddress addMemberAddress(MemberAddressDto dto) {
-//        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(dto.getDeliveryAddressId())
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid delivery address ID"));
-//        MemberAddress memberAddress = MemberAddress.builder()
-//                .memberUUID(dto.getMemberUUID())
-//                .deliveryAddress(deliveryAddress)
-//                .addressDefaultCheck(dto.getAddressDefaultCheck())
-//                .build();
-//        return memberAddressRepository.save(memberAddress);
-//    }
+        return memberAddressList.stream().map(memberAddress -> {
+            DeliveryAddress deliveryAddress = memberAddress.getDeliveryAddress();
+            return MemberAddressResponseVo.builder()
+                    .memberAddressId(memberAddress.getMemberAddressId())
+                    .memberUUID(memberAddress.getMemberUUID())
+                    .addressDefaultCheck(memberAddress.getAddressDefaultCheck())
+                    .addressDetail(deliveryAddress.getAddressDetail())
+                    .deliveryMemo(deliveryAddress.getDeliveryMemo())
+                    .deliveryAddressNickname(deliveryAddress.getDeliveryAddressNickname())
+                    .recipient(deliveryAddress.getRecipient())
+                    .phone1(deliveryAddress.getPhone1())
+                    .phone2(deliveryAddress.getPhone2())
+                    .build();
+        }).collect(Collectors.toList());
+    }
 }

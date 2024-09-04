@@ -1,16 +1,18 @@
-package TRaMis8khae.starbucks.member.dto;
+package TRaMis8khae.starbucks.member.vo;
 
 import lombok.*;
-
-import javax.annotation.processing.Generated;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeliveryAddressDto {
-    private Long deliveryAddressId;
+@ToString
+public class MemberAddressResponseVo {
+    private Long memberAddressId;
+    private String memberUUID;
+    private boolean addressDefaultCheck;
+
     private String addressDetail;
     private String deliveryMemo;
     private String deliveryAddressNickname;
