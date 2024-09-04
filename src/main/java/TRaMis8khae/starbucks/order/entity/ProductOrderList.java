@@ -3,10 +3,10 @@ package TRaMis8khae.starbucks.order.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class ProductOrder {
+public class ProductOrderList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productOrderId;
+    private Long id;
     private Double productPrice;
     @Column(length = 50)
     private String productName;

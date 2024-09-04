@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Coupon {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long couponId;
+    private Long id;
     @Column(nullable = false, length = 50)
     private String couponTitle;
     private String couponCode;

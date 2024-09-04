@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class MobileVoucher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mobileGiftId;
+    private Long id;
     @Column(length = 50)
     private String VoucherName;
     private LocalDate endDate;

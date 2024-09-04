@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class StarbucksCardInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long StarbucksCardId;
+    private Long id;
     @Column(nullable = false, length = 50)
     private String StarbucksCardName;
     @Column(columnDefinition = "binary(16)")

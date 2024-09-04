@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 public class ReviewMedia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewMediaId;
+    private Long id;
     private String reviewMediaType;
     private String reviewMediaPath;
 }

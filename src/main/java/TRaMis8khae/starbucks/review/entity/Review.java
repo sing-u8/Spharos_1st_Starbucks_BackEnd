@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long reviewId;
+    private Long id;
     private Long productOrderUUID;
     @Column(columnDefinition = "binary(16)")
     private String memberUUID;

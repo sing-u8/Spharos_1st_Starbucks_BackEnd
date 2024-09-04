@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class MobileVoucherOrderList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mobileGiftOrderId;
+    private Long id;
     @Column(columnDefinition = "binary(16)")
     private String memberUUID;
     @Column(columnDefinition = "binary(16)")

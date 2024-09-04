@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class ReviewMediaList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productReviewMediaId;
+    private Long id;
     private Integer imageOrder;
 
     @ManyToOne
