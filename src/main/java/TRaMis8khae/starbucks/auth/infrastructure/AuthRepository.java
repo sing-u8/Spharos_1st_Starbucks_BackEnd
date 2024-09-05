@@ -10,6 +10,6 @@ public interface AuthRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByLoginId(String loginId);
     Optional<Member> findByMemberUUID(String memberUUID);
-//    void findByUuid(UUID memberUuid);
+    void deleteByMemberUUID(String memberUUID);
     //TEST!!!!
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface AuthService {
     SignInResponseDto signIn(SignInRequestDto signInRequestDto);
     LogInResponseDto logIn(LogInRequestDto logInRequestDto);
-    void signOut(String memberUUID);
+    void signOut(String memberUUID, String accessToken);
 }
 
 

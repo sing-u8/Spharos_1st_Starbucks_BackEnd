@@ -10,6 +10,7 @@ import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.domain.Member;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -69,12 +70,20 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public void signOut(String memberUUID) {
+    public void signOut(String memberUUID, String accessToken) {
+        log.info("들어옴!!!!!!!!!!");
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
-        authRepository.delete(member);
+
+        Claims claims = jwtTokenProvider.getClaims(accessToken);
+        if (!memberUUID.equals(claims.getSubject())) {
+            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
+        }
+
+        authRepository.deleteByMemberUUID(memberUUID);
     }
+
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
@@ -114,8 +123,8 @@ public class AuthServiceImpl implements AuthService{
     }
 
 
-    public String generateAccessToken(String memberUuid) {
-        return jwtTokenProvider.generateAccessToken(memberUuid);
+    public String generateAccessToken(String memberUUID) {
+        return jwtTokenProvider.generateAccessToken(memberUUID);
     }
 
     public String generateRefreshToken(Authentication authentication) {

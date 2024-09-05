@@ -11,6 +11,7 @@ import TRaMis8khae.starbucks.auth.vo.SignInRequestVo;
 import TRaMis8khae.starbucks.auth.vo.SignInResponseVo;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
+import TRaMis8khae.starbucks.common.jwt.JwtAuthenticationFilter;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
@@ -67,12 +69,26 @@ public class AuthController {
                 signInResponseVo);
     }
 
-    @DeleteMapping("/signout/{memberUuid}")
-    public CommonResponseEntity<Void> signOut(@PathVariable String memberUuid,
+    @DeleteMapping("/signout/{memberUUID}")
+    public CommonResponseEntity<Void> signOut(@PathVariable String memberUUID,
                                               @RequestHeader("Authorization") String token) {
 
-        authService.signOut(memberUuid);
-        return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
+        String accessToken = token.replace("Bearer ", "");
+
+        Claims claims = jwtTokenProvider.getClaims(accessToken);
+        String memberUuidFromToken = claims.getSubject();
+
+        if (!memberUUID.equals(memberUuidFromToken)) {
+            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 토큰", null);
+        }
+
+        authService.signOut(memberUUID, accessToken);
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
 //        String accessToken = token.replace("Bearer ", "");
 //        Claims claims = jwtTokenProvider.getClaims(accessToken);
 //
