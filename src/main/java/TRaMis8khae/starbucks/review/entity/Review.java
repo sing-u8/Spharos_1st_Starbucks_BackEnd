@@ -6,23 +6,28 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long productOrderUUID;
-    @Column(columnDefinition = "binary(16)")
+
+    private String productOrderUUID; // productUUID로 변경
+
     private String memberUUID;
+
     @Column(nullable = false, length = 50)
-    private String loginId;
-    private String memberMaskingId;
+    private String memberMaskingId; // masking을 프론트에서 하거나 db 넣을 때 바로 masking
+
     @Column(length = 30)
     private String memberNickname;
+
     @Column(nullable = false, length = 50)
     private String reviewTitle;
+
     @Column(nullable = false, length = 50)
     private String reviewContext;
+
     private Integer reviewScore;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
-    private Boolean reviewChecked;
+
+    private Boolean reviewChecked; // 상품주문 테이블로
 }
