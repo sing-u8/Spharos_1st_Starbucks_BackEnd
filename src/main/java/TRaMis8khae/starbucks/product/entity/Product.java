@@ -14,12 +14,24 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 50)
     private String productName;
+
     private LocalDate date;
+
     private String productUUID;
+
     private Integer productScore;
+
+    private Double price;
+
+    private String description;
+
+    private Boolean additionalChecked;
+    
 }
