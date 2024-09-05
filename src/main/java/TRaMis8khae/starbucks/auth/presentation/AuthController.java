@@ -34,10 +34,12 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Operation(summary = "SignUp API", description = "SignUp API", tags = {"Auth"})
+    @Operation(summary = "SignIn API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
     public CommonResponseEntity<SignInResponseVo> signIn(
             @RequestBody SignInRequestVo signInRequestVo) {
+
+        log.info("signInRequestVo : {}", signInRequestVo);
 
         SignInRequestDto signInRequestDto = SignInRequestDto.builder().
                 name(signInRequestVo.getName()).
@@ -53,11 +55,16 @@ public class AuthController {
 
         SignInResponseDto signInResponseDto = authService.signIn(signInRequestDto);
 
+        log.info("signInResponseDto : {}", signInResponseDto);
+
         SignInResponseVo signInResponseVo = SignInResponseVo.builder().
-                accessToken(signInResponseDto.getAccessToken()).
-                refreshToken(signInResponseDto.getRefreshToken()).
-                uuid(signInResponseDto.getUuid()).
+                nickname(signInRequestVo.getNickname()).
+//                accessToken(signInResponseDto.getAccessToken()).
+//                refreshToken(signInResponseDto.getRefreshToken()).
+//                uuid(signInResponseDto.getUuid()).
                 build();
+
+        log.info("signInResponseVo : {}", signInResponseVo);
 
 //        ModelMapper modelMapper = new ModelMapper();
 //        SignInRequestDto signInRequestDto = modelMapper.map(signInRequestVo, SignInRequestDto.class);
@@ -68,6 +75,7 @@ public class AuthController {
                 CommonResponseMessage.SUCCESS.getMessage(),
                 signInResponseVo);
     }
+
 
     @DeleteMapping("/signout/{memberUUID}")
     public CommonResponseEntity<Void> signOut(@PathVariable String memberUUID,
@@ -105,12 +113,18 @@ public class AuthController {
     public CommonResponseEntity<LogInResponseVo> logIn(
             @RequestBody LogInRequestVo logInRequestVo) {
 
+        log.info("logInRequestVo : {}", logInRequestVo);
+
         LogInRequestDto logInRequestDto = LogInRequestDto.builder().
                 loginId(logInRequestVo.getLoginId()).
                 password(logInRequestVo.getPassword()).
                 build();
 
+        log.info("logInRequestDto : {}", logInRequestDto);
+
         LogInResponseDto logInResponseDto = authService.logIn(logInRequestDto);
+
+        log.info("logInResponseDto : {}", logInResponseDto);
 
         LogInResponseVo logInResponseVo = LogInResponseVo.builder().
                 accessToken(logInResponseDto.getAccessToken()).
@@ -118,6 +132,8 @@ public class AuthController {
                 uuid(logInResponseDto.getUuid()).
                 nickname(logInResponseDto.getNickname()).
                 build();
+
+        log.info("logInResponseVo : {}", logInResponseVo);
 
 //        LogInResponseVo logInResponseVo = modelMapper.map(authService.logIn(logInRequestDto), LogInResponseVo.class);
 //        log.info("signInResponseVo : {}", logInResponseVo);

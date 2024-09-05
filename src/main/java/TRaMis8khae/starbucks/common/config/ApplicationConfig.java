@@ -20,14 +20,12 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return loginId -> {
-            return memberRepository.findByLoginId(loginId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+        return memberUUID -> {
+            return memberRepository.findByMemberUUID(memberUUID).orElseThrow(
+                    () -> new IllegalArgumentException("회원이 없습니다.")
             );
         };
     }
-
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -39,7 +37,7 @@ public class ApplicationConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-        throws Exception {
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

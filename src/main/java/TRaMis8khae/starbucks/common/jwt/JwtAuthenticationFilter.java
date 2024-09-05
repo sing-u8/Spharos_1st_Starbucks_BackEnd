@@ -31,9 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("JwtAuthenticationFilter.doFilterInternal");
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String loginId;
         final String memberUUID;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -47,33 +48,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("jwt : {}", jwt);
 
-//        // 클레임을 통해 memberUUID를 가져옴
-//        Claims claims = jwtTokenProvider.getClaims(jwt);
-//        memberUUID = claims.getSubject();
+        memberUUID = Jwts.parser()
+                .verifyWith((SecretKey) jwtTokenProvider.getSignKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload()
+                .get("memberUUID", String.class);
 
-        if (jwtTokenProvider.getClaims(jwt) != null) {
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(memberUUID);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-
-//        if (memberUUID != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        }
-
-//        loginId = Jwts.parser().verifyWith((SecretKey) jwtTokenProvider.getSignKey())
-//                .build().parseSignedClaims(jwt).getPayload().get("email", String.class);
-//
-//        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-//            UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
-//            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-//                    userDetails,
-//                    null,
-//                    userDetails.getAuthorities()
-//            );
-//            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-//        }
 
         filterChain.doFilter(request, response);
     }

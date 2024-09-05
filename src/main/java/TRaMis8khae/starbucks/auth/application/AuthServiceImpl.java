@@ -5,15 +5,11 @@ import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
 import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
 import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
-import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
-import TRaMis8khae.starbucks.member.domain.Member;
+import TRaMis8khae.starbucks.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,11 +35,11 @@ public class AuthServiceImpl implements AuthService{
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
 
-        String Uuid = UUID.randomUUID().toString();
+//        String Uuid = UUID.randomUUID().toString();
         Member newMember = signInRequestDto.toEntity(passwordEncoder);
-        newMember.setMemberUUID(Uuid);
+//        newMember.setMemberUUID(Uuid);
 
-        log.info("newMember: {}", newMember);
+//        log.info("newMember: {}", newMember);
 
 //        authRepository.save(signInRequestDto.toEntity(passwordEncoder));
         authRepository.save(newMember);
@@ -55,17 +51,17 @@ public class AuthServiceImpl implements AuthService{
                 )
         );
 
-        String accessToken = generateAccessToken(Uuid);
-        String refreshToken = generateRefreshToken(authentication);
+//        String accessToken = generateAccessToken(Uuid);
+//        String refreshToken = generateRefreshToken(authentication);
 
-        log.info("accessToken : {}", accessToken);
-        log.info("refreshToken : {}", refreshToken);
+//        log.info("accessToken : {}", accessToken);
+//        log.info("refreshToken : {}", refreshToken);
 
         return SignInResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+//                .accessToken(accessToken)
+//                .refreshToken(refreshToken)
                 .nickname(signInRequestDto.getNickname())
-                .uuid(Uuid)
+//                .uuid(Uuid)
                 .build();
     }
 
@@ -87,6 +83,8 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
+
+        log.info("logInRequestDto : {}", logInRequestDto);
 
         // 로그인 아이디로 회원 조회
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
