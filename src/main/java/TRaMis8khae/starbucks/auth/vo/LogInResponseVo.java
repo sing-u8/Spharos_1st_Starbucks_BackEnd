@@ -10,7 +10,11 @@ import lombok.*;
 public class LogInResponseVo {
 
     private String accessToken;
+
     private String refreshToken;
-    private String uuid;
+
+    private String memberUUID;
+
     private String nickname;
+
 }

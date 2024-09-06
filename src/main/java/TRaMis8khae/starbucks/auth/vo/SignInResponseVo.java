@@ -8,8 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignInResponseVo {
-//    private String accessToken;
-//    private String refreshToken;
-//    private String uuid;
+
     private String nickname;
+
 }

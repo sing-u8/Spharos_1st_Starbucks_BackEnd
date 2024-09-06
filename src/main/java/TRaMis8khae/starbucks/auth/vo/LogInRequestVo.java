@@ -6,6 +6,9 @@ import lombok.ToString;
 @ToString
 @Getter
 public class LogInRequestVo {
+
     private String loginId;
+
     private String password;
+
 }

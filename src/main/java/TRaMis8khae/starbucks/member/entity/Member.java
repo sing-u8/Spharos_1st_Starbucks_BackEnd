@@ -72,7 +72,6 @@ public class Member implements UserDetails {
     public void prePersist() {
         this.memberUUID = UUID.randomUUID().toString();
     }
-    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -81,9 +80,6 @@ public class Member implements UserDetails {
     }
 
     @Override
-//    public String getUsername() {
-//        return loginId;
-//    }
     public String getUsername() {
         return memberUUID;
     }

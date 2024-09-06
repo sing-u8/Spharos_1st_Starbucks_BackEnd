@@ -41,4 +41,5 @@ public class SignInRequestDto {
                 .memberUUID(UUID)
                 .build();
     }
+
 }

@@ -31,6 +31,7 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     public String generateAccessToken(String memberUUID) {
+
         Claims claims = Jwts.claims().subject(memberUUID).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
@@ -46,23 +47,10 @@ public class JwtTokenProvider {
 
          return token;
 
-        //        Claims claims = Jwts.claims().subject(authentication.getName()).build();
-//        Date now = new Date();
-//        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
-//
-//        String token = Jwts.builder()
-//                .signWith(getSignKey())
-//                .claim("memberUuid", claims.getSubject())
-//                .issuedAt(expiration)
-//                .compact();
-//
-//        logger.info("Generated JWT AccessToken: {}", token);
-//        logger.info("Login ID: {}", claims.getSubject());
-//
-//        return token;
     }
 
     public String generateRefreshToken(Authentication authentication) {
+
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
@@ -72,6 +60,7 @@ public class JwtTokenProvider {
                 .claim("email", claims.getSubject())
                 .setIssuedAt(expiration)
                 .compact();
+
     }
 
     public Key getSignKey() {
@@ -79,22 +68,20 @@ public class JwtTokenProvider {
     }
 
     public Claims getClaims(String token) {
+
         return Jwts.parser()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
     }
 
     public Authentication getAuthentication(String token) {
-        log.info("token : {}", token);
 
         Claims claims = getClaims(token);
-        log.info("claims : {}", claims);
 
         String memberUUID = claims.get("memberUUID", String.class);
-
-        log.info("memberUUID : {}", memberUUID);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(memberUUID);
 
@@ -104,5 +91,4 @@ public class JwtTokenProvider {
                 userDetails.getAuthorities()
         );
     }
-
 }

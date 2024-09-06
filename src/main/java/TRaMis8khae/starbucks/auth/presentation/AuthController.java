@@ -36,10 +36,7 @@ public class AuthController {
 
     @Operation(summary = "SignIn API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
-    public CommonResponseEntity<SignInResponseVo> signIn(
-            @RequestBody SignInRequestVo signInRequestVo) {
-
-        log.info("signInRequestVo : {}", signInRequestVo);
+    public CommonResponseEntity<SignInResponseVo> signIn(@RequestBody SignInRequestVo signInRequestVo) {
 
         SignInRequestDto signInRequestDto = SignInRequestDto.builder().
                 name(signInRequestVo.getName()).
@@ -55,25 +52,17 @@ public class AuthController {
 
         SignInResponseDto signInResponseDto = authService.signIn(signInRequestDto);
 
-        log.info("signInResponseDto : {}", signInResponseDto);
 
         SignInResponseVo signInResponseVo = SignInResponseVo.builder().
                 nickname(signInRequestVo.getNickname()).
-//                accessToken(signInResponseDto.getAccessToken()).
-//                refreshToken(signInResponseDto.getRefreshToken()).
-//                uuid(signInResponseDto.getUuid()).
                 build();
 
-        log.info("signInResponseVo : {}", signInResponseVo);
-
-//        ModelMapper modelMapper = new ModelMapper();
-//        SignInRequestDto signInRequestDto = modelMapper.map(signInRequestVo, SignInRequestDto.class);
-//        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 signInResponseVo);
+
     }
 
 
@@ -84,10 +73,11 @@ public class AuthController {
         String accessToken = token.replace("Bearer ", "");
 
         Claims claims = jwtTokenProvider.getClaims(accessToken);
-        String memberUuidFromToken = claims.getSubject();
+
+        String memberUuidFromToken = claims.get("memberUUID", String.class);
 
         if (!memberUUID.equals(memberUuidFromToken)) {
-            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 토큰", null);
+            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 UUID", null);
         }
 
         authService.signOut(memberUUID, accessToken);
@@ -97,46 +87,27 @@ public class AuthController {
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 null);
-//        String accessToken = token.replace("Bearer ", "");
-//        Claims claims = jwtTokenProvider.getClaims(accessToken);
-//
-//        if (!claims.getSubject().equals(memberUuid.toString())) {
-//            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 토큰", null);
-//        }
-//
-//        authService.signOut(memberUuid);
-//        return new CommonResponseEntity<>(HttpStatus.OK, true, CommonResponseMessage.SUCCESS.getMessage(), null);
+
     }
 
     @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
     @PostMapping("/login")
-    public CommonResponseEntity<LogInResponseVo> logIn(
-            @RequestBody LogInRequestVo logInRequestVo) {
+    public CommonResponseEntity<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
-        log.info("logInRequestVo : {}", logInRequestVo);
 
         LogInRequestDto logInRequestDto = LogInRequestDto.builder().
                 loginId(logInRequestVo.getLoginId()).
                 password(logInRequestVo.getPassword()).
                 build();
 
-        log.info("logInRequestDto : {}", logInRequestDto);
-
         LogInResponseDto logInResponseDto = authService.logIn(logInRequestDto);
-
-        log.info("logInResponseDto : {}", logInResponseDto);
 
         LogInResponseVo logInResponseVo = LogInResponseVo.builder().
                 accessToken(logInResponseDto.getAccessToken()).
                 refreshToken(logInResponseDto.getRefreshToken()).
-                uuid(logInResponseDto.getUuid()).
+                memberUUID(logInResponseDto.getMemberUUID()).
                 nickname(logInResponseDto.getNickname()).
                 build();
-
-        log.info("logInResponseVo : {}", logInResponseVo);
-
-//        LogInResponseVo logInResponseVo = modelMapper.map(authService.logIn(logInRequestDto), LogInResponseVo.class);
-//        log.info("signInResponseVo : {}", logInResponseVo);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
