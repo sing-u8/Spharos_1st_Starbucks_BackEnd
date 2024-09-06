@@ -11,6 +11,7 @@ public class LogInResponseVo {
 
     private String accessToken;
     private String refreshToken;
-    private String nickname;
     private String uuid;
+    private String nickname;
+
 }

@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.dto;
 
+import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.domain.Member;
 
 import lombok.*;
@@ -29,15 +30,14 @@ public class MemberSignUpDto {
     public Member toEntity() {
         return Member.builder()
                 .name(name)
-                .login_id(loginId)
+                .loginId(loginId)
                 .password(password)
                 .birth(birth)
-                .phone_number(phoneNumber)
+                .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
                 .address(address)
-                .payment_password(paymentPassword)
+                .paymentPassword(paymentPassword)
                 .build();
     }
-
 }

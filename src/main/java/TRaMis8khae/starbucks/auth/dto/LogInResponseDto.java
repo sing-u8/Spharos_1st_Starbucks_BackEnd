@@ -14,6 +14,7 @@ import java.util.UUID;
 public class LogInResponseDto {
 
     private String accessToken;
-    private String name;
-    private UUID uuid;
+    private String refreshToken;
+    private String nickname;
+    private String uuid;
 }

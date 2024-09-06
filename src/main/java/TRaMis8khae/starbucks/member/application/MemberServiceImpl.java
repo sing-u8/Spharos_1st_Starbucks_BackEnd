@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.member.application;
 
+
+import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.domain.Member;
 import TRaMis8khae.starbucks.member.dto.MemberSignUpDto;
 import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;

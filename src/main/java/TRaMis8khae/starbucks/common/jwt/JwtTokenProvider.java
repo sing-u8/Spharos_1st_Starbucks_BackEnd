@@ -1,10 +1,19 @@
 package TRaMis8khae.starbucks.common.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.core.env.Environment;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -13,110 +22,90 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
     private final Environment env;
+    private final UserDetailsService userDetailsService;
 
-    public String generateAccessToken(Authentication authentication) {
-        Claims claims = Jwts.claims().subject(authentication.getName()).build();
+    public String generateAccessToken(String memberUUID) {
+        Claims claims = Jwts.claims().subject(memberUUID).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
-//        return Jwts.builder()
-//                .signWith(getSignKey())
-//                .claim("loginId", claims.getSubject())
-//                .issuedAt(expiration)
-//                .compact();
-
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
+         String token = Jwts.builder()
+                .signWith(getSignKey())
+                .claim("memberUUID", claims.getSubject())
                 .setExpiration(expiration)
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
 
-        logger.info("Generated JWT AccessToken: {}", token);
-        logger.info("Login ID: {}", claims.getSubject());
+        log.info("Generated JWT AccessToken: {}", token);
+        log.info("Login ID: {}", claims.getSubject());
 
-        return token;
+         return token;
+
+        //        Claims claims = Jwts.claims().subject(authentication.getName()).build();
+//        Date now = new Date();
+//        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
+//
+//        String token = Jwts.builder()
+//                .signWith(getSignKey())
+//                .claim("memberUuid", claims.getSubject())
+//                .issuedAt(expiration)
+//                .compact();
+//
+//        logger.info("Generated JWT AccessToken: {}", token);
+//        logger.info("Login ID: {}", claims.getSubject());
+//
+//        return token;
     }
 
     public String generateRefreshToken(Authentication authentication) {
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
-        Long expirationTime = env.getProperty("jwt.refresh-expire-time", Long.class);
+        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
 
-        if (expirationTime == null) {
-            throw new IllegalArgumentException("JWT refresh expiration time must be defined in the environment.");
-        }
-
-        Date expiration = new Date(now.getTime() + expirationTime);
-
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+        return Jwts.builder()
+                .signWith(getSignKey())
+                .claim("email", claims.getSubject())
+                .setIssuedAt(expiration)
                 .compact();
-
-
-        logger.info("Generated JWT RefreshToken: {}", token);
-        return token;
     }
 
     public Key getSignKey() {
-        String secretKey = env.getProperty("jwt.secret-key");
-        if (secretKey == null || secretKey.isEmpty()) {
-            throw new IllegalArgumentException("JWT secret key must be defined in the environment.");
-        }
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor( env.getProperty("jwt.secret-key").getBytes() );
     }
 
+    public Claims getClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
-//    public Key getSignKey() {
-//        return Keys.hmacShaKeyFor( env.getProperty("jwt.secret-key").getBytes() );
-//    }
+    public Authentication getAuthentication(String token) {
+        log.info("token : {}", token);
 
+        Claims claims = getClaims(token);
+        log.info("claims : {}", claims);
 
-//    // 서명에 사용할 SecretKey 생성
-//    public Key getSignKey() {
-//        String secretKey = env.getProperty("jwt.secret-key");
-//        if (secretKey == null || secretKey.isEmpty()) {
-//            throw new IllegalArgumentException("JWT secret key must be defined in the environment.");
-//        }
-//        return Keys.hmacShaKeyFor(secretKey.getBytes());
-//    }
-//
-//    // 액세스 토큰 생성
-//    public String generateAccessToken(Authentication authentication) {
-//        Claims claims = Jwts.claims().setSubject(authentication.getName()).build();
-//        Date now = new Date();
-//        Long expirationTime = env.getProperty("jwt.access-expire-time", Long.class);
-//
-//        if (expirationTime == null) {
-//            throw new IllegalArgumentException("JWT expiration time must be defined in the environment.");
-//        }
-//
-//        Date expiration = new Date(now.getTime() + expirationTime);
-//
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(now)
-//                .setExpiration(expiration)
-//                .signWith(getSignKey(), SignatureAlgorithm.HS256) // 키와 서명 알고리즘 설정
-//                .compact();
-//    }
-//
-//    // JWT 토큰의 유효성 검사 및 클레임 파싱
-//    public Claims parseClaims(String token) {
-//        return Jwts.parser()
-//                .setSigningKey(getSignKey())
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//    }
+        String memberUUID = claims.get("memberUUID", String.class);
+
+        log.info("memberUUID : {}", memberUUID);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(memberUUID);
+
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
+    }
 }

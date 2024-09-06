@@ -9,8 +9,9 @@ import java.util.UUID;
 @ToString
 @Getter
 public class SignInRequestVo {
-    private Long memberId;
-    private UUID memberUuid;
+
+//    private Long id;
+//    private UUID memberUUID;
     private String name;
     private String loginId;
     private String password;

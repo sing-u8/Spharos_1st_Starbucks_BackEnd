@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.auth.dto;
 
-import TRaMis8khae.starbucks.member.domain.Member;
+
+import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,18 +26,21 @@ public class SignInRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
+    private String UUID;
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .name(name)
-                .login_id(loginId)
+                .loginId(loginId)
                 .password(passwordEncoder.encode(password))
                 .birth(birth)
-                .phone_number(phoneNumber)
+                .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
                 .address(address)
-                .payment_password(paymentPassword)
+                .paymentPassword(paymentPassword)
+                .memberUUID(UUID)
+
                 .build();
     }
 }

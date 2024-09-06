@@ -14,7 +14,7 @@ import java.util.UUID;
 public class MemberResponseVo {
 
     private Long memberId;
-    private UUID memberUuid;
+    private String memberUUID;
     private String name;
     private String loginId;
     private String password;

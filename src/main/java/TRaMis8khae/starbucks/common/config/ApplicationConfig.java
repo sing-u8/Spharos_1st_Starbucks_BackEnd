@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,9 +24,9 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return loginId -> {
-            return (UserDetails) memberRepository.findByLoginId(loginId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+        return memberUUID -> {
+            return memberRepository.findByMemberUUID(memberUUID).orElseThrow(
+                    () -> new IllegalArgumentException("회원이 없습니다.")
             );
         };
     }
@@ -42,7 +41,8 @@ public class ApplicationConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-        throws Exception {
+            throws Exception {
+
         return authenticationConfiguration.getAuthenticationManager();
     }
 

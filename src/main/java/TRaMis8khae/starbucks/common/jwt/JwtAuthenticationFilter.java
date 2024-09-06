@@ -1,11 +1,16 @@
 package TRaMis8khae.starbucks.common.jwt;
 
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -27,22 +33,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("JwtAuthenticationFilter.doFilterInternal");
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String loginId;
+        final String memberUUID;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
 
-        loginId = Jwts.parser().verifyWith((SecretKey) jwtTokenProvider.getSignKey())
-                .build().parseSignedClaims(jwt).getPayload().get("email", String.class);
+        log.info("authHeader : {}", authHeader);
+
+        jwt = authHeader.substring(7); // "Bearer " 제거
+
+        log.info("jwt : {}", jwt);
+
+        memberUUID = Jwts.parser()
+                .verifyWith((SecretKey) jwtTokenProvider.getSignKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload()
+                .get("memberUUID", String.class);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(memberUUID);
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
