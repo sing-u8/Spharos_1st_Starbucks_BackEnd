@@ -14,6 +14,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -104,5 +108,4 @@ public class JwtTokenProvider {
                 userDetails.getAuthorities()
         );
     }
-
 }

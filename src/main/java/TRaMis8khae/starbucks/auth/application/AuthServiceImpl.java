@@ -30,6 +30,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
+
         Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
@@ -77,7 +78,7 @@ public class AuthServiceImpl implements AuthService{
             throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
         }
 
-        authRepository.deleteByMemberUUID(memberUUID);
+        authRepository.deleteByMemberUUID(memberUUID)
     }
 
 
@@ -90,16 +91,21 @@ public class AuthServiceImpl implements AuthService{
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
         );
+        log.info("member : {}", member);
+
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(logInRequestDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+
         log.info("member : {}", member);
 
         // 인증 객체 생성 및 반환
         Authentication authentication = authenticationManager.authenticate(
+        // 인증 객체 생성 및 반환
+        return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         member.getLoginId(),
                         logInRequestDto.getPassword()
@@ -127,5 +133,45 @@ public class AuthServiceImpl implements AuthService{
 
     public String generateRefreshToken(Authentication authentication) {
         return jwtTokenProvider.generateRefreshToken(authentication);
+    }
+
+//    @Override
+//    public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
+//
+//        log.info("signInRequestDto : {}", signInRequestDto);
+//
+//        // 로그인 아이디로 회원 조회
+//        Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElseThrow(
+//                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+//        );
+//        log.info("member : {}", member);
+//
+//        // 비밀번호 검증
+//        if (!passwordEncoder.matches(signInRequestDto.getPassword(), member.getPassword())) {
+//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        try {
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            member.getLoginId(),
+//                            signInRequestDto.getPassword()
+//                    )
+//            );
+//
+//            // 성공 시 토큰 생성
+//            return SignInResponseDto.builder()
+//                    .accessToken(createToken(authentication))
+//                    .name(member.getName())
+//                    .uuid(member.getMemberUuid()).build();
+//        } catch (Exception e) {
+//            log.error("Authentication failed!!! Check log!!!", e);
+//            throw new IllegalArgumentException("로그인 실패");
+//        }
+//    }
+
+
+    private String createToken(Authentication authentication) {
+        return jwtTokenProvider.generateAccessToken(authentication);
     }
 }

@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.common.jwt;
 
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+
         log.info("authHeader : {}", authHeader);
 
         jwt = authHeader.substring(7); // "Bearer " 제거
@@ -57,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(memberUUID);
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
@@ -65,7 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-
         filterChain.doFilter(request, response);
     }
 }
