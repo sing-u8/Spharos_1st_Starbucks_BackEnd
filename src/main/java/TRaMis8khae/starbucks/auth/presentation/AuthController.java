@@ -39,8 +39,7 @@ public class AuthController {
 
     @Operation(summary = "SignIn API", description = "SignUp API", tags = {"Auth"})
     @PostMapping("/signin")
-    public CommonResponseEntity<SignInResponseVo> signIn(
-            @RequestBody SignInRequestVo signInRequestVo) {
+    public CommonResponseEntity<SignInResponseVo> signIn(@RequestBody SignInRequestVo signInRequestVo) {
 
         log.info("signInRequestVo : {}", signInRequestVo);
 
@@ -72,6 +71,7 @@ public class AuthController {
 //        ModelMapper modelMapper = new ModelMapper();
 //        SignInRequestDto signInRequestDto = modelMapper.map(signInRequestVo, SignInRequestDto.class);
 //        SignInResponseVo signInResponseVo = modelMapper.map(authService.signIn(signInRequestDto), SignInResponseVo.class);
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
@@ -79,10 +79,10 @@ public class AuthController {
                 signInResponseVo);
     }
 
-
     @DeleteMapping("/signout/{memberUUID}")
-    public CommonResponseEntity<Void> signOut(@PathVariable String memberUUID,
-                                              @RequestHeader("Authorization") String token) {
+    public CommonResponseEntity<Void> signOut(
+            @PathVariable String memberUUID,
+            @RequestHeader("Authorization") String token) {
 
         String accessToken = token.replace("Bearer ", "");
 
@@ -113,8 +113,7 @@ public class AuthController {
 
     @Operation(summary = "LogIn API", description = "LogIn API", tags = {"Auth"})
     @PostMapping("/login")
-    public CommonResponseEntity<LogInResponseVo> logIn(
-            @RequestBody LogInRequestVo logInRequestVo) {
+    public CommonResponseEntity<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
         log.info("logInRequestVo : {}", logInRequestVo);
 
@@ -147,4 +146,5 @@ public class AuthController {
                 CommonResponseMessage.SUCCESS.getMessage(),
                 logInResponseVo);
     }
+
 }

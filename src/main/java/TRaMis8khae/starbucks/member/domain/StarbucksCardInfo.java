@@ -1,7 +1,7 @@
-package TRaMis8khae.starbucks.purchase.entity;
+package TRaMis8khae.starbucks.member.domain;
 
 import jakarta.persistence.*;
-// member로
+
 @Entity
 public class StarbucksCardInfo {
 
@@ -14,4 +14,5 @@ public class StarbucksCardInfo {
 
     @Column(columnDefinition = "binary(16)")
     private String memberUUID;
+
 }

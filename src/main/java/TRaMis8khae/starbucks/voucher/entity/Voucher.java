@@ -20,4 +20,5 @@ public class Voucher {
 
     // 양방향 연관 관계를 끊는다
 //    private List<MemberVoucherList> memberVoucherList = new ArrayList<>();
+
 }

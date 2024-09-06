@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.purchase.application;
 
-public interface OrderDeliveryAddressService {
+public interface PurchaseDeliveryService {
 
-    public void addOrderDeliveryAddress();
+    public void addPurchaseDelivery();
 
 }

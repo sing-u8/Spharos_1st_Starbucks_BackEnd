@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
     private final AuthRepository authRepository;
@@ -68,19 +68,20 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public void signOut(String memberUUID, String accessToken) {
+
         log.info("들어옴!!!!!!!!!!");
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
         Claims claims = jwtTokenProvider.getClaims(accessToken);
+
         if (!memberUUID.equals(claims.getSubject())) {
             throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
         }
 
-        authRepository.deleteByMemberUUID(memberUUID)
+        authRepository.deleteByMemberUUID(memberUUID);
     }
-
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
@@ -126,7 +127,6 @@ public class AuthServiceImpl implements AuthService{
                 .build();
     }
 
-
     public String generateAccessToken(String memberUUID) {
         return jwtTokenProvider.generateAccessToken(memberUUID);
     }
@@ -170,8 +170,8 @@ public class AuthServiceImpl implements AuthService{
 //        }
 //    }
 
-
     private String createToken(Authentication authentication) {
         return jwtTokenProvider.generateAccessToken(authentication);
     }
+
 }

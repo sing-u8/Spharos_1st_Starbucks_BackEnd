@@ -7,29 +7,30 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
-    private final JPAQueryFactory jpaQueryFactory;
+//    private final JPAQueryFactory jpaQueryFactory;
+//
+//    @Override
+//    public List<ProductInfoList> getProductInfoWithProduct(String productUUID) {
+//
+//        QProductInfoList productInfoList = QProductInfoList.productInfoList;
+//
+//        return jpaQueryFactory.selectFrom(productInfoList)
+//                .where(productInfoList.productUUID.eq(productUUID))
+//                .fetch();
+//
+//    }
+//
+//    @Override
+//    public List<ProductOption> getProductOptionWithProduct(String productUUID) {
+//        QProductOption productOption = QProductOption.productOption;
+//
+//        return jpaQueryFactory.selectFrom(productOption)
+//                .where(productOption.productUUID.eq(productUUID))
+//                .fetch();
+//    }
 
-    @Override
-    public List<ProductInfoList> getProductInfoWithProduct(String productUUID) {
-
-        QProductInfoList productInfoList = QProductInfoList.productInfoList;
-
-        return jpaQueryFactory.selectFrom(productInfoList)
-                .where(productInfoList.productUUID.eq(productUUID))
-                .fetch();
-
-    }
-
-    @Override
-    public List<ProductOption> getProductOptionWithProduct(String productUUID) {
-        QProductOption productOption = QProductOption.productOption;
-
-        return jpaQueryFactory.selectFrom(productOption)
-                .where(productOption.productUUID.eq(productUUID))
-                .fetch();
-    }
 }

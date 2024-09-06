@@ -33,4 +33,5 @@ public class Coupon {
     private String condition; // 필요한가
 
 //    private List<MemberCouponList> memberCouponList = new ArrayList<>();
+
 }

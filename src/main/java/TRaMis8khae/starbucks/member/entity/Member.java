@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 public class Member implements UserDetails {
 
     @Id
@@ -97,5 +97,5 @@ public class Member implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-}
 
+}

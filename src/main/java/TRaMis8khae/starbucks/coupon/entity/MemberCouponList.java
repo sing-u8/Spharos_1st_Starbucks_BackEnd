@@ -21,4 +21,5 @@ public class MemberCouponList {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Coupon coupon;
+
 }

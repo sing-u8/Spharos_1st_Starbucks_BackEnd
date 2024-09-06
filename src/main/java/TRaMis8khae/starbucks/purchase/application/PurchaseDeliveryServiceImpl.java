@@ -1,20 +1,20 @@
 package TRaMis8khae.starbucks.purchase.application;
 
 import TRaMis8khae.starbucks.purchase.entity.PurchaseDelivery;
-import TRaMis8khae.starbucks.purchase.infrastructure.OrderDeliveryAddressRepository;
+import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseDeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class OrderDeliveryAddressServiceImpl implements OrderDeliveryAddressService {
+public class PurchaseDeliveryServiceImpl implements PurchaseDeliveryService {
 
-    private final OrderDeliveryAddressRepository orderDeliveryAddressRepository;
+    private final PurchaseDeliveryRepository purchaseDeliveryRepository;
 
     @Override
-    public void addOrderDeliveryAddress() {
+    public void addPurchaseDelivery() {
         PurchaseDelivery purchaseDelivery = new PurchaseDelivery();
-        orderDeliveryAddressRepository.save(purchaseDelivery);
+        purchaseDeliveryRepository.save(purchaseDelivery);
     }
 
 }

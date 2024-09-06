@@ -9,7 +9,7 @@ public class ReviewMediaList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer imageOrder;
+    private Integer imageSeq;
 
     @ManyToOne
     private Review review;
@@ -17,4 +17,5 @@ public class ReviewMediaList {
     @ManyToOne
     private ReviewMedia reviewMedia;
     // 관계를 끊고 Media를 common에 넣어서 재활용
+
 }

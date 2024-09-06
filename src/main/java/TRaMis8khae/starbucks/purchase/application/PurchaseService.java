@@ -1,9 +1,9 @@
 package TRaMis8khae.starbucks.purchase.application;
 
-import TRaMis8khae.starbucks.purchase.vo.OrderRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseRequestVo;
 
-public interface OrderService {
+public interface PurchaseService {
 
-    void addOrder(OrderRequestVo orderRequestVo);
+    void addPurchase(PurchaseRequestVo purchaseRequestVo);
 
 }

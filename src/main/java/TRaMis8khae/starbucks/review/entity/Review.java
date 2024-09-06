@@ -11,7 +11,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String productOrderUUID; // productUUID로 변경
+    private String productUUID;
 
     private String memberUUID;
 
@@ -30,4 +30,5 @@ public class Review {
     private Integer reviewScore;
 
     private Boolean reviewChecked; // 상품주문 테이블로
+
 }

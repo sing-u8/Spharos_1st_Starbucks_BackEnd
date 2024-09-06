@@ -7,18 +7,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@Getter
 public class ProductCategoryList {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private Integer subCategoryId;
+
     private Integer mainCategoryId;
 
     @ManyToOne
     private Product product;
+
 }

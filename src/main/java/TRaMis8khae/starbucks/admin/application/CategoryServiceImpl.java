@@ -13,11 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final MainCategoryRepository mainCategoryRepository;
@@ -25,15 +24,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void addMainCategory(MainCategoryRequestDto requestDto) {
-        System.out.println(requestDto.getMainCategoryName());
+
         if (mainCategoryRepository.existsByMainCategoryName(requestDto.getMainCategoryName())) {
             throw new IllegalArgumentException("해당 카테고리가 이미 존재합니다.");
         }
+
         mainCategoryRepository.save(requestDto.toEntity());
     }
 
     @Override
     public void addSubCategory(SubCategoryRequestDto requestDto) {
+
 //        if (subCategoryRepository.existsBySubCategoryName(requestDto.getSubCategoryName())) {
 //            throw new IllegalArgumentException("해당 카테고리가 이미 존재합니다.");
 //        }
@@ -41,7 +42,6 @@ public class CategoryServiceImpl implements CategoryService {
                 requestDto.getMainCategoryId()).orElseThrow(
                         () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
-
         subCategoryRepository.save(requestDto.toEntity(mainCategory));
     }
 
@@ -68,13 +68,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteSubCategory(Integer SubCategoryId) {
         subCategoryRepository.deleteById(SubCategoryId);
-
     }
 
     @Override
     public MainCategoryResponseDto findMainCategoryById(Integer mainCategoryId) {
         MainCategory mainCategory = mainCategoryRepository.findById(mainCategoryId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다."));
+
         return MainCategoryResponseDto.toDto(mainCategory);
     }
 
@@ -82,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
     public MainCategoryResponseDto findMainCategoryByName(String mainCategoryName) {
         MainCategory mainCategory = mainCategoryRepository.findByMainCategoryName(mainCategoryName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다."));
+
         return MainCategoryResponseDto.toDto(mainCategory);
     }
 
@@ -90,6 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
         SubCategory subCategory = subCategoryRepository.findById(subCategoryId).orElseThrow(
                 () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
+
         return SubCategoryResponseDto.toDto(subCategory);
     }
 
@@ -97,6 +99,7 @@ public class CategoryServiceImpl implements CategoryService {
     public SubCategoryResponseDto findSubCategoryByName(String subCategoryName) {
         SubCategory subCategory = subCategoryRepository.findBySubCategoryName(subCategoryName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다."));
+
         return SubCategoryResponseDto.toDto(subCategory);
     }
 
@@ -111,8 +114,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<SubCategoryResponseDto> findSubCategories(Integer mainCategoryId) {
-        return subCategoryRepository.findByMainCategoryId(mainCategoryId).stream().map(SubCategoryResponseDto::toDto).toList();
+        return subCategoryRepository.findByMainCategoryId(
+                mainCategoryId).stream().map(SubCategoryResponseDto::toDto
+        ).toList();
     }
-
 
 }

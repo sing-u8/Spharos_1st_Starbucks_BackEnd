@@ -12,20 +12,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MainCategoryResponseDto {
+
     private String mainCategoryName;
-    private Integer mainCategoryOrder;
+    private Integer mainCategorySeq;
 
     public static MainCategoryResponseDto toDto(MainCategory mainCategory) {
         return MainCategoryResponseDto.builder()
                 .mainCategoryName(mainCategory.getMainCategoryName())
-                .mainCategoryOrder(mainCategory.getMainCategoryOrder())
+                .mainCategorySeq(mainCategory.getMainCategorySeq())
                 .build();
     }
 
     public MainCategoryResponseVo toVo() {
         return MainCategoryResponseVo.builder()
-                .mainCategoryOrder(mainCategoryOrder)
+                .mainCategoryPurchase(mainCategorySeq)
                 .mainCategoryName(mainCategoryName)
                 .build();
     }
+
 }

@@ -2,7 +2,7 @@ package TRaMis8khae.starbucks.purchase.dto;
 
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.entity.PurchaseDelivery;
-import TRaMis8khae.starbucks.purchase.vo.OrderRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseRequestVo;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class OrderRequestDto {
+public class PurchaseRequestDto {
 
     @Column(columnDefinition = "binary(16)")
     private String memberUUID;
@@ -22,7 +22,7 @@ public class OrderRequestDto {
     private String serialNumber;
 
     @Column(nullable = false, length = 50)
-    private LocalDateTime orderDate;
+    private LocalDateTime purchaseDate;
 
     private Double deliveryPrice;
 
@@ -36,21 +36,21 @@ public class OrderRequestDto {
     @Column(nullable = false, length = 50)
     private String memberPhone;
 
-    public static OrderRequestDto toDto(
-            OrderRequestVo orderRequestVo,
+    public static PurchaseRequestDto toDto(
+            PurchaseRequestVo purchaseRequestVo,
             PurchaseDelivery purchaseDelivery,
             String serialNum,
-            LocalDateTime orderDate) {
-        return OrderRequestDto.builder()
-                .memberUUID(orderRequestVo.getMemberUUID())
-                .deliveryPrice(orderRequestVo.getDeliveryPrice())
-                .totalPrice(orderRequestVo.getTotalPrice())
-                .cardInfo(orderRequestVo.getCardInfo())
-                .memberName(orderRequestVo.getMemberName())
-                .memberPhone(orderRequestVo.getMemberPhone())
+            LocalDateTime purhchaseDate) {
+        return PurchaseRequestDto.builder()
+                .memberUUID(purchaseRequestVo.getMemberUUID())
+                .deliveryPrice(purchaseRequestVo.getDeliveryPrice())
+                .totalPrice(purchaseRequestVo.getTotalPrice())
+                .cardInfo(purchaseRequestVo.getCardInfo())
+                .memberName(purchaseRequestVo.getMemberName())
+                .memberPhone(purchaseRequestVo.getMemberPhone())
                 .purchaseDelivery(purchaseDelivery)
                 .serialNumber(serialNum)
-                .orderDate(orderDate)
+                .purchaseDate(purhchaseDate)
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class OrderRequestDto {
         return Purchase.builder()
                 .memberUUID(memberUUID)
                 .serialNumber(serialNumber)
-                .orderDate(orderDate)
+                .purchaseDate(purchaseDate)
                 .deliveryPrice(deliveryPrice)
                 .totalPrice(totalPrice)
                 .cardInfo(cardInfo)

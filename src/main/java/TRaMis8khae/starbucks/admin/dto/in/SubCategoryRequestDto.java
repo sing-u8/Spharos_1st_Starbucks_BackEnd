@@ -8,19 +8,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubCategoryRequestDto {
+
     private String subCategoryName;
-    private Integer subCategoryOrder;//순서
+    private Integer subCategorySeq;//순서
     private Integer mainCategoryId;
 
     public static SubCategoryRequestDto toDto(SubCategoryRequestVo subCategoryRequestVo) {
         return SubCategoryRequestDto.builder()
                 .subCategoryName(subCategoryRequestVo.getSubCategoryName())
-                .subCategoryOrder(subCategoryRequestVo.getSubCategoryOrder())
+                .subCategorySeq(subCategoryRequestVo.getSubCategorySeq())
                 .mainCategoryId(subCategoryRequestVo.getMainCategoryId())
                 .build();
     }
@@ -28,7 +29,7 @@ public class SubCategoryRequestDto {
     public SubCategory toEntity(MainCategory mainCategory) {
         return SubCategory.builder()
                 .subCategoryName(subCategoryName)
-                .subCategoryOrder(subCategoryOrder)
+                .subCategorySeq(subCategorySeq)
                 .mainCategory(mainCategory)
                 .build();
     }

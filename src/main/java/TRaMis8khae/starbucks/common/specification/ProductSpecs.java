@@ -1,11 +1,11 @@
 package TRaMis8khae.starbucks.common.specification;
 
-import TRaMis8khae.starbucks.product.domain.Product;
+import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSpecs {
 
-    public static Specification<Product> withPrice(Double minPrice, Double maxPrice) {
+    public static Specification<Purchase> withPrice(Double minPrice, Double maxPrice) {
         if ( minPrice == null && maxPrice == null ) {
             return ( root, query, builder ) -> builder.isNotNull(root.get("price"));
         } else if ( minPrice == null ) {

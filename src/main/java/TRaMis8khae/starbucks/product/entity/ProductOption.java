@@ -2,9 +2,9 @@ package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
 
-
 @Entity
 public class ProductOption {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +28,6 @@ public class ProductOption {
     private Boolean closedChecked;
 
     private Boolean openChecked;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Engraving engraving;

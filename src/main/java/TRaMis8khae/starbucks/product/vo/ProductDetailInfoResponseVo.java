@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductDetailInfoResponseVo {
+
     private Long productOptionId;
     private String productUUID;
     private String productName;
     private Double productPrice;
     private String imageType;
+
 }

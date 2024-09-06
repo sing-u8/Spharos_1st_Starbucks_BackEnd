@@ -7,19 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class SubCategory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false, length = 50)
     private String subCategoryName;
-    private Integer subCategoryOrder;
 
+    private Integer subCategorySeq;
 
     @ManyToOne
     private MainCategory mainCategory;
+
 }

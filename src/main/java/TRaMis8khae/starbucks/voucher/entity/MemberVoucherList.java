@@ -25,4 +25,5 @@ public class MemberVoucherList {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Voucher voucher;
+
 }

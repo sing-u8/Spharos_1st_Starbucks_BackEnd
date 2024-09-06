@@ -40,4 +40,5 @@ public class PurchaseDelivery {
         this.phone1 = phone1;
         this.phone2 = phone2;
     }
+
 }

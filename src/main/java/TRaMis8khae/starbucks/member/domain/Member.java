@@ -9,33 +9,44 @@ import java.util.Date;
 import java.util.UUID;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "binary(16)")
     private UUID memberUuid;
+
     @Column(nullable = false, length = 50)
     private String name;
+
     @Column(nullable = false, length = 50)
     private String loginId;
+
     @Column(nullable = false, length = 50)
     private String password;
+
     @Column(nullable = false, length = 50)
     private Date birth;
+
     @Column(nullable = false, length = 50)
     private String phoneNumber;
+
     @Column(nullable = false, length = 50)
     private String email;
+
     @Column(nullable = false, length = 50)
     private String nickname;
+
     @Column(nullable = false, length = 100)
     private String address;
+
     @Column(nullable = false, length = 6)
     private String paymentPassword;
+
     private Boolean memberStatus;
 
     @Builder
@@ -51,9 +62,7 @@ public class Member {
             String nickname,
             String address,
             String payment_password,
-            Boolean member_status
-    ) {
-
+            Boolean member_status) {
         this.id = member_id;
         this.memberUuid = member_uuid;
         this.name = name;
@@ -69,4 +78,3 @@ public class Member {
     }
 
 }
-

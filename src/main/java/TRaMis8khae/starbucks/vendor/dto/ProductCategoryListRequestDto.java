@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductCategoryListRequestDto {
+
     private Integer subCategoryId;
     private Integer mainCategoryId;
     private Long productId;
@@ -33,4 +34,5 @@ public class ProductCategoryListRequestDto {
                 .product(product)
                 .build();
     }
+
 }

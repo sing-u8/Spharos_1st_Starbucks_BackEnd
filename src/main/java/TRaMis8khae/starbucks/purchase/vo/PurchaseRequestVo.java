@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class OrderRequestVo {
+public class PurchaseRequestVo {
 
     private String memberUUID;
 

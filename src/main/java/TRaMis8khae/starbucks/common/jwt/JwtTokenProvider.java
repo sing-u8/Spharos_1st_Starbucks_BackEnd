@@ -26,8 +26,8 @@ import java.util.UUID;
 
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
@@ -35,6 +35,7 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     public String generateAccessToken(String memberUUID) {
+
         Claims claims = Jwts.claims().subject(memberUUID).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
@@ -67,6 +68,7 @@ public class JwtTokenProvider {
     }
 
     public String generateRefreshToken(Authentication authentication) {
+
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
         Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
@@ -91,6 +93,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
+
         log.info("token : {}", token);
 
         Claims claims = getClaims(token);
@@ -108,4 +111,5 @@ public class JwtTokenProvider {
                 userDetails.getAuthorities()
         );
     }
+
 }

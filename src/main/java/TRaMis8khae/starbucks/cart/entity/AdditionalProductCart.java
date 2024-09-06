@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class AdditionalProductCart {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,4 +17,5 @@ public class AdditionalProductCart {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductCart productCart;
+
 }

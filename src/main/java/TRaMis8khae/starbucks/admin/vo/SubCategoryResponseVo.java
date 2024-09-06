@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SubCategoryResponseVo {
+
     private String subCategoryName;
-    private Integer subCategoryOrder;
+
+    private Integer subCategorySeq;
+
 }

@@ -42,7 +42,7 @@ public class Purchase extends BaseEntity {
 
     @Builder
     public Purchase(
-            String memberUUID, String serialNumber, LocalDateTime orderDate, Double deliveryPrice, Double totalPrice,
+            String memberUUID, String serialNumber, LocalDateTime purchaseDate, Double deliveryPrice, Double totalPrice,
             String cardInfo, String memberName, String memberPhone, PurchaseDelivery purchaseDelivery) {
         this.memberUUID = memberUUID;
         this.serialNumber = serialNumber;
@@ -53,4 +53,5 @@ public class Purchase extends BaseEntity {
         this.memberPhone = memberPhone;
         this.purchaseDelivery = purchaseDelivery;
     }
+
 }

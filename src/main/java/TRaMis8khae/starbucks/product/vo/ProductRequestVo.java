@@ -6,6 +6,9 @@ import java.time.LocalDate;
 
 @Getter
 public class ProductRequestVo {
+
     private String productName;
+
     private LocalDate date;
+
 }

@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LogInRequestDto {
 
     private String loginId;
     private String password;
+
 }

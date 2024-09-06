@@ -27,7 +27,9 @@ public class CategoryController {
 
     @PostMapping("/main-category")
     public CommonResponseEntity<Void> createMainCategory(@RequestBody MainCategoryRequestVo mainCategoryRequestVo) {
+
         categoryService.addMainCategory(MainCategoryRequestDto.toDto(mainCategoryRequestVo));
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "카테고리 등록 성공",
@@ -37,8 +39,11 @@ public class CategoryController {
 
     @PostMapping("/sub-category")
     public CommonResponseEntity<Void> createSubCategory(@RequestBody SubCategoryRequestVo subCategoryRequestVo) {
+
         System.out.println(subCategoryRequestVo.getSubCategoryName());
+
         categoryService.addSubCategory(SubCategoryRequestDto.toDto(subCategoryRequestVo));
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "카테고리 등록 성공",
@@ -48,6 +53,7 @@ public class CategoryController {
 
     @GetMapping("/main-category/{mainId}")
     public CommonResponseEntity<MainCategoryResponseVo> getMainCategory(@PathVariable Integer mainId) {
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "메인 카테고리 조회 성공",
@@ -57,6 +63,7 @@ public class CategoryController {
 
     @GetMapping("/sub-category/{subId}")
     public CommonResponseEntity<SubCategoryResponseVo> getSubCategory(@PathVariable Integer subId) {
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "서브 카테고리 조회 성공",
@@ -66,6 +73,7 @@ public class CategoryController {
 
     @GetMapping("/main-categories")
     public CommonResponseEntity<List<MainCategoryResponseVo>> getMainCategories() {
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "메인 카테고리 리스트 조회 성공",
@@ -75,10 +83,12 @@ public class CategoryController {
 
     @GetMapping("/sub-categories/{mainId}")
     public CommonResponseEntity<List<SubCategoryResponseVo>> getSubCategories(@PathVariable Integer mainId) {
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 "서브 카테고리 리스트 조회 성공",
                 categoryService.findSubCategories(mainId).stream().map(SubCategoryResponseDto::toVo).toList()
         );
     }
+
 }

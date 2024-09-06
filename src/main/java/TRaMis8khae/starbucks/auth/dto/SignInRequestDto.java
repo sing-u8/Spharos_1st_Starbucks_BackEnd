@@ -1,6 +1,5 @@
 package TRaMis8khae.starbucks.auth.dto;
 
-
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,10 +9,10 @@ import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequestDto {
 
     private String name;
@@ -40,7 +39,7 @@ public class SignInRequestDto {
                 .address(address)
                 .paymentPassword(paymentPassword)
                 .memberUUID(UUID)
-
                 .build();
     }
+
 }

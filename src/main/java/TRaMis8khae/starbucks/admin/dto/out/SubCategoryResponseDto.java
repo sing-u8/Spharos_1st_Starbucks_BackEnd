@@ -15,14 +15,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubCategoryResponseDto {
+
     private String subCategoryName;
-    private Integer subCategoryOrder;
+    private Integer subCategorySeq;
     private Integer mainCategoryId;
 
     public static SubCategoryResponseDto toDto(SubCategory subCategory) {
         return SubCategoryResponseDto.builder()
                 .subCategoryName(subCategory.getSubCategoryName())
-                .subCategoryOrder(subCategory.getSubCategoryOrder())
+                .subCategorySeq(subCategory.getSubCategorySeq())
                 .mainCategoryId(subCategory.getMainCategory().getId())
                 .build();
     }
@@ -30,7 +31,7 @@ public class SubCategoryResponseDto {
     public SubCategoryResponseVo toVo() {
         return SubCategoryResponseVo.builder()
                 .subCategoryName(subCategoryName)
-                .subCategoryOrder(subCategoryOrder)
+                .subCategorySeq(subCategorySeq)
                 .build();
     }
 

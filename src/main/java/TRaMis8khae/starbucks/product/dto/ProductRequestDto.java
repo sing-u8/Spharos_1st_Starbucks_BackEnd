@@ -3,15 +3,15 @@ package TRaMis8khae.starbucks.product.dto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import lombok.*;
-import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 
 import java.time.LocalDate;
 
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Getter
 public class ProductRequestDto {
+
     private String productName;
     private LocalDate date;
     private String productUUID;
@@ -32,4 +32,5 @@ public class ProductRequestDto {
                 //.productScore(productScore)
                 .build();
     }
+
 }

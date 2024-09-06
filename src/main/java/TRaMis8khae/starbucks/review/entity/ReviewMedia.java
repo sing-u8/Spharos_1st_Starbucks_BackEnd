@@ -15,4 +15,5 @@ public class ReviewMedia {
     private String reviewMediaType;
 
     private String reviewMediaPath;
+
 }

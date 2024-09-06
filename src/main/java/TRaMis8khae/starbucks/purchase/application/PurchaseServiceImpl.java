@@ -1,11 +1,11 @@
 package TRaMis8khae.starbucks.purchase.application;
 
-import TRaMis8khae.starbucks.purchase.dto.OrderRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseRequestDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.entity.PurchaseDelivery;
-import TRaMis8khae.starbucks.purchase.infrastructure.OrderDeliveryAddressRepository;
-import TRaMis8khae.starbucks.purchase.infrastructure.OrderRepository;
-import TRaMis8khae.starbucks.purchase.vo.OrderRequestVo;
+import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseDeliveryRepository;
+import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseRequestVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,29 +16,29 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public class PurchaseServiceImpl implements PurchaseService {
 
-    private final OrderRepository orderRepository;
-    private final OrderDeliveryAddressRepository orderDeliveryAddressRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final PurchaseDeliveryRepository purchaseDeliveryRepository;
 
     @Override
-    public void addOrder(OrderRequestVo orderRequestVo) {
+    public void addPurchase(PurchaseRequestVo purchaseRequestVo) {
         // todo 주문배송 리포지토리에서 꺼내야 함
         PurchaseDelivery purchaseDelivery = new PurchaseDelivery();
         String serialNum = UUID.randomUUID().toString();
-        LocalDateTime orderDate = LocalDateTime.now();
+        LocalDateTime purchaseDate = LocalDateTime.now();
 
-        OrderRequestDto orderRequestDto = OrderRequestDto.toDto(
-                orderRequestVo,
+        PurchaseRequestDto purchaseRequestDto = PurchaseRequestDto.toDto(
+                purchaseRequestVo,
                 purchaseDelivery,
                 serialNum,
-                orderDate);
+                purchaseDate);
 
-        Purchase purchase = orderRequestDto.toEntity();
+        Purchase purchase = purchaseRequestDto.toEntity();
 
-        log.info("order: {}", purchase);
+        log.info("purchase: {}", purchase);
 
-        orderRepository.save(purchase);
+        purchaseRepository.save(purchase);
 
         // todo 주문배송리스트, 상품주문리스트 추가 필요
 

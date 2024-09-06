@@ -13,8 +13,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseVo {
+
     private String productName;
+
     private LocalDate date;
+
     private String productUUID;
+
     private Integer productScore;
+
 }

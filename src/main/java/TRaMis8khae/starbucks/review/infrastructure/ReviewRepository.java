@@ -5,4 +5,5 @@ import TRaMis8khae.starbucks.review.infrastructure.dynamic.ReviewRepositoryCusto
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
+
 }

@@ -15,4 +15,5 @@ public class ProductEventList {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Event eventId;
+
 }
