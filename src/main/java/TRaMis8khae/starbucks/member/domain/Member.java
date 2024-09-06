@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(columnDefinition = "binary(16)")
     private UUID memberUuid;
     @Column(nullable = false, length = 50)
@@ -51,6 +53,7 @@ public class Member {
             String payment_password,
             Boolean member_status
     ) {
+
         this.id = member_id;
         this.memberUuid = member_uuid;
         this.name = name;
@@ -64,5 +67,6 @@ public class Member {
         this.paymentPassword = payment_password;
         this.memberStatus = member_status;
     }
+
 }
 

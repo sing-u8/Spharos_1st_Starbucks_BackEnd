@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.product.presentation;
 
+
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
@@ -68,7 +69,5 @@ public class ProductController {
                 productService.findProducts().stream().map(ProductResponseDto::toVo).toList()
         );
     }
-
-
 
 }

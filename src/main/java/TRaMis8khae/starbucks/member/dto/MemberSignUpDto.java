@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.domain.Member;
+
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -38,4 +39,5 @@ public class MemberSignUpDto {
                 .payment_password(paymentPassword)
                 .build();
     }
+
 }
