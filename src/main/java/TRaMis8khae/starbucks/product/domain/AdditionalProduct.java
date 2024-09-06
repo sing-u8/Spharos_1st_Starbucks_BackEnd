@@ -19,6 +19,4 @@ public class AdditionalProduct {
     private LocalDate registerDate;
     private Integer limitedCount;
     private Integer stockQuantity;
-
-
 }
