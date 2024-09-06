@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.auth.dto;
 
+
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +40,7 @@ public class SignInRequestDto {
                 .address(address)
                 .paymentPassword(paymentPassword)
                 .memberUUID(UUID)
+
                 .build();
     }
 }
