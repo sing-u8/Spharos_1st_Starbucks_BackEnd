@@ -11,10 +11,10 @@ public class OrderDeliveryAddressServiceImpl implements OrderDeliveryAddressServ
 
     private final OrderDeliveryAddressRepository orderDeliveryAddressRepository;
 
-
     @Override
     public void addOrderDeliveryAddress() {
         PurchaseDelivery purchaseDelivery = new PurchaseDelivery();
         orderDeliveryAddressRepository.save(purchaseDelivery);
     }
+
 }

@@ -1,18 +1,21 @@
-package TRaMis8khae.starbucks.order.domain;
+package TRaMis8khae.starbucks.purchase.entity;
 
 import jakarta.persistence.*;
-
-import java.util.UUID;
-
+// member로
 @Entity
 public class CreditCardInfo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long creditCardId;
+    private Long id;
+
     @Column(nullable = false, length = 50)
-    private String card_name;
+    private String cardName;
+
     @Column(length = 50)
-    private String cardCo;
+    private String cardCompany;
+
     @Column(columnDefinition = "binary(16)")
-    private UUID memberUuId;
+    private String memberUUID;
+
 }

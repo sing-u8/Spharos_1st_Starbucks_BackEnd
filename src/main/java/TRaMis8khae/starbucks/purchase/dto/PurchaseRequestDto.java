@@ -67,4 +67,5 @@ public class OrderRequestDto {
                 .purchaseDelivery(purchaseDelivery)
                 .build();
     }
+
 }
