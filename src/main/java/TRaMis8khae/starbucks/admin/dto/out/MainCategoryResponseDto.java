@@ -25,7 +25,7 @@ public class MainCategoryResponseDto {
 
     public MainCategoryResponseVo toVo() {
         return MainCategoryResponseVo.builder()
-                .mainCategoryPurchase(mainCategorySeq)
+                .mainCategorySeq(mainCategorySeq)
                 .mainCategoryName(mainCategoryName)
                 .build();
     }

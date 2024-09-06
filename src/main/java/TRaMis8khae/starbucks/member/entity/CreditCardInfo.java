@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.member.domain;
+package TRaMis8khae.starbucks.member.entity;
 
 import jakarta.persistence.*;
 

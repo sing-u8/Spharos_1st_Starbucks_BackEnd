@@ -16,6 +16,6 @@ public class LogInResponseDto {
     private String accessToken;
     private String refreshToken;
     private String nickname;
-    private String uuid;
+    private String memberUUID;
 
 }

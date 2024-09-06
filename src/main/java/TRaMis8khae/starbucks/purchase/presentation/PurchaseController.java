@@ -24,6 +24,7 @@ public class PurchaseController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 null);
     }

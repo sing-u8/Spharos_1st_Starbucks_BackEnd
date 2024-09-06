@@ -32,6 +32,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "카테고리 등록 성공",
                 null
         );
@@ -46,6 +47,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "카테고리 등록 성공",
                 null
         );
@@ -56,6 +58,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "메인 카테고리 조회 성공",
                 categoryService.findMainCategoryById(mainId).toVo()
         );
@@ -66,6 +69,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "서브 카테고리 조회 성공",
                 categoryService.findSubCategoryById(subId).toVo()
         );
@@ -76,6 +80,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "메인 카테고리 리스트 조회 성공",
                 categoryService.findMainCategories().stream().map(MainCategoryResponseDto::toVo).toList()
         );
@@ -86,6 +91,7 @@ public class CategoryController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "서브 카테고리 리스트 조회 성공",
                 categoryService.findSubCategories(mainId).stream().map(SubCategoryResponseDto::toVo).toList()
         );

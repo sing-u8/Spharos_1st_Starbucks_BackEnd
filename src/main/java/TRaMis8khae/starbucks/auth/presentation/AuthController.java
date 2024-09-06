@@ -131,7 +131,7 @@ public class AuthController {
         LogInResponseVo logInResponseVo = LogInResponseVo.builder().
                 accessToken(logInResponseDto.getAccessToken()).
                 refreshToken(logInResponseDto.getRefreshToken()).
-                uuid(logInResponseDto.getUuid()).
+                uuid(logInResponseDto.getMemberUUID()).
                 nickname(logInResponseDto.getNickname()).
                 build();
 
