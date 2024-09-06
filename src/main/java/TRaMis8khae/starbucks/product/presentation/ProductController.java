@@ -28,6 +28,7 @@ public class ProductController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "상품 등록 성공",
                 null
         );
@@ -40,6 +41,7 @@ public class ProductController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "상품 삭제 성공",
                 null
         );
@@ -58,15 +60,17 @@ public class ProductController {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "상품 조회 성공",
                 productResponseDto.toVo()
-                );
+        );
     }
 
     @GetMapping("/productList")
     public CommonResponseEntity<List<ProductResponseVo>> getProducts() {
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
+                true,
                 "상품 리스트 조회 성공",
                 productService.findProducts().stream().map(ProductResponseDto::toVo).toList()
         );

@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductCategoryListResponseVo {
 
-//    private Integer subCategoryId;
-//    private Integer mainCategoryId;
-//    private Long productId;
+    private Integer subCategoryId;
+    private Integer mainCategoryId;
+    private Long productId;
 
 }

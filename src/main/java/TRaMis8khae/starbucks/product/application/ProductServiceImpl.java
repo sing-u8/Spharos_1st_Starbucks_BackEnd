@@ -71,8 +71,8 @@ public class ProductServiceImpl implements ProductService{
     }
 
     public List<ProductDetailInfoResponseDto> findDetailProduct(String productUUID) {
-        List<ProductOption> productOptionWithProduct = productRepositoryCustom.getProductOptionWithProduct(productUUID);
-        //List<ProductInfoList> productInfoWithProduct = productRepositoryCustom.getProductInfoWithProduct(productUUID);
+//        List<ProductOption> productOptionWithProduct = productRepositoryCustom.getProductOptionWithProduct(productUUID);
+//        List<ProductInfoList> productInfoWithProduct = productRepositoryCustom.getProductInfoWithProduct(productUUID);
 
         return null;
     }
