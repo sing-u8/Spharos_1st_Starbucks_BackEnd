@@ -9,8 +9,8 @@ import java.util.UUID;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LogInResponseDto {
 
     private String accessToken;

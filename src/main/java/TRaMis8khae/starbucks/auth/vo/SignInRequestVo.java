@@ -4,15 +4,14 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Date;
-import java.util.UUID;
 
-@ToString
 @Getter
+@ToString
 public class SignInRequestVo {
 
     private Long id;
 
-    private UUID memberUUID;
+    private String memberUUID;
 
     private String name;
 

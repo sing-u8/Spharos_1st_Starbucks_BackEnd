@@ -27,14 +27,18 @@ public class SecurityConfig {
 
     @Bean
     public CorsFilter corsFilter() {
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setExposedHeaders(List.of("Authorization"));
+
         source.registerCorsConfiguration("/**", config);
+
         return new CorsFilter(source);
     }
 
@@ -51,7 +55,8 @@ public class SecurityConfig {
                                         "/api/v1/delivery/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",
-                                        "/error"
+                                        "/error",
+                                        "/api/v1/category/**"
                                 )
                                 .permitAll()
                                 .anyRequest()

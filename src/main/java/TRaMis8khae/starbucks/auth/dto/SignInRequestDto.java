@@ -9,10 +9,10 @@ import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequestDto {
 
     private String name;

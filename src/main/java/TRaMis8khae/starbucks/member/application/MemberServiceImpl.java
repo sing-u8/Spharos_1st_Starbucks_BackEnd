@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.application;
 
+
 import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.dto.MemberSignUpDto;
 import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
@@ -16,9 +17,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void signUp(MemberSignUpDto memberSignUpDto) {
+
         log.info("memberSignUpDto : {}", memberSignUpDto);
         Member member = memberSignUpDto.toEntity();
         log.info("member : {}", member);
         memberRepository.save(member);
     }
+
 }

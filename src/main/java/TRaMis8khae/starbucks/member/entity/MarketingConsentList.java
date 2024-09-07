@@ -5,10 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 @Entity
+@NoArgsConstructor
 public class MarketingConsentList {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,4 +28,5 @@ public class MarketingConsentList {
         this.marketing = marketing;
         this.member = member;
     }
+
 }

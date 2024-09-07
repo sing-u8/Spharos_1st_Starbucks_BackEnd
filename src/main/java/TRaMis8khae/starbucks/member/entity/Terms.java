@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 @Entity
+@NoArgsConstructor
 public class Terms { //네이밍
 
     @Id

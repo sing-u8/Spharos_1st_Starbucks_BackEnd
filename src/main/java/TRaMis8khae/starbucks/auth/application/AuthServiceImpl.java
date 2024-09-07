@@ -1,9 +1,6 @@
 package TRaMis8khae.starbucks.auth.application;
 
-import TRaMis8khae.starbucks.auth.dto.LogInRequestDto;
-import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
-import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
-import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
+import TRaMis8khae.starbucks.auth.dto.*;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.entity.Member;
@@ -20,8 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
     private final AuthRepository authRepository;
@@ -33,7 +30,6 @@ public class AuthServiceImpl implements AuthService{
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
 
         Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
-
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
@@ -68,7 +64,6 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
-
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
 
@@ -102,6 +97,18 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
+    @Override
+    @Transactional
+    public void updateMemberInfo(String memberUUID, String accessToken, ModifyMemberInfoRequestDto modifyMemberInfoRequestDto) {
+        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+        );
+
+        member.updateNickname(modifyMemberInfoRequestDto.getNickname());
+        member.updatePhoneNumber(modifyMemberInfoRequestDto.getPhoneNumber());
+
+    }
+
     public String generateAccessToken(String memberUUID) {
         return jwtTokenProvider.generateAccessToken(memberUUID);
     }
@@ -109,4 +116,5 @@ public class AuthServiceImpl implements AuthService{
     public String generateRefreshToken(Authentication authentication) {
         return jwtTokenProvider.generateRefreshToken(authentication);
     }
+
 }

@@ -1,14 +1,8 @@
 package TRaMis8khae.starbucks.auth.presentation;
 
 import TRaMis8khae.starbucks.auth.application.AuthService;
-import TRaMis8khae.starbucks.auth.dto.LogInRequestDto;
-import TRaMis8khae.starbucks.auth.dto.LogInResponseDto;
-import TRaMis8khae.starbucks.auth.dto.SignInRequestDto;
-import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
-import TRaMis8khae.starbucks.auth.vo.LogInRequestVo;
-import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
-import TRaMis8khae.starbucks.auth.vo.SignInRequestVo;
-import TRaMis8khae.starbucks.auth.vo.SignInResponseVo;
+import TRaMis8khae.starbucks.auth.dto.*;
+import TRaMis8khae.starbucks.auth.vo.*;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.common.jwt.JwtAuthenticationFilter;
@@ -21,8 +15,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.UUID;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -52,7 +49,6 @@ public class AuthController {
 
         SignInResponseDto signInResponseDto = authService.signIn(signInRequestDto);
 
-
         SignInResponseVo signInResponseVo = SignInResponseVo.builder().
                 nickname(signInRequestVo.getNickname()).
                 build();
@@ -65,10 +61,10 @@ public class AuthController {
 
     }
 
-
     @DeleteMapping("/signout/{memberUUID}")
-    public CommonResponseEntity<Void> signOut(@PathVariable String memberUUID,
-                                              @RequestHeader("Authorization") String token) {
+    public CommonResponseEntity<Void> signOut(
+            @PathVariable String memberUUID,
+            @RequestHeader("Authorization") String token) {
 
         String accessToken = token.replace("Bearer ", "");
 
@@ -94,7 +90,6 @@ public class AuthController {
     @PostMapping("/login")
     public CommonResponseEntity<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
-
         LogInRequestDto logInRequestDto = LogInRequestDto.builder().
                 loginId(logInRequestVo.getLoginId()).
                 password(logInRequestVo.getPassword()).
@@ -115,4 +110,39 @@ public class AuthController {
                 CommonResponseMessage.SUCCESS.getMessage(),
                 logInResponseVo);
     }
+
+    @PutMapping("/member_info/{memberUUID}")
+    public CommonResponseEntity<Void> updateMemberInfo(@RequestHeader("Authorization") String accessToken,
+                                                       @PathVariable String memberUUID,
+                                                       @RequestBody ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
+
+        String token = accessToken.replace("Bearer ", "");
+
+        Claims claims = jwtTokenProvider.getClaims(token);
+
+        String memberUuidFromToken = claims.get("memberUUID", String.class);
+
+        if (!memberUUID.equals(memberUuidFromToken)) {
+            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 UUID", null);
+        }
+
+        ModifyMemberInfoRequestDto modifyMemberInfoRequestDto = ModifyMemberInfoRequestDto.builder()
+                .nickname(modifyMemberInfoRequestVo.getNickname())
+                .phoneNumber(modifyMemberInfoRequestVo.getPhoneNumber())
+                .build();
+
+        try {
+            authService.updateMemberInfo(memberUUID, token, modifyMemberInfoRequestDto);
+            return new CommonResponseEntity<>(HttpStatus.OK,
+                    true,
+                    CommonResponseMessage.SUCCESS.getMessage(),
+                    null);
+        } catch (Exception e) {
+            return new CommonResponseEntity<>(HttpStatus.BAD_REQUEST,
+                    false,
+                    e.getMessage(),
+                    null);
+        }
+    }
+
 }

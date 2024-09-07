@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 @Entity
+@NoArgsConstructor
 public class MemberAddressList {
 
     @Id
@@ -28,4 +28,5 @@ public class MemberAddressList {
         this.addressDefaultCheck = addressDefaultCheck;
         this.deliveryAddress = deliveryAddress;
     }
+
 }
