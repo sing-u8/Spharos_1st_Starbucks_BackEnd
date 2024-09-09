@@ -1,14 +1,22 @@
 package TRaMis8khae.starbucks.purchase.application;
 
-import TRaMis8khae.starbucks.purchase.dto.PurchaseRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseCreateRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -19,21 +27,22 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseRepository purchaseRepository;
 
     @Override
-    public void addPurchase(PurchaseRequestVo purchaseRequestVo) {
+    public void addPurchase(PurchaseCreateRequestVo requestVo) {
+
         // todo 주문배송 리포지토리에서 꺼내야 함
         String serialNum = UUID.randomUUID().toString();
         LocalDateTime purchaseDate = LocalDateTime.now();
 
-        log.info("purchaseRequestVo: {}", purchaseRequestVo);
+        log.info("purchaseCreateRequestVo: {}", requestVo);
 
-        PurchaseRequestDto purchaseRequestDto = PurchaseRequestDto.toDto(
-                purchaseRequestVo,
+        PurchaseCreateRequestDto requestDto = PurchaseCreateRequestDto.toDto(
+                requestVo,
                 serialNum,
                 purchaseDate);
 
-        log.info("purchaseRequestDto: {}", purchaseRequestDto);
+        log.info("purchaseCreateRequestDto: {}", requestDto);
 
-        Purchase purchase = purchaseRequestDto.toEntity();
+        Purchase purchase = PurchaseCreateRequestDto.toEntity(requestDto);
 
         log.info("purchase: {}", purchase);
 
@@ -41,6 +50,37 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         // todo 상품주문리스트 추가 필요
 
+    }
+
+    @Override
+    public PurchaseReadResponseVo findPurchase(PurchaseReadRequestVo requestVo) {
+
+        // 요청 처리
+        log.info("PurchaseReadRequestVo: {}", requestVo);
+
+        PurchaseReadRequestDto requestDto = PurchaseReadRequestDto.toDto(requestVo);
+        log.info("PurchaseReadRequestDto: {}", requestDto);
+
+        Optional<Purchase> purchase = purchaseRepository.findBySerialNumber(requestDto.getSerialNum());
+        if (purchase.isEmpty()) {
+            log.error("해당 주문이 존재하지 않습니다. serialNum: {}", requestVo);
+        }
+
+        // 응답 처리
+        Purchase findPurchase = purchase.get();
+        log.info("findPurchase: {}", findPurchase);
+
+        PurchaseReadResponseDto responseDto = PurchaseReadResponseDto.toDto(findPurchase);
+
+        return PurchaseReadResponseDto.toVo(responseDto);
+    }
+
+    @Override
+    public Page<PurchaseReadResponseVo> findPurchases(Pageable pageable) {
+
+        Page<PurchaseReadResponseDto> purchases = purchaseRepository.findPurchases(pageable);
+
+        return purchases.map(PurchaseReadResponseDto::toVo);
     }
 
 }
