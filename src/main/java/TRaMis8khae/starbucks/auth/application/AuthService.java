@@ -10,6 +10,7 @@ public interface AuthService {
 
     SignInResponseDto signIn(SignInRequestDto signInRequestDto);
     LogInResponseDto logIn(LogInRequestDto logInRequestDto);
+    FindMemberResponseDto findMember(FindMemberRequestDto findMemberRequestDto);
 
     void signOut(String memberUUID, String accessToken);
     void updateMemberInfo(String memberUUID, String accessToken, ModifyMemberInfoRequestDto modifyMemberInfoRequestDto);

@@ -145,4 +145,25 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/find_member")
+    public CommonResponseEntity<FindMemberResponseVo> findMember(@RequestBody FindMemberRequestVo findMemberRequestVo) {
+
+        FindMemberRequestDto findMemberRequestDto = FindMemberRequestDto.builder()
+                .name(findMemberRequestVo.getName())
+                .phoneNumber(findMemberRequestVo.getPhoneNumber())
+                .build();
+
+        FindMemberResponseDto findMemberResponseDto = authService.findMember(findMemberRequestDto);
+
+        FindMemberResponseVo findMemberResponseVo = FindMemberResponseVo.builder()
+                .loginId(findMemberResponseDto.getLoginId())
+                .build();
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                findMemberResponseVo);
+    }
+
 }

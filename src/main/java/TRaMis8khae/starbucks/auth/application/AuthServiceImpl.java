@@ -109,6 +109,19 @@ public class AuthServiceImpl implements AuthService{
 
     }
 
+    @Override
+    public FindMemberResponseDto findMember(FindMemberRequestDto findMemberRequestDto) {
+        Member member = authRepository.findByNameAndPhoneNumber(
+                findMemberRequestDto.getName(),
+                findMemberRequestDto.getPhoneNumber()).orElseThrow(
+                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+        );
+
+        return FindMemberResponseDto.builder()
+                .loginId(member.getNickname())
+                .build();
+    }
+
     public String generateAccessToken(String memberUUID) {
         return jwtTokenProvider.generateAccessToken(memberUUID);
     }
