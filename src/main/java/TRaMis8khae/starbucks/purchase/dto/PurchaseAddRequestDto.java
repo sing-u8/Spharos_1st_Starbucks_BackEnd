@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.purchase.dto;
 
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class PurchaseCreateRequestDto {
+public class PurchaseAddRequestDto {
 
     @Column(columnDefinition = "binary(16)")
     private String memberUUID;
@@ -33,23 +33,23 @@ public class PurchaseCreateRequestDto {
     @Column(nullable = false, length = 50)
     private String memberPhone;
 
-    public static PurchaseCreateRequestDto toDto(
-            PurchaseCreateRequestVo purchaseCreateRequestVo,
+    public static PurchaseAddRequestDto toDto(
+            PurchaseAddRequestVo purchaseAddRequestVo,
             String serialNum,
             LocalDateTime purhchaseDate) {
-        return PurchaseCreateRequestDto.builder()
-                .memberUUID(purchaseCreateRequestVo.getMemberUUID())
-                .deliveryPrice(purchaseCreateRequestVo.getDeliveryPrice())
-                .totalPrice(purchaseCreateRequestVo.getTotalPrice())
-                .cardInfo(purchaseCreateRequestVo.getCardInfo())
-                .memberName(purchaseCreateRequestVo.getMemberName())
-                .memberPhone(purchaseCreateRequestVo.getMemberPhone())
+        return PurchaseAddRequestDto.builder()
+                .memberUUID(purchaseAddRequestVo.getMemberUUID())
+                .deliveryPrice(purchaseAddRequestVo.getDeliveryPrice())
+                .totalPrice(purchaseAddRequestVo.getTotalPrice())
+                .cardInfo(purchaseAddRequestVo.getCardInfo())
+                .memberName(purchaseAddRequestVo.getMemberName())
+                .memberPhone(purchaseAddRequestVo.getMemberPhone())
                 .serialNumber(serialNum)
                 .purchaseDate(purhchaseDate)
                 .build();
     }
 
-    public static Purchase toEntity(PurchaseCreateRequestDto dto) {
+    public static Purchase toEntity(PurchaseAddRequestDto dto) {
         return Purchase.builder()
                 .memberUUID(dto.getMemberUUID())
                 .serialNumber(dto.getSerialNumber())

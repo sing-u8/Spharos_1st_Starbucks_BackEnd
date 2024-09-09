@@ -3,7 +3,7 @@ package TRaMis8khae.starbucks.purchase.presentation;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
@@ -22,7 +22,7 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @PostMapping("/add")
-    public CommonResponseEntity<Void> addPurchase(@RequestBody PurchaseCreateRequestVo vo) {
+    public CommonResponseEntity<Void> addPurchase(@RequestBody PurchaseAddRequestVo vo) {
         purchaseService.addPurchase(vo);
 
         return new CommonResponseEntity<>(

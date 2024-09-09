@@ -1,12 +1,12 @@
 package TRaMis8khae.starbucks.purchase.application;
 
-import TRaMis8khae.starbucks.purchase.dto.PurchaseCreateRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseDeleteRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,22 +28,22 @@ public class PurchaseServiceImpl implements PurchaseService {
     private final PurchaseRepository purchaseRepository;
 
     @Override
-    public void addPurchase(PurchaseCreateRequestVo requestVo) {
+    public void addPurchase(PurchaseAddRequestVo requestVo) {
 
         // todo 주문배송 리포지토리에서 꺼내야 함
         String serialNum = UUID.randomUUID().toString();
         LocalDateTime purchaseDate = LocalDateTime.now();
 
-        log.info("purchaseCreateRequestVo: {}", requestVo);
+        log.info("PurchaseAddRequestVo: {}", requestVo);
 
-        PurchaseCreateRequestDto requestDto = PurchaseCreateRequestDto.toDto(
+        PurchaseAddRequestDto requestDto = PurchaseAddRequestDto.toDto(
                 requestVo,
                 serialNum,
                 purchaseDate);
 
-        log.info("purchaseCreateRequestDto: {}", requestDto);
+        log.info("PurchaseAddRequestDto: {}", requestDto);
 
-        Purchase purchase = PurchaseCreateRequestDto.toEntity(requestDto);
+        Purchase purchase = PurchaseAddRequestDto.toEntity(requestDto);
 
         log.info("purchase: {}", purchase);
 
