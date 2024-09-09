@@ -16,10 +16,12 @@ public class ProductResponseVo {
 
     private String productName;
 
-    private LocalDate date;
-
     private String productUUID;
 
-    private Integer productScore;
+    private Long optionId;
+
+    private Double price;
+
+    private Boolean thumbChecked;
 
 }

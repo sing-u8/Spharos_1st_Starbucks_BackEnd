@@ -14,23 +14,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SubCategoryRequestDto {
 
-    private String subCategoryName;
-    private Integer subCategorySeq;//순서
-    private Integer mainCategoryId;
+    private String name;
+    private Integer sequence;
+    private String mainCategoryCode;
+    private String description;
 
     public static SubCategoryRequestDto toDto(SubCategoryRequestVo subCategoryRequestVo) {
         return SubCategoryRequestDto.builder()
-                .subCategoryName(subCategoryRequestVo.getSubCategoryName())
-                .subCategorySeq(subCategoryRequestVo.getSubCategorySeq())
-                .mainCategoryId(subCategoryRequestVo.getMainCategoryId())
+                .name(subCategoryRequestVo.getName())
+                .sequence(subCategoryRequestVo.getSequence())
+                .description(subCategoryRequestVo.getDescription())
+                .mainCategoryCode(subCategoryRequestVo.getMainCategoryCode())
                 .build();
     }
 
-    public SubCategory toEntity(MainCategory mainCategory) {
+    public SubCategory toEntity(MainCategory mainCategory, String code) {
         return SubCategory.builder()
-                .subCategoryName(subCategoryName)
-                .subCategorySeq(subCategorySeq)
+                .name(name)
+                .sequence(sequence)
                 .mainCategory(mainCategory)
+                .mainCategoryCode(getMainCategoryCode())
+                .description(description)
+                .code(code)
                 .build();
     }
 

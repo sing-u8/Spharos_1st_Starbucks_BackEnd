@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SubCategoryRequestVo {
 
-    private String subCategoryName;
+    private String name;
 
-    private Integer subCategorySeq;
+    private Integer sequence;
 
-    private Integer mainCategoryId;
+    private String mainCategoryCode;
+
+    private String description;
 
 }

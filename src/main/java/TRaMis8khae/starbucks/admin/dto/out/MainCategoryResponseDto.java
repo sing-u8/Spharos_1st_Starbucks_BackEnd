@@ -13,20 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MainCategoryResponseDto {
 
-    private String mainCategoryName;
-    private Integer mainCategorySeq;
+    private String name;
+    private Integer sequence;
+    private String code;
 
     public static MainCategoryResponseDto toDto(MainCategory mainCategory) {
         return MainCategoryResponseDto.builder()
-                .mainCategoryName(mainCategory.getMainCategoryName())
-                .mainCategorySeq(mainCategory.getMainCategorySeq())
+                .name(mainCategory.getName())
+                .sequence(mainCategory.getSequence())
+                .code(mainCategory.getCode())
                 .build();
     }
 
     public MainCategoryResponseVo toVo() {
         return MainCategoryResponseVo.builder()
-                .mainCategorySeq(mainCategorySeq)
-                .mainCategoryName(mainCategoryName)
+                .code(code)
                 .build();
     }
 

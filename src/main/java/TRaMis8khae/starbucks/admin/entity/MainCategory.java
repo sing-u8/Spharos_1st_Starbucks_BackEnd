@@ -18,8 +18,10 @@ public class MainCategory {
     private Integer id;
 
     @Column(nullable = false, length = 50)
-    private String mainCategoryName;
+    private String name;
 
-    private Integer mainCategorySeq;
+    private Integer sequence;
+
+    private String code;
 
 }

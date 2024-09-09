@@ -16,25 +16,18 @@ import java.time.LocalDate;
 public class ProductResponseDto {
 
     private String productName;
-    private LocalDate date;
     private String productUUID;
-    private Integer productScore;
-
-    public static ProductResponseDto toDto(Product product) {
-        return ProductResponseDto.builder()
-                .productName(product.getProductName())
-                .productScore(product.getProductScore())
-                .date(product.getDate())
-                .productUUID(product.getProductUUID())
-                .build();
-    }
+    private Long optionId;
+    private Double price;
+    private Boolean thumbChecked;
 
     public ProductResponseVo toVo() {
         return ProductResponseVo.builder()
                 .productName(productName)
-                .date(date)
                 .productUUID(productUUID)
-                .productScore(productScore)
+                .optionId(optionId)
+                .price(price)
+                .thumbChecked(thumbChecked)
                 .build();
     }
 

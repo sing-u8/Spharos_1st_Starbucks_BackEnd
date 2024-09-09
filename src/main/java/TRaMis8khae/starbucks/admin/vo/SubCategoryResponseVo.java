@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SubCategoryResponseVo {
 
-    private String subCategoryName;
+    private String name;
+//    private Integer sequence;
+    private String code;
 
-    private Integer subCategorySeq;
-
+    private String description;
 }

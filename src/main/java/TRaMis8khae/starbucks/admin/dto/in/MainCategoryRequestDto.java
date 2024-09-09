@@ -13,20 +13,21 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MainCategoryRequestDto {
 
-    private String mainCategoryName;
-    private Integer mainCategorySeq;//순서
+    private String name;
+    private Integer sequence;//순서
 
     public static MainCategoryRequestDto toDto(MainCategoryRequestVo mainCategoryRequestVo) {
         return MainCategoryRequestDto.builder()
-                .mainCategoryName(mainCategoryRequestVo.getMainCategoryName())
-                .mainCategorySeq(mainCategoryRequestVo.getMainCategorySeq())
+                .name(mainCategoryRequestVo.getName())
+                .sequence(mainCategoryRequestVo.getSequence())
                 .build();
     }
 
-    public MainCategory toEntity() {
+    public MainCategory toEntity(String code) {
         return MainCategory.builder()
-                .mainCategoryName(mainCategoryName)
-                .mainCategorySeq(mainCategorySeq)
+                .name(name)
+                .sequence(sequence)
+                .code(code)
                 .build();
     }
 

@@ -15,14 +15,21 @@ public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
 
     @Column(nullable = false, length = 50)
-    private String subCategoryName;
+    private String name;
 
-    private Integer subCategorySeq;
+    private String description;
 
-    @ManyToOne
+    private Integer sequence;
+
+    private String code;
+
+    private String mainCategoryCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private MainCategory mainCategory;
 
 }
