@@ -2,8 +2,6 @@ package TRaMis8khae.starbucks.purchase.application;
 
 import TRaMis8khae.starbucks.purchase.dto.PurchaseRequestDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
-import TRaMis8khae.starbucks.purchase.entity.PurchaseDelivery;
-import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseDeliveryRepository;
 import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseRequestVo;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +17,21 @@ import java.util.UUID;
 public class PurchaseServiceImpl implements PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
-    private final PurchaseDeliveryRepository purchaseDeliveryRepository;
 
     @Override
     public void addPurchase(PurchaseRequestVo purchaseRequestVo) {
         // todo 주문배송 리포지토리에서 꺼내야 함
-        PurchaseDelivery purchaseDelivery = new PurchaseDelivery();
         String serialNum = UUID.randomUUID().toString();
         LocalDateTime purchaseDate = LocalDateTime.now();
 
+        log.info("purchaseRequestVo: {}", purchaseRequestVo);
+
         PurchaseRequestDto purchaseRequestDto = PurchaseRequestDto.toDto(
                 purchaseRequestVo,
-                purchaseDelivery,
                 serialNum,
                 purchaseDate);
+
+        log.info("purchaseRequestDto: {}", purchaseRequestDto);
 
         Purchase purchase = purchaseRequestDto.toEntity();
 
@@ -40,7 +39,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         purchaseRepository.save(purchase);
 
-        // todo 주문배송리스트, 상품주문리스트 추가 필요
+        // todo 상품주문리스트 추가 필요
 
     }
 

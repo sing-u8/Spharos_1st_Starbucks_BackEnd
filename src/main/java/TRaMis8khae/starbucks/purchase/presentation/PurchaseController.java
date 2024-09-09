@@ -8,6 +8,7 @@ import TRaMis8khae.starbucks.purchase.vo.PurchaseResponseVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @PostMapping("/add")
-    public CommonResponseEntity<PurchaseResponseVo> addPurchase(PurchaseRequestVo purchaseRequestVo) {
+    public CommonResponseEntity<PurchaseResponseVo> addPurchase(@RequestBody PurchaseRequestVo purchaseRequestVo) {
         purchaseService.addPurchase(purchaseRequestVo);
 
         return new CommonResponseEntity<>(
