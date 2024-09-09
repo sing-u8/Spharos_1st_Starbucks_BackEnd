@@ -104,6 +104,14 @@ public class AuthServiceImpl implements AuthService{
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
+        Claims claims = jwtTokenProvider.getClaims(accessToken);
+
+        String memberUuidFromToken = claims.get("memberUUID", String.class);
+
+        if (!memberUUID.equals(memberUuidFromToken)) {
+            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
+        }
+
         member.updateNickname(modifyMemberInfoRequestDto.getNickname());
         member.updatePhoneNumber(modifyMemberInfoRequestDto.getPhoneNumber());
 
@@ -114,7 +122,7 @@ public class AuthServiceImpl implements AuthService{
         Member member = authRepository.findByNameAndPhoneNumber(
                 findMemberRequestDto.getName(),
                 findMemberRequestDto.getPhoneNumber()).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+                () -> new IllegalArgumentException("해당 이름과 전화번호를 가진 회원이 없습니다.")
         );
 
         return FindMemberResponseDto.builder()
