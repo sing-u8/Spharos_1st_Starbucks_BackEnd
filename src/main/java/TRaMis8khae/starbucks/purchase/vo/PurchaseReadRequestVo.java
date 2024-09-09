@@ -8,5 +8,6 @@ import lombok.ToString;
 @Builder
 @ToString
 public class PurchaseReadRequestVo {
+
         private String serialNum;
 }

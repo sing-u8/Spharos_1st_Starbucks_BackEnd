@@ -1,11 +1,13 @@
 package TRaMis8khae.starbucks.purchase.application;
 
 import TRaMis8khae.starbucks.purchase.dto.PurchaseCreateRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseDeleteRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +83,27 @@ public class PurchaseServiceImpl implements PurchaseService {
         Page<PurchaseReadResponseDto> purchases = purchaseRepository.findPurchases(pageable);
 
         return purchases.map(PurchaseReadResponseDto::toVo);
+    }
+
+    @Override
+    public void deletePurchase(PurchaseDeleteRequestVo vo) {
+
+        // 요청 처리
+        log.info("PurchaseDeleteRequestVo: {}", vo);
+
+        PurchaseDeleteRequestDto requestDto = PurchaseDeleteRequestDto.toDto(vo);
+        log.info("PurchaseDeleteRequestDto: {}", requestDto);
+
+        Optional<Purchase> purchase = purchaseRepository.findBySerialNumber(requestDto.getSerialNum());
+        if (purchase.isEmpty()) {
+            log.error("해당 주문이 존재하지 않습니다. serialNum: {}", vo);
+        }
+
+        // 응답 처리
+        Purchase findPurchase = purchase.get();
+        log.info("findPurchase: {}", findPurchase);
+
+        purchaseRepository.delete(findPurchase);
     }
 
 }

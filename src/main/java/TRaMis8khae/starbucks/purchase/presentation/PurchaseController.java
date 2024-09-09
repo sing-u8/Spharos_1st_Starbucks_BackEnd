@@ -4,6 +4,7 @@ import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseCreateRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class PurchaseController {
     // 주문 삭제
     @DeleteMapping("/delete/{serialNum}")
     public CommonResponseEntity<Void> deletePurchase(@PathVariable String serialNum) {
-        PurchaseReadRequestVo vo = PurchaseReadRequestVo.builder()
+        PurchaseDeleteRequestVo vo = PurchaseDeleteRequestVo.builder()
                 .serialNum(serialNum)
                 .build();
 
