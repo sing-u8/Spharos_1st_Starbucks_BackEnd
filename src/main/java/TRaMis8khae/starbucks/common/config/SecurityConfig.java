@@ -55,7 +55,8 @@ public class SecurityConfig {
                                     "/v3/api-docs/**",
                                     "/error",
                                     "/api/v1/category/**",
-                                    "/purchase/**"
+                                    "/purchase/**",
+                                    "/review/**"
                             )
                             .permitAll()
                             .anyRequest()

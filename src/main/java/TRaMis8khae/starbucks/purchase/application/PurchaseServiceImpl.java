@@ -40,11 +40,9 @@ public class PurchaseServiceImpl implements PurchaseService {
                 requestVo,
                 serialNum,
                 purchaseDate);
-
         log.info("PurchaseAddRequestDto: {}", requestDto);
 
         Purchase purchase = PurchaseAddRequestDto.toEntity(requestDto);
-
         log.info("purchase: {}", purchase);
 
         purchaseRepository.save(purchase);
