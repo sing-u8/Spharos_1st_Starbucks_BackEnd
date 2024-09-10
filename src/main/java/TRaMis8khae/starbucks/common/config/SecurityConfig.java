@@ -56,7 +56,8 @@ public class SecurityConfig {
                                     "/error",
                                     "/api/v1/category/**",
                                     "/purchase/**",
-                                    "/review/**"
+                                    "/review/**",
+                                    "/voucher/**"
                             )
                             .permitAll()
                             .anyRequest()

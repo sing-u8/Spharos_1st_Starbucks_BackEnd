@@ -49,6 +49,8 @@ public class Purchase extends BaseEntity {
 
     private String phone1;
 
+    Boolean isDeleted;
+
     private String phone2;
 
     @Builder
