@@ -7,6 +7,8 @@ import TRaMis8khae.starbucks.auth.dto.SignInResponseDto;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.entity.Member;
+import io.jsonwebtoken.Claims;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,8 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
     private final AuthRepository authRepository;
@@ -29,92 +31,81 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
+
         Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
 
-        String Uuid = UUID.randomUUID().toString();
-        Member addMember = signInRequestDto.toEntity(passwordEncoder);
-        addMember.setMemberUUID(Uuid);
+        Member newMember = signInRequestDto.toEntity(passwordEncoder);
 
-        log.info("newMember: {}", addMember);
-
-//        authRepository.save(signInRequestDto.toEntity(passwordEncoder));
-        authRepository.save(addMember);
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        signInRequestDto.getLoginId(),
-                        signInRequestDto.getPassword()
-                )
-        );
-
-        String accessToken = generateAccessToken(Uuid);
-        String refreshToken = generateRefreshToken(authentication);
-
-        log.info("accessToken : {}", accessToken);
-        log.info("refreshToken : {}", refreshToken);
+        authRepository.save(newMember);
 
         return SignInResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .nickname(signInRequestDto.getNickname())
-                .uuid(Uuid)
                 .build();
+
     }
 
     @Override
-    public void signOut(String memberUUID) {
+    @Transactional
+    public void signOut(String memberUUID, String accessToken) {
+
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
-        authRepository.delete(member);
+
+        Claims claims = jwtTokenProvider.getClaims(accessToken);
+
+        String memberUuidFromToken = claims.get("memberUUID", String.class);
+
+        if (!memberUUID.equals(memberUuidFromToken)) {
+            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
+        }
+
+        authRepository.deleteByMemberUUID(memberUUID);
+
     }
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
 
-        // 로그인 아이디로 회원 조회
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
         );
 
-        // 비밀번호 검증
         if (!passwordEncoder.matches(logInRequestDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        log.info("member : {}", member);
+        try {
+            log.info("try 실행");
 
-        // 인증 객체 생성 및 반환
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        member.getLoginId(),
-                        logInRequestDto.getPassword()
-                )
-        );
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            member.getMemberUUID(),
+                            logInRequestDto.getPassword()
+                    )
 
-        String accessToken = generateAccessToken(member.getMemberUUID());
-        String refreshToken = generateRefreshToken(authentication);
+            );
+            return LogInResponseDto.builder()
+                    .accessToken(generateAccessToken(member.getMemberUUID()))
+                    .refreshToken(generateRefreshToken(authentication))
+                    .nickname(member.getNickname())
+                    .memberUUID(member.getMemberUUID())
+                    .build();
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
 
-        log.info("accessToken : {}", accessToken);
-        log.info("refreshToken : {}", refreshToken);
-
-        return LogInResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .nickname(member.getNickname())
-                .uuid(member.getMemberUUID())
-                .build();
     }
 
-
-    public String generateAccessToken(String memberUuid) {
-        return jwtTokenProvider.generateAccessToken(memberUuid);
+    public String generateAccessToken(String memberUUID) {
+        return jwtTokenProvider.generateAccessToken(memberUUID);
     }
 
     public String generateRefreshToken(Authentication authentication) {
         return jwtTokenProvider.generateRefreshToken(authentication);
     }
+
 }

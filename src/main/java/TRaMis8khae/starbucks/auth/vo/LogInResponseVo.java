@@ -5,11 +5,16 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LogInResponseVo {
 
     private String accessToken;
+
     private String refreshToken;
+
     private String uuid;
+
+    private String nickname;
+
 }

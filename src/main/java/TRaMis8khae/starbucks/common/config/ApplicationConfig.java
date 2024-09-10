@@ -12,32 +12,34 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@RequiredArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 public class ApplicationConfig {
 
     private final MemberRepository memberRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return loginId -> {
-            return memberRepository.findByLoginId(loginId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+        return memberUUID -> {
+            return memberRepository.findByMemberUUID(memberUUID).orElseThrow(
+                    () -> new IllegalArgumentException("회원이 없습니다.")
             );
         };
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
+
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+
         return daoAuthenticationProvider;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-        throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

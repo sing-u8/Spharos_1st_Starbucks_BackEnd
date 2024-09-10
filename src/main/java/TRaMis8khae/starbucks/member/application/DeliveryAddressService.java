@@ -10,8 +10,12 @@ import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
 import java.util.List;
 
 public interface DeliveryAddressService {
+
     void addDeliveryAddress(String memberUUID, MemberAddressRequestVo memberAddressRequestVo);
-    List<MemberAddressResponseVo> getMemberDeliveryAddress(String memberUUID);
+    void deleteDeliveryAddress(Long deliveryAddressId);
+    void updateDeliveryAddress(String memberUUID, Long id, MemberAddressRequestVo memberAddressRequestVo);
+
+    List<DeliveryAddressResponseDto> getMemberDeliveryAddress(String memberUUID);
 //    DeliveryAddress updateDeliveryAddress(String memberUUID, DeliveryAddressResponseDto deliveryAddressResponseDto);
-//    void deleteDeliveryAddress(String memberUUID, Long deliveryAddressId);
+
 }

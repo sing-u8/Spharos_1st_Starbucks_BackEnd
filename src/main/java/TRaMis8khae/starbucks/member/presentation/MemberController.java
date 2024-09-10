@@ -1,36 +1,82 @@
 package TRaMis8khae.starbucks.member.presentation;
 
+import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
+import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.DeliveryAddressService;
-import TRaMis8khae.starbucks.member.application.MemberService;
-import TRaMis8khae.starbucks.member.dto.MemberSignUpDto;
-import TRaMis8khae.starbucks.member.entity.MemberAddressList;
+import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.vo.MemberAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
-@RequiredArgsConstructor
+
 @RestController
-@RequestMapping("api/v1/member") // 임시
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/member")
 public class MemberController {
 
-    private final MemberService memberService;
+    private final DeliveryAddressService deliveryAddressService;
 
-//    @GetMapping("/sign-up") // 임시
-//    public String signUpForm(Model model) {
-//        model.addAttribute("memberSignUpDto", new MemberSignUpDto());
-//        return "signup_form";
-//    }
-//
-//    @PostMapping("/sign-up") // 임시
-//    public ResponseEntity<String> signUp(@ModelAttribute MemberSignUpDto memberSignUpDto) {
-//        log.info("memberSignUpDto : {}", memberSignUpDto);
-//        memberService.signUp(memberSignUpDto);
-//        return ResponseEntity.ok("Member registered successfully.");
-//    }
+    @PostMapping("delivery/{memberUUID}")
+    public CommonResponseEntity<Void> addDeliveryAddress(@PathVariable String memberUUID, @RequestBody MemberAddressRequestVo memberAddressRequestVo) {
+
+        deliveryAddressService.addDeliveryAddress(memberUUID, memberAddressRequestVo);
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
+
+    }
+
+    @GetMapping("delivery/{memberUUID}")
+    public CommonResponseEntity<List<MemberAddressResponseVo>> getMemberDeliveryAddress(@PathVariable String memberUUID) {
+        List<DeliveryAddressResponseDto> memberAddressList = deliveryAddressService.getMemberDeliveryAddress(memberUUID);
+
+        if (memberAddressList.isEmpty()) {
+            return new CommonResponseEntity<>(
+                    HttpStatus.OK,
+                    true,
+                    "배송지가 없습니다.",
+                    null);
+        }
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                memberAddressList.stream().
+                        map(DeliveryAddressResponseDto::toResponseVo).
+                        toList());
+
+    }
+
+    @DeleteMapping("delivery/{memberAddressId}")
+    public CommonResponseEntity<Void> deleteDeliveryAddress(@PathVariable Long memberAddressId) {
+        deliveryAddressService.deleteDeliveryAddress(memberAddressId);
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
+    }
+
+    @PutMapping("delivery/{memberUUID}/{memberAddressId}")
+    public CommonResponseEntity<Void> updateDeliveryAddress(@PathVariable String memberUUID, @PathVariable Long memberAddressId, @RequestBody MemberAddressRequestVo memberAddressRequestVo) {
+
+        deliveryAddressService.updateDeliveryAddress(memberUUID, memberAddressId, memberAddressRequestVo);
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
+
+    }
+
 }

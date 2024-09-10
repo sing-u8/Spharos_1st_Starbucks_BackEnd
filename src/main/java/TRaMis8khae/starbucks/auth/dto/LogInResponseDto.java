@@ -9,12 +9,13 @@ import java.util.UUID;
 
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class LogInResponseDto {
 
     private String accessToken;
     private String refreshToken;
     private String nickname;
-    private String uuid;
+    private String memberUUID;
+
 }

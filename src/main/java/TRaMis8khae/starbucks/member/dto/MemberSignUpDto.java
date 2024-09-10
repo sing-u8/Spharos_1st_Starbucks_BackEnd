@@ -1,11 +1,11 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.entity.Member;
+
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-
 
 @Getter
 @Setter
@@ -28,14 +28,15 @@ public class MemberSignUpDto {
     public Member toEntity() {
         return Member.builder()
                 .name(name)
-                .login_id(loginId)
+                .loginId(loginId)
                 .password(password)
                 .birth(birth)
-                .phone_number(phoneNumber)
+                .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
                 .address(address)
-                .payment_password(paymentPassword)
+                .paymentPassword(paymentPassword)
                 .build();
     }
+
 }

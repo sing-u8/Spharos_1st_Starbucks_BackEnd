@@ -9,10 +9,10 @@ import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequestDto {
 
     private String name;
@@ -25,20 +25,21 @@ public class SignInRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
-    private String uuid;
+    private String UUID;
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .name(name)
-                .login_id(loginId)
+                .loginId(loginId)
                 .password(passwordEncoder.encode(password))
                 .birth(birth)
-                .phone_number(phoneNumber)
+                .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
                 .address(address)
-                .payment_password(paymentPassword)
-                .member_uuid(uuid)
+                .paymentPassword(paymentPassword)
+                .memberUUID(UUID)
                 .build();
     }
+
 }

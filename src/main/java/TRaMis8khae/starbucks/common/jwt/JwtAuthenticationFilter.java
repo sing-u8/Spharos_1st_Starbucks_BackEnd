@@ -1,12 +1,12 @@
 package TRaMis8khae.starbucks.common.jwt;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +18,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 
-@RequiredArgsConstructor
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,37 +29,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("JwtAuthenticationFilter.doFilterInternal");
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String loginId;
+        final String memberUUID;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
+        log.info("authHeader : {}", authHeader);
 
-        // ----------------------------------------------
-        Claims claims = Jwts.parser().setSigningKey(jwtTokenProvider.getSignKey())
-                .build().parseClaimsJws(jwt).getBody();
+        jwt = authHeader.substring(7); // "Bearer " 제거
 
-        loginId = claims.getSubject();
-        // ----------------------------------------------
+        log.info("jwt : {}", jwt);
 
-//        loginId = Jwts.parser().verifyWith((SecretKey) jwtTokenProvider.getSignKey())
-//                .build().parseSignedClaims(jwt).getPayload().get("email", String.class);
+        memberUUID = Jwts.parser()
+                .verifyWith((SecretKey) jwtTokenProvider.getSignKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload()
+                .get("memberUUID", String.class);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(loginId);
+
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(memberUUID);
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
                     userDetails.getAuthorities()
             );
+
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+
         filterChain.doFilter(request, response);
     }
+
 }
