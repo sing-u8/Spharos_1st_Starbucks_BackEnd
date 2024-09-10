@@ -13,24 +13,28 @@ import java.time.LocalDate;
 public class ProductRequestDto {
 
     private String productName;
-    private LocalDate date;
+    private Double price;
+    private String description;
+    private Boolean additionalChecked;
     private String productUUID;
-    //private Integer productScore;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
         return ProductRequestDto.builder()
-                .productName(productRequestVo.getProductName())
-                .date(productRequestVo.getDate())
-                .build();
+            .productName(productRequestVo.getProductName())
+            .price(productRequestVo.getPrice())
+            .description(productRequestVo.getDescription())
+            .additionalChecked(productRequestVo.getAdditionalChecked())
+            .build();
     }
 
     public Product toEntity(String productUUID) {
         return Product.builder()
-                .productUUID(productUUID)
-                .date(date)
-                .productName(productName)
-                //.productScore(productScore)
-                .build();
+            .productUUID(productUUID)
+            .productName(productName)
+            .price(price)
+            .description(description)
+            .additionalChecked(additionalChecked)
+            .build();
     }
 
 }

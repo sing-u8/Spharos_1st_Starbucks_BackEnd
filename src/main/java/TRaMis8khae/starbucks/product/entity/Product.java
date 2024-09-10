@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.product.entity;
 
+import TRaMis8khae.starbucks.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +22,6 @@ public class Product {
 
     @Column(nullable = false, length = 50)
     private String productName;
-
-    private LocalDate date;
 
     private String productUUID;
 

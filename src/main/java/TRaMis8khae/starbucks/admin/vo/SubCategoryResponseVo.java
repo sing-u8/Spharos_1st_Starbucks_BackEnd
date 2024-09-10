@@ -15,5 +15,5 @@ public class SubCategoryResponseVo {
 //    private Integer sequence;
     private String code;
 
-    private String description;
+//    private String description;
 }

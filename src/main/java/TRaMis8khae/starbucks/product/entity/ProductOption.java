@@ -1,7 +1,10 @@
 package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+
+@Getter
 @Entity
 public class ProductOption {
 
@@ -9,18 +12,22 @@ public class ProductOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
     private String productUUID;
 
-    @Column(length = 30)
+    @Column(nullable = false, length = 30)
     private String productName;
 
+    @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
     private Integer stockQuantity;
 
-    @Column(length = 30)
+    @Column(nullable = false)
     private String productStatus;
 
+    @Column(nullable = false)
     private Integer limitCnt;
 
     private Boolean soldOutChecked;

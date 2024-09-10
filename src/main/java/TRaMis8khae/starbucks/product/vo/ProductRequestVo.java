@@ -9,6 +9,10 @@ public class ProductRequestVo {
 
     private String productName;
 
-    private LocalDate date;
+    private Double price;
+
+    private String description;
+
+    private Boolean additionalChecked;
 
 }

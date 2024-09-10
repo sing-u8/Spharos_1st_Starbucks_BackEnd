@@ -13,21 +13,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductCategoryListResponseDto {
 
-    private Integer subCategoryId;
-    private Integer mainCategoryId;
     private Long productId;
 
     public static ProductCategoryListResponseDto toDto(ProductCategoryList productCategoryList) {
         return ProductCategoryListResponseDto.builder()
-                .mainCategoryId(productCategoryList.getMainCategoryId())
-                .subCategoryId(productCategoryList.getSubCategoryId())
+                .productId(productCategoryList.getProduct().getId())
                 .build();
     }
 
     public ProductCategoryListResponseVo toVo() {
         return ProductCategoryListResponseVo.builder()
-                .mainCategoryId(mainCategoryId)
-                .subCategoryId(subCategoryId)
                 .productId(productId)
                 .build();
     }

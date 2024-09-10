@@ -8,6 +8,6 @@ import java.util.List;
 public interface ProductCategoryListService {
 
     void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto);
-    List<ProductCategoryListResponseDto> findProductsByCategory(Integer mainId, Integer subId);
+    List<ProductCategoryListResponseDto> findProductsByCategory(String mainCode, String subCode);
 
 }

@@ -17,6 +17,6 @@ public class SubCategoryRequestVo {
 
     private String mainCategoryCode;
 
-    private String description;
+//    private String description;
 
 }

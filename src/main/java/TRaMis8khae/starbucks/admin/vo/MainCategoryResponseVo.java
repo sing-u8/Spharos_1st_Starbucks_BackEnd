@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MainCategoryResponseVo {
 
-//    private String name;
-//
-//    private Integer sequence;
+    private String name;
+
+    private Integer sequence;
+
     private String code;
 
 }

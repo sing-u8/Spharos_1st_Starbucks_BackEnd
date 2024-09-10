@@ -18,10 +18,18 @@ public class ProductResponseVo {
 
     private String productUUID;
 
-    private Long optionId;
-
     private Double price;
 
+    private Long optionId;
+
+    private Boolean soldOutChecked;
+
+    private Boolean closedChecked;
+
+    private Boolean openChecked;
+
     private Boolean thumbChecked;
+
+    private String path;
 
 }

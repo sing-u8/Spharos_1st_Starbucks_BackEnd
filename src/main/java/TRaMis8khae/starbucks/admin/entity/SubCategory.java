@@ -21,13 +21,11 @@ public class SubCategory {
     @Column(nullable = false, length = 50)
     private String name;
 
-    private String description;
+//    private String description;
 
     private Integer sequence;
 
     private String code;
-
-    private String mainCategoryCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MainCategory mainCategory;

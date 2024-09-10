@@ -20,21 +20,22 @@ public class SubCategoryRequestDto {
     private String description;
 
     public static SubCategoryRequestDto toDto(SubCategoryRequestVo subCategoryRequestVo) {
+
         return SubCategoryRequestDto.builder()
                 .name(subCategoryRequestVo.getName())
                 .sequence(subCategoryRequestVo.getSequence())
-                .description(subCategoryRequestVo.getDescription())
+//                .description(subCategoryRequestVo.getDescription())
                 .mainCategoryCode(subCategoryRequestVo.getMainCategoryCode())
                 .build();
     }
 
     public SubCategory toEntity(MainCategory mainCategory, String code) {
+
         return SubCategory.builder()
                 .name(name)
                 .sequence(sequence)
                 .mainCategory(mainCategory)
-                .mainCategoryCode(getMainCategoryCode())
-                .description(description)
+//                .description(description)
                 .code(code)
                 .build();
     }

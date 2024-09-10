@@ -1,18 +1,22 @@
 package TRaMis8khae.starbucks.product.application;
 
-import TRaMis8khae.starbucks.product.dto.ProductDetailInfoResponseDto;
-import TRaMis8khae.starbucks.product.entity.Product;
+import TRaMis8khae.starbucks.product.dto.ProductDetailResponseDto;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
+import TRaMis8khae.starbucks.product.entity.Product;
+import TRaMis8khae.starbucks.product.entity.ProductMedia;
 import TRaMis8khae.starbucks.product.entity.ProductOption;
+import TRaMis8khae.starbucks.product.infrastructure.MediaRepository;
+import TRaMis8khae.starbucks.product.infrastructure.ProductOptionRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
-import TRaMis8khae.starbucks.product.infrastructure.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
 
 @Slf4j
 @Service
@@ -20,7 +24,8 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
-    private final ProductRepositoryCustom productRepositoryCustom;
+    private final ProductOptionRepository productOptionRepository;
+    private final MediaRepository mediaRepository;
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
@@ -58,8 +63,20 @@ public class ProductServiceImpl implements ProductService{
 
         Product product = productRepository.findByProductUUID(productUUID)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품의 미디어가 존재하지 않습니다."));
+        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID)
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품의 옵션이 존재하지 않습니다."));
 
-        return ProductResponseDto.toDto(product);
+        return ProductResponseDto.builder()
+            .productName(product.getProductName())
+            .productUUID(productUUID)
+            .price(product.getPrice())
+            .thumbChecked(productMedia.getThumbChecked())
+            .path(productMedia.getPath())
+            .soldOutChecked(productOption.getSoldOutChecked())
+            .openChecked(productOption.getOpenChecked())
+            .build();
     }
 
     @Override
@@ -67,13 +84,11 @@ public class ProductServiceImpl implements ProductService{
 
         List<Product> productList = productRepository.findAll();
 
-        return productList.stream().map(ProductResponseDto::toDto).toList();
+//        return productList.stream().map(ProductResponseDto::toDto).toList();
+        return null;
     }
 
-    public List<ProductDetailInfoResponseDto> findDetailProduct(String productUUID) {
-//        List<ProductOption> productOptionWithProduct = productRepositoryCustom.getProductOptionWithProduct(productUUID);
-//        List<ProductInfoList> productInfoWithProduct = productRepositoryCustom.getProductInfoWithProduct(productUUID);
-
+    public List<ProductDetailResponseDto> findDetailProduct(String productUUID) {
         return null;
     }
 

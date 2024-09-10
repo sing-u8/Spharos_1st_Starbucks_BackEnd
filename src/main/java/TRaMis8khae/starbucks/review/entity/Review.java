@@ -2,7 +2,6 @@ package TRaMis8khae.starbucks.review.entity;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 
 @Entity
 public class Review {

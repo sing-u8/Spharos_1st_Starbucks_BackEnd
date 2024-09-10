@@ -27,17 +27,22 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void addMainCategory(MainCategoryRequestDto requestDto) {
         
-        mainCategoryRepository.save(requestDto.toEntity(CategoryCodeGenerator.generateCategoryCode()));
+        mainCategoryRepository.save(requestDto.toEntity(
+            CategoryCodeGenerator.generateCategoryCode())
+        );
     }
 
     @Override
     public void addSubCategory(SubCategoryRequestDto requestDto) {
 
-        MainCategory mainCategory = mainCategoryRepository.findByCode(requestDto.getMainCategoryCode()).orElseThrow(
+        MainCategory mainCategory = mainCategoryRepository.findByCode(requestDto.getMainCategoryCode())
+            .orElseThrow(
                 () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        subCategoryRepository.save(requestDto.toEntity(mainCategory, CategoryCodeGenerator.generateCategoryCode()));
+        subCategoryRepository.save(requestDto.toEntity(
+            mainCategory, CategoryCodeGenerator.generateCategoryCode()))
+        ;
     }
 
     @Override

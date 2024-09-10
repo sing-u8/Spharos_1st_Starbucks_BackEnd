@@ -15,13 +15,13 @@ public class SubCategoryResponseDto {
 
     private String name;
     private String code;
-    private String description;
+//    private String description;
 
     public static SubCategoryResponseDto toDto(SubCategory subCategory) {
         return SubCategoryResponseDto.builder()
                 .name(subCategory.getName())
                 .code(subCategory.getCode())
-                .description(subCategory.getDescription())
+//                .description(subCategory.getDescription())
                 .build();
     }
 
@@ -29,7 +29,7 @@ public class SubCategoryResponseDto {
         return SubCategoryResponseVo.builder()
                 .code(code)
                 .name(name)
-                .description(description)
+//                .description(description)
                 .build();
     }
 

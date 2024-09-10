@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductCategoryListRequestVo {
 
-    private Integer subCategoryId;
+    private String subCode;
 
-    private Integer mainCategoryId;
+    private String mainCode;
 
     private Long productId;
 

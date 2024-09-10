@@ -27,6 +27,8 @@ public class MainCategoryResponseDto {
 
     public MainCategoryResponseVo toVo() {
         return MainCategoryResponseVo.builder()
+            .name(name)
+            .sequence(sequence)
                 .code(code)
                 .build();
     }
