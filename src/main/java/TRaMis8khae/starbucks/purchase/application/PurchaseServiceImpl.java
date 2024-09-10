@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -22,11 +23,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PurchaseServiceImpl implements PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
 
+    @Transactional
     @Override
     public void addPurchase(PurchaseAddRequestVo requestVo) {
 
@@ -82,6 +85,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         return purchases.map(PurchaseReadResponseDto::toVo);
     }
 
+    @Transactional
     @Override
     public void deletePurchase(PurchaseDeleteRequestVo vo) {
 
