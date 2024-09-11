@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.vendor.infrastructure;
 
+import TRaMis8khae.starbucks.product.entity.Product;
+import TRaMis8khae.starbucks.product.entity.QProduct;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.entity.QProductCategoryList;
 import com.querydsl.core.BooleanBuilder;
@@ -17,22 +19,24 @@ public class ProductCategoryListRepositoryCustomImpl implements ProductCategoryL
 	private final JPAQueryFactory jpaQueryFactory;
 
 	QProductCategoryList productCategoryList = QProductCategoryList.productCategoryList;
+	QProduct product = QProduct.product;
 
 	BooleanBuilder builder = new BooleanBuilder();
 
 	@Override
-	public List<ProductCategoryList> findProductsByCategories(String mainCode, String subCode) {
+	public List<ProductCategoryList> findProductsByCategories(String topCode, String middleCode) {
 
-		if (mainCode != null) {
-			builder.and(productCategoryList.mainCode.eq(mainCode));
+		if (topCode != null) {
+			builder.and(productCategoryList.topCode.eq(topCode));
 		}
-		if (subCode != null) {
-			builder.and(productCategoryList.subCode.eq(subCode));
+		if (middleCode != null) {
+			builder.and(productCategoryList.middleCode.eq(middleCode));
 		}
 
 		return jpaQueryFactory.selectFrom(productCategoryList)
 			.where(builder)
 			.fetch();
 	}
+
 
 }

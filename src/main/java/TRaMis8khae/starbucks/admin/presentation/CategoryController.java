@@ -1,14 +1,14 @@
 package TRaMis8khae.starbucks.admin.presentation;
 
 import TRaMis8khae.starbucks.admin.application.CategoryService;
-import TRaMis8khae.starbucks.admin.dto.in.MainCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.in.SubCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MainCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.dto.out.SubCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.vo.MainCategoryRequestVo;
-import TRaMis8khae.starbucks.admin.vo.MainCategoryResponseVo;
-import TRaMis8khae.starbucks.admin.vo.SubCategoryRequestVo;
-import TRaMis8khae.starbucks.admin.vo.SubCategoryResponseVo;
+import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.out.TopCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.out.MiddleCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
+import TRaMis8khae.starbucks.admin.vo.TopCategoryResponseVo;
+import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
+import TRaMis8khae.starbucks.admin.vo.MiddleCategoryResponseVo;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,9 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/main")
-    public CommonResponseEntity<Void> createMainCategory(@RequestBody MainCategoryRequestVo mainCategoryRequestVo) {
+    public CommonResponseEntity<Void> createTopCategory(@RequestBody TopCategoryRequestVo TopCategoryRequestVo) {
 
-        categoryService.addMainCategory(MainCategoryRequestDto.toDto(mainCategoryRequestVo));
+        categoryService.addTopCategory(TopCategoryRequestDto.toDto(TopCategoryRequestVo));
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -40,11 +40,11 @@ public class CategoryController {
     }
 
     @PostMapping("/sub")
-    public CommonResponseEntity<Void> createSubCategory(@RequestBody SubCategoryRequestVo subCategoryRequestVo) {
+    public CommonResponseEntity<Void> createMiddleCategory(@RequestBody MiddleCategoryRequestVo MiddleCategoryRequestVo) {
 
-        System.out.println(subCategoryRequestVo.getName());
+        System.out.println(MiddleCategoryRequestVo.getName());
 
-        categoryService.addSubCategory(SubCategoryRequestDto.toDto(subCategoryRequestVo));
+        categoryService.addMiddleCategory(MiddleCategoryRequestDto.toDto(MiddleCategoryRequestVo));
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -55,46 +55,46 @@ public class CategoryController {
     }
 
     @GetMapping("/main/{code}")
-    public CommonResponseEntity<MainCategoryResponseVo> getMainCategory(@PathVariable String code) {
+    public CommonResponseEntity<TopCategoryResponseVo> getTopCategory(@PathVariable String code) {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                categoryService.findMainCategoryByCode(code).toVo()
+                categoryService.findTopCategoryByCode(code).toVo()
         );
     }
 
     @GetMapping("/sub/{code}")
-    public CommonResponseEntity<SubCategoryResponseVo> getSubCategory(@PathVariable String code) {
+    public CommonResponseEntity<MiddleCategoryResponseVo> getMiddleCategory(@PathVariable String code) {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                categoryService.findSubCategoryByCode(code).toVo()
+                categoryService.findMiddleCategoryByCode(code).toVo()
         );
     }
 
     @GetMapping("/main-categories")
-    public CommonResponseEntity<List<MainCategoryResponseVo>> getMainCategories() {
+    public CommonResponseEntity<List<TopCategoryResponseVo>> getTopCategories() {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                categoryService.findMainCategories().stream().map(MainCategoryResponseDto::toVo).toList()
+                categoryService.findTopCategories().stream().map(TopCategoryResponseDto::toVo).toList()
         );
     }
 
     @GetMapping("/{mainCode}/sub-categories")
-    public CommonResponseEntity<List<SubCategoryResponseVo>> getSubCategories(@PathVariable String mainCode) {
+    public CommonResponseEntity<List<MiddleCategoryResponseVo>> getSubCategories(@PathVariable String mainCode) {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                categoryService.findSubCategories(mainCode).stream().map(SubCategoryResponseDto::toVo).toList()
+                categoryService.findMiddleCategories(mainCode).stream().map(MiddleCategoryResponseDto::toVo).toList()
         );
     }
 

@@ -1,13 +1,17 @@
 package TRaMis8khae.starbucks.admin.application;
 
-import TRaMis8khae.starbucks.admin.dto.in.MainCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.in.SubCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MainCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.dto.out.SubCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.entity.MainCategory;
-import TRaMis8khae.starbucks.admin.entity.SubCategory;
-import TRaMis8khae.starbucks.admin.infrastructure.MainCategoryRepository;
-import TRaMis8khae.starbucks.admin.infrastructure.SubCategoryRepository;
+import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.out.BottomCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.out.TopCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.out.MiddleCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.entity.BottomCategory;
+import TRaMis8khae.starbucks.admin.entity.TopCategory;
+import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
+import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
+import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
+import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.common.utils.CategoryCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,109 +20,152 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static TRaMis8khae.starbucks.admin.entity.QBottomCategory.bottomCategory;
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final MainCategoryRepository mainCategoryRepository;
-    private final SubCategoryRepository subCategoryRepository;
+    private final TopCategoryRepository topCategoryRepository;
+    private final MiddleCategoryRepository middleCategoryRepository;
+    private final BottomCategoryRepository bottomCategoryRepository;
+
 
     @Override
-    public void addMainCategory(MainCategoryRequestDto requestDto) {
-        
-        mainCategoryRepository.save(requestDto.toEntity(
-            CategoryCodeGenerator.generateCategoryCode())
-        );
+    public void addTopCategory(TopCategoryRequestDto requestDto) {
+
+        if (topCategoryRepository.existsByName(requestDto.getName())) {
+            throw new IllegalArgumentException("이미 해당 카테고리의 이름이 존재합니다.");
+        }
+        if (topCategoryRepository.existsBySequence(requestDto.getSequence())) {
+            throw new IllegalArgumentException("순서가 존재합니다. ");
+        }
+
+        topCategoryRepository.save(requestDto.toEntity(
+            CategoryCodeGenerator.generateCategoryCode()));
     }
 
-    @Override
-    public void addSubCategory(SubCategoryRequestDto requestDto) {
 
-        MainCategory mainCategory = mainCategoryRepository.findByCode(requestDto.getMainCategoryCode())
+    @Override // 이름 겹쳐도 됨
+    public void addMiddleCategory(MiddleCategoryRequestDto requestDto) {
+
+        TopCategory topCategory = topCategoryRepository.findByCode(requestDto.getTopCategoryCode())
+                    .orElseThrow(
+                        () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+                    );
+
+        middleCategoryRepository.save(requestDto.toEntity(
+            topCategory, CategoryCodeGenerator.generateCategoryCode()));
+    }
+
+
+    @Override
+    public void addBottomCategory(BottomCategoryRequestDto requestDto) {
+
+        MiddleCategory middleCategory = middleCategoryRepository.findByCode(requestDto.getMiddleCategoryCode())
             .orElseThrow(
                 () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            );
+
+        bottomCategoryRepository.save(requestDto.toEntity(
+            middleCategory, CategoryCodeGenerator.generateCategoryCode()));
+    }
+
+
+    @Override
+    public TopCategoryResponseDto findTopCategoryByName(String name) {
+
+        TopCategory topCategory = topCategoryRepository.findByName(name).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        subCategoryRepository.save(requestDto.toEntity(
-            mainCategory, CategoryCodeGenerator.generateCategoryCode()))
-        ;
+        return TopCategoryResponseDto.toDto(topCategory);
     }
 
-    @Override
-    public MainCategoryResponseDto findMainCategoryById(Integer id) {
 
-        MainCategory mainCategory = mainCategoryRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+    @Override
+    public TopCategoryResponseDto findTopCategoryByCode(String code) {
+
+        TopCategory topCategory = topCategoryRepository.findByCode(code).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        return MainCategoryResponseDto.toDto(mainCategory);
+        return TopCategoryResponseDto.toDto(topCategory);
     }
 
-    @Override
-    public MainCategoryResponseDto findMainCategoryByName(String name) {
 
-        MainCategory mainCategory = mainCategoryRepository.findByName(name).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+
+    @Override
+    public MiddleCategoryResponseDto findMiddleCategoryByName(String name) {
+
+        MiddleCategory middleCategory = middleCategoryRepository.findByName(name).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        return MainCategoryResponseDto.toDto(mainCategory);
+        return MiddleCategoryResponseDto.toDto(middleCategory);
     }
 
-    @Override
-    public MainCategoryResponseDto findMainCategoryByCode(String code) {
 
-        MainCategory mainCategory = mainCategoryRepository.findByCode(code).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+    @Override
+    public MiddleCategoryResponseDto findMiddleCategoryByCode(String code) {
+
+        MiddleCategory middleCategory = middleCategoryRepository.findByCode(code).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        return MainCategoryResponseDto.toDto(mainCategory);
+        return MiddleCategoryResponseDto.toDto(middleCategory);
     }
 
-    @Override
-    public SubCategoryResponseDto findSubCategoryById(Integer id) {
 
-        SubCategory subCategory = subCategoryRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+
+    @Override
+    public BottomCategoryResponseDto findBottomCategoryByName(String name) {
+
+        BottomCategory bottomCategory = bottomCategoryRepository.findByName(name).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        return SubCategoryResponseDto.toDto(subCategory);
+        return BottomCategoryResponseDto.toDto(bottomCategory);
     }
 
-    @Override
-    public SubCategoryResponseDto findSubCategoryByName(String name) {
 
-        SubCategory subCategory = subCategoryRepository.findByName(name).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+    @Override
+    public BottomCategoryResponseDto findBottomCategoryByCode(String code) {
+
+        BottomCategory bottomCategory = bottomCategoryRepository.findByCode(code).orElseThrow(
+            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
         );
 
-        return SubCategoryResponseDto.toDto(subCategory);
+        return BottomCategoryResponseDto.toDto(bottomCategory);
     }
 
+
     @Override
-    public SubCategoryResponseDto findSubCategoryByCode(String code) {
+    public List<TopCategoryResponseDto> findTopCategories() {
 
-        SubCategory subCategory = subCategoryRepository.findByCode(code).orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
-        );
+        List<TopCategory> topCategories = topCategoryRepository.findAll();
 
-        return SubCategoryResponseDto.toDto(subCategory);
+        return topCategories.stream().map(TopCategoryResponseDto::toDto).toList();
     }
 
+
     @Override
-    public List<MainCategoryResponseDto> findMainCategories() {
+    public List<MiddleCategoryResponseDto> findMiddleCategories(String topCategoryCode) {
 
-        List<MainCategory> mainCategories = mainCategoryRepository.findAll();
+        List<MiddleCategory> middleCategories = middleCategoryRepository.findByTopCategoryCode(topCategoryCode);
 
-        return mainCategories.stream().map(MainCategoryResponseDto::toDto).toList();
+        return middleCategories.stream().map(MiddleCategoryResponseDto::toDto).toList();
     }
 
+
     @Override
-    public List<SubCategoryResponseDto> findSubCategories(String mainCategoryCode) {
+    public List<BottomCategoryResponseDto> findBottomCategories(String middleCategoryCode) {
 
-        List<SubCategory> subCategories = subCategoryRepository.findByMainCategoryCode(mainCategoryCode);
+        List<BottomCategory> bottomCategories = bottomCategoryRepository.findByMiddleCategoryCode(middleCategoryCode);
 
-        return subCategories.stream().map(SubCategoryResponseDto::toDto).toList();
+        return bottomCategories.stream().map(BottomCategoryResponseDto::toDto).toList();
     }
 
 }

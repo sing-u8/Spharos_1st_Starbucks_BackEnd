@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface ProductCategoryListRepositoryCustom {
 
-	List<ProductCategoryList> findProductsByCategories(String mainCode, String subCode);
+	List<ProductCategoryList> findProductsByCategories(String topCode, String middleCode);
 
 }

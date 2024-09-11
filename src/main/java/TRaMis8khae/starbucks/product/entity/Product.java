@@ -23,14 +23,18 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String productName;
 
+    @Column(nullable = false, length = 50)
     private String productUUID;
 
     private Integer productScore;
 
+    @Column(nullable = false)
     private Double price;
 
     private String description;
 
     private Boolean additionalChecked;
+
+    private Boolean isAdditionalTogether;
     
 }

@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubCategoryRequestVo {
+public class MiddleCategoryRequestVo {
 
     private String name;
 
     private Integer sequence;
 
-    private String mainCategoryCode;
+    private String TopCategoryCode;
 
 //    private String description;
 

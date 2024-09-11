@@ -1,26 +1,36 @@
 package TRaMis8khae.starbucks.admin.application;
 
-import TRaMis8khae.starbucks.admin.dto.in.MainCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.in.SubCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MainCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.dto.out.SubCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.out.BottomCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.out.TopCategoryResponseDto;
+import TRaMis8khae.starbucks.admin.dto.out.MiddleCategoryResponseDto;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    void addMainCategory(MainCategoryRequestDto requestDto);
-    void addSubCategory(SubCategoryRequestDto requestDto);
+    void addTopCategory(TopCategoryRequestDto requestDto);
+    void addMiddleCategory(MiddleCategoryRequestDto requestDto);
+    void addBottomCategory(BottomCategoryRequestDto requestDto);
 
-    MainCategoryResponseDto findMainCategoryById(Integer id);
-    MainCategoryResponseDto findMainCategoryByName(String name);
-    MainCategoryResponseDto findMainCategoryByCode(String code);
 
-    SubCategoryResponseDto findSubCategoryById(Integer id);
-    SubCategoryResponseDto findSubCategoryByName(String name);
-    SubCategoryResponseDto findSubCategoryByCode(String code);
+    TopCategoryResponseDto findTopCategoryByName(String name);
+    TopCategoryResponseDto findTopCategoryByCode(String code);
 
-    List<MainCategoryResponseDto> findMainCategories();
-    List<SubCategoryResponseDto> findSubCategories(String mainCategoryCode);
+
+    MiddleCategoryResponseDto findMiddleCategoryByName(String name);
+    MiddleCategoryResponseDto findMiddleCategoryByCode(String code);
+
+
+    BottomCategoryResponseDto findBottomCategoryByName(String name);
+    BottomCategoryResponseDto findBottomCategoryByCode(String code);
+
+    List<TopCategoryResponseDto> findTopCategories();
+
+    List<MiddleCategoryResponseDto> findMiddleCategories(String TopCategoryCode);
+
+    List<BottomCategoryResponseDto> findBottomCategories(String MiddleCategoryCode);
 
 }

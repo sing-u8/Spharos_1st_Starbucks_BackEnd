@@ -9,14 +9,14 @@ import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductOptionRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
+import TRaMis8khae.starbucks.product.infrastructure.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
 
 @Slf4j
 @Service
@@ -26,6 +26,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final MediaRepository mediaRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
@@ -64,31 +65,34 @@ public class ProductServiceImpl implements ProductService{
         Product product = productRepository.findByProductUUID(productUUID)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
         ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID)
-            .orElseThrow(() -> new IllegalArgumentException("해당 상품의 미디어가 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당 상품의 이미지가 존재하지 않습니다."));
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID)
             .orElseThrow(() -> new IllegalArgumentException("해당 상품의 옵션이 존재하지 않습니다."));
 
-        return ProductResponseDto.builder()
-            .productName(product.getProductName())
-            .productUUID(productUUID)
-            .price(product.getPrice())
-            .thumbChecked(productMedia.getThumbChecked())
-            .path(productMedia.getPath())
-            .soldOutChecked(productOption.getSoldOutChecked())
-            .openChecked(productOption.getOpenChecked())
-            .build();
+        return ProductResponseDto.toDto(product, productOption, productMedia);
     }
 
     @Override
     public List<ProductResponseDto> findProducts() {
 
-        List<Product> productList = productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        List<ProductMedia> productsMedia = mediaRepository.findAll();
+        List<ProductOption> productOptions = productOptionRepository.findAll();
 
-//        return productList.stream().map(ProductResponseDto::toDto).toList();
+
         return null;
     }
 
     public List<ProductDetailResponseDto> findDetailProduct(String productUUID) {
+
+        return null;
+    }
+
+    public List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice) {
+
+        List<Product> products = productRepositoryCustom.getProductListWithPrice(MinPrice, MaxPrice);
+
+//        return products.stream().map(ProductResponseDto::toDto).toList();
         return null;
     }
 

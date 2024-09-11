@@ -17,4 +17,6 @@ public interface ProductService {
 
     List<ProductResponseDto> findProducts();
 
+    List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
+
 }

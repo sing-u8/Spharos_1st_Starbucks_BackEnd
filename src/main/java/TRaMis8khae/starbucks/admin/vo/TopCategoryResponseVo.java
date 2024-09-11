@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.vendor.vo;
+package TRaMis8khae.starbucks.admin.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductCategoryListResponseVo {
-    
-    private String productUUID;
+public class TopCategoryResponseVo {
+
+    private String name;
+
+    private Integer sequence;
+
+    private String code;
 
 }

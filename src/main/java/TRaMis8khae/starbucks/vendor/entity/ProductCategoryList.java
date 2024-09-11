@@ -19,10 +19,13 @@ public class ProductCategoryList {
     private Integer id;
 
     @Column(length = 50)
-    private String subCode;
+    private String middleCode;
 
-    @Column(nullable = false, length = 50)
-    private String mainCode;
+    @Column(length = 50)
+    private String topCode;
+
+    @Column(length = 50)
+    private String bottomCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;

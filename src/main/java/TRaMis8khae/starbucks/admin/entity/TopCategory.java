@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MainCategory {
+public class TopCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +20,10 @@ public class MainCategory {
     @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false)
     private Integer sequence;
 
+    @Column(nullable = false)
     private String code;
 
 }

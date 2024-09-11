@@ -13,17 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductCategoryListResponseDto {
 
-    private Long productId;
+    private String productUUID;
 
     public static ProductCategoryListResponseDto toDto(ProductCategoryList productCategoryList) {
         return ProductCategoryListResponseDto.builder()
-                .productId(productCategoryList.getProduct().getId())
+                .productUUID(productCategoryList.getProduct().getProductUUID())
                 .build();
     }
 
     public ProductCategoryListResponseVo toVo() {
         return ProductCategoryListResponseVo.builder()
-                .productId(productId)
+                .productUUID(productUUID)
                 .build();
     }
 
