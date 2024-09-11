@@ -2,10 +2,8 @@ package TRaMis8khae.starbucks.product.entity;
 
 
 import TRaMis8khae.starbucks.common.entity.Media;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 
 @Entity
 public class ProductMedia extends Media {
@@ -14,6 +12,7 @@ public class ProductMedia extends Media {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private String productUUID;
 
 }
