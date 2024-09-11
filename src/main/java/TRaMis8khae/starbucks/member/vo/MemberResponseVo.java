@@ -5,10 +5,6 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Builder
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
 public class MemberResponseVo {
 
     private Long memberId;
