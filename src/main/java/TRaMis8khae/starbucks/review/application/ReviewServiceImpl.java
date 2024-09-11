@@ -2,13 +2,10 @@ package TRaMis8khae.starbucks.review.application;
 
 import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
 import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
+import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
 import TRaMis8khae.starbucks.review.dto.ReviewUpdateResponseDto;
 import TRaMis8khae.starbucks.review.entity.Review;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
-import TRaMis8khae.starbucks.review.vo.ReviewAddRequestVo;
-import TRaMis8khae.starbucks.review.vo.ReviewReadResponseVo;
-import TRaMis8khae.starbucks.review.vo.ReviewUpdateRequestVo;
-import TRaMis8khae.starbucks.review.vo.ReviewUpdateResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,12 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     @Override
-    public void addReview(ReviewAddRequestVo requestVo) {
-
-        log.info("ReviewAddRequestVo: {}", requestVo);
-
-        ReviewAddRequestDto requestDto = ReviewAddRequestDto.toDto(requestVo);
-        log.info("ReviewAddRequestDto: {}", requestDto);
+    public void addReview(ReviewAddRequestDto requestDto) {
 
         Review review = ReviewAddRequestDto.toEntity(requestDto);
         log.info("review: {}", review);
@@ -42,32 +34,21 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<ReviewReadResponseVo> findReviews(Pageable pageable) {
-
-        Page<ReviewReadResponseDto> reviews = reviewRepository.findReviews(pageable);
-
-        return reviews.map(ReviewReadResponseDto::toVo);
+    public Page<ReviewReadResponseDto> findReviews(Pageable pageable) {
+        return reviewRepository.findReviews(pageable);
     }
 
     @Transactional
     @Override
-    public ReviewUpdateResponseVo updateReview(Long id, ReviewUpdateRequestVo vo) {
+    public ReviewUpdateResponseDto updateReview(Long id, ReviewUpdateRequestDto requestDto) {
 
-        Optional<Review> review = reviewRepository.findById(id);
+        Review review = reviewRepository.findById(id).orElseThrow();
 
-        if (review.isEmpty()) {
-            log.error("Review not found. id: {}", id);
-        }
+        review.updateReview(requestDto.getReviewTitle(), requestDto.getReviewContext(), requestDto.getReviewScore());
 
-        Review findReview = review.get();
+        Review updatedReview = reviewRepository.save(review);
 
-        findReview.updateReview(vo.getReviewTitle(), vo.getReviewContext(), vo.getReviewScore());
-
-        Review updatedReview = reviewRepository.save(findReview);
-
-        ReviewUpdateResponseDto responseDto = ReviewUpdateResponseDto.toDto(updatedReview);
-
-        return ReviewUpdateResponseDto.toVo(responseDto);
+        return ReviewUpdateResponseDto.toDto(updatedReview);
     }
 
     @Transactional

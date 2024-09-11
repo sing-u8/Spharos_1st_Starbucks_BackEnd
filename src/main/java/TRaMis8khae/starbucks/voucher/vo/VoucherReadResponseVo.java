@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.voucher.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,7 +8,11 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class VoucherAddRequestVo {
+@AllArgsConstructor
+public class VoucherReadResponseVo {
+    private String memberUUID;
+
+    private LocalDateTime registDate;
 
     private String name;
 
@@ -17,4 +22,5 @@ public class VoucherAddRequestVo {
 
     private LocalDateTime expireDate;
 
+    private String voucherCode;
 }

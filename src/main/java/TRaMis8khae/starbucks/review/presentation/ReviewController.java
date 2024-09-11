@@ -3,6 +3,10 @@ package TRaMis8khae.starbucks.review.presentation;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.review.application.ReviewService;
+import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
+import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
+import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
+import TRaMis8khae.starbucks.review.dto.ReviewUpdateResponseDto;
 import TRaMis8khae.starbucks.review.vo.ReviewAddRequestVo;
 import TRaMis8khae.starbucks.review.vo.ReviewReadResponseVo;
 import TRaMis8khae.starbucks.review.vo.ReviewUpdateRequestVo;
@@ -23,8 +27,11 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/add")
-    public CommonResponseEntity<Void> addReview(@RequestBody ReviewAddRequestVo vo) {
-        reviewService.addReview(vo);
+    public CommonResponseEntity<Void> addReview(@RequestBody ReviewAddRequestVo requestVo) {
+
+        ReviewAddRequestDto requestDto = ReviewAddRequestDto.toDto(requestVo);
+
+        reviewService.addReview(requestDto);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -40,22 +47,28 @@ public class ReviewController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewReadResponseVo> responseVo = reviewService.findReviews(pageable);
+        Page<ReviewReadResponseDto> responseDtos = reviewService.findReviews(pageable);
+
+        Page<ReviewReadResponseVo> responseVos = responseDtos.map(ReviewReadResponseDto::toVo);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                responseVo);
+                responseVos);
     }
 
     // 리뷰 수정
     @PutMapping("/update/{id}")
     public CommonResponseEntity<ReviewUpdateResponseVo> updateReview(
             @PathVariable Long id,
-            @RequestBody ReviewUpdateRequestVo vo) {
+            @RequestBody ReviewUpdateRequestVo requestVo) {
 
-        ReviewUpdateResponseVo responseVo = reviewService.updateReview(id, vo);
+        ReviewUpdateRequestDto requestDto = ReviewUpdateRequestDto.toDto(requestVo);
+
+        ReviewUpdateResponseDto responseDto = reviewService.updateReview(id, requestDto);
+
+        ReviewUpdateResponseVo responseVo = ReviewUpdateResponseDto.toVo(responseDto);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

@@ -1,5 +1,9 @@
 package TRaMis8khae.starbucks.purchase.application;
 
+import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseDeleteRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
@@ -10,11 +14,11 @@ import org.springframework.data.domain.Pageable;
 
 public interface PurchaseService {
 
-    void addPurchase(PurchaseAddRequestVo vo);
+    void addPurchase(PurchaseAddRequestDto dto);
 
-    PurchaseReadResponseVo findPurchase(PurchaseReadRequestVo vo);
+    PurchaseReadResponseDto findPurchase(PurchaseReadRequestDto dto);
 
-    Page<PurchaseReadResponseVo> findPurchases(Pageable pageable);
+    Page<PurchaseReadResponseDto> findPurchases(Pageable pageable);
 
-    void deletePurchase(PurchaseDeleteRequestVo vo);
+    void deletePurchase(PurchaseDeleteRequestDto vo);
 }

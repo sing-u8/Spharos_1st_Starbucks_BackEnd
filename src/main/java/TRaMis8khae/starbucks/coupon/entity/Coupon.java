@@ -3,8 +3,6 @@ package TRaMis8khae.starbucks.coupon.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Coupon {

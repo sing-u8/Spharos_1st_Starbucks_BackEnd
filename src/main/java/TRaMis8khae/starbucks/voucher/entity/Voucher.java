@@ -1,11 +1,16 @@
 package TRaMis8khae.starbucks.voucher.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-// member로
+@Getter
 @Entity
+@NoArgsConstructor
 public class Voucher {
 
     @Id
@@ -15,9 +20,21 @@ public class Voucher {
     @Column(length = 50)
     private String name;
 
-    private LocalDate expireDate;
+    private Double price;
 
-    // 양방향 연관 관계를 끊는다
-//    private List<MemberVoucherList> memberVoucherList = new ArrayList<>();
+    private String productUUID;
+
+    private LocalDateTime expireDate;
+
+    private String voucherCode;
+
+    @Builder
+    public Voucher(String name, Double price, String productUUID, LocalDateTime expireDate, String voucherCode) {
+        this.name = name;
+        this.price = price;
+        this.productUUID = productUUID;
+        this.expireDate = expireDate;
+        this.voucherCode = voucherCode;
+    }
 
 }
