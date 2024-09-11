@@ -29,7 +29,7 @@ public class VoucherServiceImpl implements VoucherService {
         for (VoucherAddRequestDto requestDto : requestDtos) {
 
             String voucherCode = UUID.randomUUID().toString().substring(0, 12);
-            Voucher voucher = VoucherAddRequestDto.toEntity(requestDto, voucherCode);
+            Voucher voucher = requestDto.toEntity(voucherCode);
 
             Voucher savedVoucher = voucherRepository.save(voucher);
 
@@ -48,7 +48,7 @@ public class VoucherServiceImpl implements VoucherService {
 
         // todo 상품권 사용 했다는 로직
 
-        MemberVoucherList memberVoucherList = VoucherRegistRequestDto.toEntity(requestDto, voucher, LocalDateTime.now());
+        MemberVoucherList memberVoucherList = requestDto.toEntity(voucher, LocalDateTime.now());
 
         memberVoucherListRepository.save(memberVoucherList);
 
@@ -74,9 +74,6 @@ public class VoucherServiceImpl implements VoucherService {
 //        memberVoucherList.stream().map(list -> {
 //            return VoucherReadResponseDto.toDto(list, list.getVoucher());
 //        });
-
-
-
 
         return memberVoucherList.stream().map(VoucherReadResponseDto::toDto).toList();
     }

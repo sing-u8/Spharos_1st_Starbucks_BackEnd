@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.review.dto;
 
+import TRaMis8khae.starbucks.review.entity.Review;
 import TRaMis8khae.starbucks.review.vo.ReviewUpdateRequestVo;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,5 +24,16 @@ public class ReviewUpdateRequestDto {
     }
 
 //    toEntity(Entity)
+    public Review toEntity(Review review) {
+        return Review.builder()
+                .memberMaskingId(review.getMemberMaskingId())
+                .memberNickname(review.getMemberNickname())
+                .memberUUID(review.getMemberUUID())
+                .productUUID(review.getProductUUID())
+                .reviewTitle(this.reviewTitle)
+                .reviewContext(this.reviewContext)
+                .reviewScore(this.reviewScore)
+                .build();
+    }
 
 }

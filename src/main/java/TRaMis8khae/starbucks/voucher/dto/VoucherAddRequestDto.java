@@ -30,10 +30,10 @@ public class VoucherAddRequestDto {
 
     public Voucher toEntity(String voucherCode) {
         return Voucher.builder()
-                .name(name)
-                .price(dto.getPrice())
-                .productUUID(dto.getProductUUID())
-                .expireDate(dto.getExpireDate())
+                .name(this.name)
+                .price(this.price)
+                .productUUID(this.productUUID)
+                .expireDate(this.expireDate)
                 .voucherCode(voucherCode)
                 .build();
     }

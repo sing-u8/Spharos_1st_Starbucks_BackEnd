@@ -17,9 +17,9 @@ public class VoucherReadRequestDto {
                 .build();
     }
 
-    public static MemberVoucherList toEntity(VoucherReadRequestDto dto) {
+    public MemberVoucherList toEntity() {
         return MemberVoucherList.builder()
-                .memberUUID(dto.getMemberUUID())
+                .memberUUID(this.memberUUID)
                 .build();
     }
 

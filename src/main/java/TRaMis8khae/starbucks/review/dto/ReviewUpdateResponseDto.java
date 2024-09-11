@@ -23,11 +23,11 @@ public class ReviewUpdateResponseDto {
                 .build();
     }
 
-    public static ReviewUpdateResponseVo toVo(ReviewUpdateResponseDto dto) {
+    public ReviewUpdateResponseVo toVo() {
         return ReviewUpdateResponseVo.builder()
-                .reviewTitle(dto.getReviewTitle())
-                .reviewContext(dto.getReviewContext())
-                .reviewScore(dto.getReviewScore())
+                .reviewTitle(this.reviewTitle)
+                .reviewContext(this.reviewContext)
+                .reviewScore(this.reviewScore)
                 .build();
     }
 

@@ -61,7 +61,7 @@ public class PurchaseController {
 
         PurchaseReadResponseDto responseDto = purchaseService.findPurchase(requestDto);
 
-        PurchaseReadResponseVo responseVo = PurchaseReadResponseDto.toVo(responseDto);
+        PurchaseReadResponseVo responseVo = responseDto.toVo();
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

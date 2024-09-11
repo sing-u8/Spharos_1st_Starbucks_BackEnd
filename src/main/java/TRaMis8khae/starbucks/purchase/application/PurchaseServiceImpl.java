@@ -26,13 +26,14 @@ public class PurchaseServiceImpl implements PurchaseService {
     public void addPurchase(PurchaseAddRequestDto requestDto) {
 
         // todo 주문배송 리포지토리에서 꺼내야 함
-        Purchase purchase = PurchaseAddRequestDto.toEntity(requestDto);
+        Purchase purchase = requestDto.toEntity();
         log.info("purchase: {}", purchase);
 
         purchaseRepository.save(purchase);
 
         // todo 상품주문리스트 추가 필요
 
+        // void인 값은 ResponseDto, Vo가 필요할까?
     }
 
     @Override
@@ -57,6 +58,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         log.info("purchase: {}", purchase);
 
         purchaseRepository.delete(purchase);
+
+        // void와 Void 중 어떤 것을 사용해야 할까?
     }
 
 }

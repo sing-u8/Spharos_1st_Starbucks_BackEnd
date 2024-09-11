@@ -36,7 +36,7 @@ public class PurchaseAddRequestDto {
     public static PurchaseAddRequestDto toDto(
             PurchaseAddRequestVo purchaseAddRequestVo,
             String serialNum,
-            LocalDateTime purhchaseDate) {
+            LocalDateTime purchaseDate) {
         return PurchaseAddRequestDto.builder()
                 .memberUUID(purchaseAddRequestVo.getMemberUUID())
                 .deliveryPrice(purchaseAddRequestVo.getDeliveryPrice())
@@ -45,19 +45,19 @@ public class PurchaseAddRequestDto {
                 .memberName(purchaseAddRequestVo.getMemberName())
                 .memberPhone(purchaseAddRequestVo.getMemberPhone())
                 .serialNumber(serialNum)
-                .purchaseDate(purhchaseDate)
+                .purchaseDate(purchaseDate)
                 .build();
     }
 
-    public static Purchase toEntity(PurchaseAddRequestDto dto) {
+    public Purchase toEntity() {
         return Purchase.builder()
-                .memberUUID(dto.getMemberUUID())
-                .serialNumber(dto.getSerialNumber())
-                .deliveryPrice(dto.getDeliveryPrice())
-                .totalPrice(dto.getTotalPrice())
-                .cardInfo(dto.getCardInfo())
-                .memberName(dto.getMemberName())
-                .memberPhone(dto.getMemberPhone())
+                .memberUUID(this.memberUUID)
+                .serialNumber(this.serialNumber)
+                .deliveryPrice(this.deliveryPrice)
+                .totalPrice(this.totalPrice)
+                .cardInfo(this.cardInfo)
+                .memberName(this.memberName)
+                .memberPhone(this.memberPhone)
                 .build();
     }
 

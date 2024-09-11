@@ -29,15 +29,16 @@ public class ReviewReadResponseDto {
 
     private Integer reviewScore;
 
-    public static ReviewReadResponseVo toVo(ReviewReadResponseDto dto) {
+    public ReviewReadResponseVo toVo() {
         return ReviewReadResponseVo.builder()
-                .productUUID(dto.getProductUUID())
-                .memberUUID(dto.getMemberUUID())
-                .memberMaskingId(dto.getMemberMaskingId())
-                .memberNickname(dto.getMemberNickname())
-                .reviewTitle(dto.getReviewTitle())
-                .reviewContext(dto.getReviewContext())
-                .reviewScore(dto.getReviewScore())
+                .productUUID(this.productUUID)
+                .memberUUID(this.memberUUID)
+                .memberMaskingId(this.memberMaskingId)
+                .memberNickname(this.memberNickname)
+                .reviewTitle(this.reviewTitle)
+                .reviewContext(this.reviewContext)
+                .reviewScore(this.reviewScore)
                 .build();
     }
+
 }

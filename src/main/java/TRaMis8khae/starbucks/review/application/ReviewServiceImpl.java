@@ -27,7 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void addReview(ReviewAddRequestDto requestDto) {
 
-        Review review = ReviewAddRequestDto.toEntity(requestDto);
+        Review review = requestDto.toEntity();
         log.info("review: {}", review);
 
         reviewRepository.save(review);
@@ -44,9 +44,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review review = reviewRepository.findById(id).orElseThrow();
 
-        review.updateReview(requestDto.getReviewTitle(), requestDto.getReviewContext(), requestDto.getReviewScore());
+//        review.updateReview(requestDto.getReviewTitle(), requestDto.getReviewContext(), requestDto.getReviewScore());
+//
+//        Review updatedReview = reviewRepository.save(review);
 
-        Review updatedReview = reviewRepository.save(review);
+        // 바뀐 버전, dto에서 Entity update
+        Review updateReviewFromDto = requestDto.toEntity(review);
+
+        Review updatedReview = reviewRepository.save(updateReviewFromDto);
 
         return ReviewUpdateResponseDto.toDto(updatedReview);
     }

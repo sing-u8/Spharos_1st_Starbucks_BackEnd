@@ -23,9 +23,9 @@ public class VoucherRegistRequestDto {
                 .build();
     }
 
-    public static MemberVoucherList toEntity(VoucherRegistRequestDto dto, Voucher voucher, LocalDateTime registDate) {
+    public MemberVoucherList toEntity(Voucher voucher, LocalDateTime registDate) {
         return MemberVoucherList.builder()
-                .memberUUID(dto.memberUUID)
+                .memberUUID(this.memberUUID)
                 .registDate(registDate)
                 .voucher(voucher)
                 .build();

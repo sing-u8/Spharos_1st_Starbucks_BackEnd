@@ -30,18 +30,6 @@ public class ReviewAddRequestDto {
 
     private Integer reviewScore;
 
-    public static Review toEntity(ReviewAddRequestDto dto) {
-        return Review.builder()
-                .productUUID(dto.getProductUUID())
-                .memberUUID(dto.getMemberUUID())
-                .memberMaskingId(dto.getMemberMaskingId())
-                .memberNickname(dto.getMemberNickname())
-                .reviewTitle(dto.getReviewTitle())
-                .reviewContext(dto.getReviewContext())
-                .reviewScore(dto.getReviewScore())
-                .build();
-    }
-
     public static ReviewAddRequestDto toDto(ReviewAddRequestVo vo) {
         return ReviewAddRequestDto.builder()
                 .productUUID(vo.getProductUUID())
@@ -51,6 +39,18 @@ public class ReviewAddRequestDto {
                 .reviewTitle(vo.getReviewTitle())
                 .reviewContext(vo.getReviewContext())
                 .reviewScore(vo.getReviewScore())
+                .build();
+    }
+
+    public Review toEntity() {
+        return Review.builder()
+                .productUUID(this.productUUID)
+                .memberUUID(this.memberUUID)
+                .memberMaskingId(this.memberMaskingId)
+                .memberNickname(this.memberNickname)
+                .reviewTitle(this.reviewTitle)
+                .reviewContext(this.reviewContext)
+                .reviewScore(this.reviewScore)
                 .build();
     }
 

@@ -52,20 +52,21 @@ public class PurchaseReadResponseDto {
                 .build();
     }
 
-    public static PurchaseReadResponseVo toVo(PurchaseReadResponseDto responseDto) {
+    public PurchaseReadResponseVo toVo() {
         return PurchaseReadResponseVo.builder()
-                .serialNumber(responseDto.getSerialNumber())
-                .deliveryPrice(responseDto.getDeliveryPrice())
-                .totalPrice(responseDto.getTotalPrice())
-                .cardInfo(responseDto.getCardInfo())
-                .memberName(responseDto.getMemberName())
-                .memberPhone(responseDto.getMemberPhone())
-                .addressDetail(responseDto.getAddressDetail())
-                .deliveryMemo(responseDto.getDeliveryMemo())
-                .deliveryAddressNickname(responseDto.getDeliveryAddressNickname())
-                .recipient(responseDto.getRecipient())
-                .phone1(responseDto.getPhone1())
-                .phone2(responseDto.getPhone2())
+                .serialNumber(this.serialNumber)
+                .deliveryPrice(this.deliveryPrice)
+                .totalPrice(this.totalPrice)
+                .cardInfo(this.cardInfo)
+                .memberName(this.memberName)
+                .memberPhone(this.memberPhone)
+                .addressDetail(this.addressDetail)
+                .deliveryMemo(this.deliveryMemo)
+                .deliveryAddressNickname(this.deliveryAddressNickname)
+                .recipient(this.recipient)
+                .phone1(this.phone1)
+                .phone2(this.phone2)
                 .build();
     }
+
 }

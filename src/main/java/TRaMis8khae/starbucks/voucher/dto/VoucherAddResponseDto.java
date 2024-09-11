@@ -33,13 +33,13 @@ public class VoucherAddResponseDto {
                 .build();
     }
 
-    public static VoucherAddResponseVo toVo(VoucherAddResponseDto dto) {
+    public VoucherAddResponseVo toVo() {
         return VoucherAddResponseVo.builder()
-                .name(dto.getName())
-                .price(dto.getPrice())
-                .productUUID(dto.getProductUUID())
-                .expireDate(dto.getExpireDate())
-                .voucherCode(dto.getVoucherCode())
+                .name(this.name)
+                .price(this.price)
+                .productUUID(this.productUUID)
+                .expireDate(this.expireDate)
+                .voucherCode(this.voucherCode)
                 .build();
     }
 

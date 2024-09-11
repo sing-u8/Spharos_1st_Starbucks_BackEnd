@@ -68,7 +68,7 @@ public class ReviewController {
 
         ReviewUpdateResponseDto responseDto = reviewService.updateReview(id, requestDto);
 
-        ReviewUpdateResponseVo responseVo = ReviewUpdateResponseDto.toVo(responseDto);
+        ReviewUpdateResponseVo responseVo = responseDto.toVo();
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

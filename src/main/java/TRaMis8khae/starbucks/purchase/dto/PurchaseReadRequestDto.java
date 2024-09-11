@@ -2,7 +2,6 @@ package TRaMis8khae.starbucks.purchase.dto;
 
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,10 +17,11 @@ public class PurchaseReadRequestDto {
                 .build();
     }
 
-    public static Purchase toEntity(PurchaseReadRequestDto dto) {
-        return Purchase.builder()
-                .serialNumber(dto.getSerialNum())
-                .build();
-    }
+    // Read에 관한 요청이기에 DB에 저장할 필요가 없음 -> toEntity() 메소드 필요 없음
+//    public Purchase toEntity() {
+//        return Purchase.builder()
+//                .serialNumber(this.serialNum)
+//                .build();
+//    }
 
 }
