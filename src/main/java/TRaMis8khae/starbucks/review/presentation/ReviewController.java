@@ -60,7 +60,7 @@ public class ReviewController {
 
     // 리뷰 수정
     @PutMapping("/update/{id}")
-    public CommonResponseEntity<ReviewUpdateResponseVo> updateReview(
+    public CommonResponseEntity<Void> updateReview(
             @PathVariable Long id,
             @RequestBody ReviewUpdateRequestVo requestVo) {
 
@@ -68,13 +68,14 @@ public class ReviewController {
 
         ReviewUpdateResponseDto responseDto = reviewService.updateReview(id, requestDto);
 
+        // 수정된 값 확인 차 생성
         ReviewUpdateResponseVo responseVo = responseDto.toVo();
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
-                responseVo);
+                null);
     }
 
     // 리뷰 삭제

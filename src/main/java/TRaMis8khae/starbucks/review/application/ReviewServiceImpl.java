@@ -44,11 +44,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review review = reviewRepository.findById(id).orElseThrow();
 
-//        review.updateReview(requestDto.getReviewTitle(), requestDto.getReviewContext(), requestDto.getReviewScore());
-//
-//        Review updatedReview = reviewRepository.save(review);
-
-        // 바뀐 버전, dto에서 Entity update
         Review updateReviewFromDto = requestDto.toEntity(review);
 
         Review updatedReview = reviewRepository.save(updateReviewFromDto);

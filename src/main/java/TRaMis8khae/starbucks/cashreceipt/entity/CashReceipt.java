@@ -13,7 +13,6 @@ public class CashReceipt {
 
     private Boolean checked;//현금영수증 발행여부
 
-    @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUuid;
 
 }

@@ -17,11 +17,4 @@ public class PurchaseReadRequestDto {
                 .build();
     }
 
-    // Read에 관한 요청이기에 DB에 저장할 필요가 없음 -> toEntity() 메소드 필요 없음
-//    public Purchase toEntity() {
-//        return Purchase.builder()
-//                .serialNumber(this.serialNum)
-//                .build();
-//    }
-
 }

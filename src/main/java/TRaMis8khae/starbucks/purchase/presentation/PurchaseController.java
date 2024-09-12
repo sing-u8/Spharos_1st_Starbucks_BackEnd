@@ -4,11 +4,9 @@ import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
-import TRaMis8khae.starbucks.purchase.dto.PurchaseDeleteRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseDeleteRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
 import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/purchase") // 임시
+@RequestMapping("/purchase")
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
@@ -49,7 +47,7 @@ public class PurchaseController {
                 null);
     }
 
-    // 주문 단 건 조회
+    // 주문 단 건 조회 - 캐싱?
     @GetMapping("/find/{serialNum}")
     public CommonResponseEntity<PurchaseReadResponseVo> findPurchase(@PathVariable String serialNum) {
 
@@ -72,7 +70,7 @@ public class PurchaseController {
 
     // 주문 전체 조회 - 페이징
     @GetMapping("/find")
-    public CommonResponseEntity<Page<PurchaseReadResponseVo>> findPurchase(
+    public CommonResponseEntity<Page<PurchaseReadResponseVo>> findPurchases(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -92,14 +90,7 @@ public class PurchaseController {
     @DeleteMapping("/delete/{serialNum}")
     public CommonResponseEntity<Void> deletePurchase(@PathVariable String serialNum) {
 
-        PurchaseDeleteRequestVo requestVo = PurchaseDeleteRequestVo.builder()
-                .serialNum(serialNum)
-                .build();
-
-        PurchaseDeleteRequestDto requestDto = PurchaseDeleteRequestDto.toDto(requestVo);
-        log.info("PurchaseDeleteRequestDto: {}", requestDto);
-
-        purchaseService.deletePurchase(requestDto);
+        purchaseService.deletePurchase(serialNum);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -107,4 +98,5 @@ public class PurchaseController {
                 CommonResponseMessage.SUCCESS.getMessage(),
                 null);
     }
+
 }

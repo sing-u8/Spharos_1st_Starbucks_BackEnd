@@ -2,11 +2,13 @@ package TRaMis8khae.starbucks.voucher.dto;
 
 import TRaMis8khae.starbucks.voucher.entity.MemberVoucherList;
 import TRaMis8khae.starbucks.voucher.vo.VoucherReadRequestVo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class VoucherReadRequestDto {
 
     private String memberUUID;

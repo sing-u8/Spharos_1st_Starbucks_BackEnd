@@ -35,7 +35,8 @@ public class Review {
     private Integer reviewScore;
 
     @Builder
-    public Review(String productUUID, String memberUUID, String memberMaskingId, String memberNickname, String reviewTitle, String reviewContext, Integer reviewScore) {
+    public Review(Long id, String productUUID, String memberUUID, String memberMaskingId, String memberNickname, String reviewTitle, String reviewContext, Integer reviewScore) {
+        this.id = id;
         this.productUUID = productUUID;
         this.memberUUID = memberUUID;
         this.memberMaskingId = memberMaskingId;
@@ -44,11 +45,5 @@ public class Review {
         this.reviewContext = reviewContext;
         this.reviewScore = reviewScore;
     }
-
-//    public void updateReview(String reviewTitle, String reviewContext, Integer reviewScore) {
-//        this.reviewTitle = reviewTitle;
-//        this.reviewContext = reviewContext;
-//        this.reviewScore = reviewScore;
-//    }
 
 }

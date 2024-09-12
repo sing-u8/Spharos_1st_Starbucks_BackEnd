@@ -1,7 +1,6 @@
 package TRaMis8khae.starbucks.purchase.application;
 
 import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
-import TRaMis8khae.starbucks.purchase.dto.PurchaseDeleteRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
@@ -32,8 +31,6 @@ public class PurchaseServiceImpl implements PurchaseService {
         purchaseRepository.save(purchase);
 
         // todo 상품주문리스트 추가 필요
-
-        // void인 값은 ResponseDto, Vo가 필요할까?
     }
 
     @Override
@@ -52,14 +49,12 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Transactional
     @Override
-    public void deletePurchase(PurchaseDeleteRequestDto dto) {
+    public void deletePurchase(String serialNum) {
 
-        Purchase purchase = purchaseRepository.findBySerialNumber(dto.getSerialNum()).orElseThrow();
+        Purchase purchase = purchaseRepository.findBySerialNumber(serialNum).orElseThrow();
         log.info("purchase: {}", purchase);
 
         purchaseRepository.delete(purchase);
-
-        // void와 Void 중 어떤 것을 사용해야 할까?
     }
 
 }

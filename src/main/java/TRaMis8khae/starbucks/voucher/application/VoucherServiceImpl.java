@@ -6,6 +6,7 @@ import TRaMis8khae.starbucks.voucher.entity.Voucher;
 import TRaMis8khae.starbucks.voucher.infrastructure.MemberVoucherListRepository;
 import TRaMis8khae.starbucks.voucher.infrastructure.VoucherRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService {
@@ -42,7 +44,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Void registVoucher(VoucherRegistRequestDto requestDto) {
+    public void registVoucher(VoucherRegistRequestDto requestDto) {
 
         Voucher voucher = voucherRepository.findByVoucherCode(requestDto.getVoucherCode()).orElseThrow();
 
@@ -52,7 +54,6 @@ public class VoucherServiceImpl implements VoucherService {
 
         memberVoucherListRepository.save(memberVoucherList);
 
-        return null;
     }
 
     @Override
@@ -61,15 +62,17 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherReadResponseDto> findVouchers(VoucherReadRequestDto dto) {
+    public List<VoucherReadResponseDto> findVouchers(String memberUUID) {
 
+        log.info("memberUUID : {}", memberUUID);
         List<MemberVoucherList> memberVoucherList = memberVoucherListRepository
-                .findAllByMemberUUID(dto.getMemberUUID());
+                .findAllByMemberUUID(memberUUID);
 
+        log.info("memberVoucherList : {}", memberVoucherList);
 
-        for (MemberVoucherList list  : memberVoucherList ) {
-            VoucherReadResponseDto.toDto(list);
-        }
+//        for (MemberVoucherList list  : memberVoucherList ) {
+//            VoucherReadResponseDto.toDto(list);
+//        }
 
 //        memberVoucherList.stream().map(list -> {
 //            return VoucherReadResponseDto.toDto(list, list.getVoucher());

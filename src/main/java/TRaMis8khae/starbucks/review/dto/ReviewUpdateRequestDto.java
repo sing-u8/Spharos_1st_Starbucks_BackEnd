@@ -23,9 +23,9 @@ public class ReviewUpdateRequestDto {
                 .build();
     }
 
-//    toEntity(Entity)
     public Review toEntity(Review review) {
         return Review.builder()
+                .id(review.getId())
                 .memberMaskingId(review.getMemberMaskingId())
                 .memberNickname(review.getMemberNickname())
                 .memberUUID(review.getMemberUUID())

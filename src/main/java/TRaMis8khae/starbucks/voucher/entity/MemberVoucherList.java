@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// 회원에 관련된 쿠폰인가, 상품에 관련된 쿠폰인가 등을 나눌 필요가 있는가?
-
 @Entity
 @NoArgsConstructor
 @Getter
@@ -18,7 +16,6 @@ public class MemberVoucherList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "binary(16)")
     private String memberUUID;
 
     private LocalDateTime registDate;
@@ -32,4 +29,5 @@ public class MemberVoucherList {
         this.registDate = registDate;
         this.voucher = voucher;
     }
+
 }

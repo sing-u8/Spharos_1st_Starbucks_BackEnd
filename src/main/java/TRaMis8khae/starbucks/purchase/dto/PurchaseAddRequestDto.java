@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public class PurchaseAddRequestDto {
 
-    @Column(columnDefinition = "binary(16)")
     private String memberUUID;
 
     @Column(nullable = false, length = 50)

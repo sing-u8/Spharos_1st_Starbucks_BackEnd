@@ -1,12 +1,7 @@
 package TRaMis8khae.starbucks.voucher.dto;
 
 import TRaMis8khae.starbucks.voucher.entity.MemberVoucherList;
-import TRaMis8khae.starbucks.voucher.entity.Voucher;
-import TRaMis8khae.starbucks.voucher.vo.VoucherReadRequestVo;
 import TRaMis8khae.starbucks.voucher.vo.VoucherReadResponseVo;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,7 +52,5 @@ public class VoucherReadResponseDto {
                 .voucherCode(this.voucherCode)
                 .build();
     }
-
-
 
 }

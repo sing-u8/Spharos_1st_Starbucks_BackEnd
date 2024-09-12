@@ -5,13 +5,14 @@ import TRaMis8khae.starbucks.voucher.application.VoucherService;
 import TRaMis8khae.starbucks.voucher.dto.*;
 import TRaMis8khae.starbucks.voucher.vo.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/voucher")
@@ -58,21 +59,30 @@ public class VoucherController {
         );
     }
 
+    // todo 상품권 사용 API
+
     // 상품권 조회 (사용자)
-    @GetMapping("/find")
-    public CommonResponseEntity<List<VoucherReadResponseVo>> findVouchers(VoucherReadRequestVo vo) {
+    @GetMapping("/find/{memberUUID}")
+    public CommonResponseEntity<List<VoucherReadResponseVo>> findVouchers(@PathVariable String memberUUID) {
 
-        VoucherReadRequestDto requestDto = VoucherReadRequestDto.toDto(vo);
-        List<VoucherReadResponseDto> lists = voucherService.findVouchers(requestDto);
+        List<VoucherReadResponseDto> responseDtos = voucherService.findVouchers(memberUUID);
+        for (VoucherReadResponseDto responseDto : responseDtos) {
+            log.info("responseDto : {}", responseDto);
+        }
 
-        List<VoucherReadResponseVo> responseVo = null;
+        List<VoucherReadResponseVo> responseVos = responseDtos.stream().map(VoucherReadResponseDto::toVo).toList();
+        for (VoucherReadResponseVo responseVo : responseVos) {
+            log.info("responseVo : {}", responseVo);
+        }
 
         return new CommonResponseEntity<>(
                 HttpStatus.ACCEPTED,
                 true,
                 "상품권 조회 성공",
-                lists.stream().map(VoucherReadResponseDto::toVo).toList());
+                responseVos);
     }
+
+    // todo 상품권 사용
 
     // 상품권 삭제 (관리자, 사용자 중 정해야 함)
     @DeleteMapping("/delete/{id}")
