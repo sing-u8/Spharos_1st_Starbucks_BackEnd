@@ -3,12 +3,12 @@ package TRaMis8khae.starbucks.member.presentation;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.DeliveryAddressService;
+import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
-import TRaMis8khae.starbucks.member.vo.MemberAddressRequestVo;
-import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +22,11 @@ public class MemberController {
     private final DeliveryAddressService deliveryAddressService;
 
     @PostMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<Void> addDeliveryAddress(@PathVariable String memberUUID, @RequestBody MemberAddressRequestVo memberAddressRequestVo) {
+    public CommonResponseEntity<Void> addDeliveryAddress(@PathVariable String memberUUID, @RequestBody MemberDeliveryAddressRequestVo memberDeliveryAddressRequestVo) {
 
-        deliveryAddressService.addDeliveryAddress(memberUUID, memberAddressRequestVo);
+        DeliveryAddressRequestDto deliveryAddressRequestDto = DeliveryAddressRequestDto.toDto(memberDeliveryAddressRequestVo);
+
+        deliveryAddressService.addDeliveryAddress(memberUUID, deliveryAddressRequestDto);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -35,7 +37,7 @@ public class MemberController {
     }
 
     @GetMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<List<MemberAddressResponseVo>> getMemberDeliveryAddress(@PathVariable String memberUUID) {
+    public CommonResponseEntity<List<MemberDeliveryAddressResponseVo>> getMemberDeliveryAddress(@PathVariable String memberUUID) {
         List<DeliveryAddressResponseDto> memberAddressList = deliveryAddressService.getMemberDeliveryAddress(memberUUID);
 
         if (memberAddressList.isEmpty()) {
@@ -51,7 +53,7 @@ public class MemberController {
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 memberAddressList.stream().
-                        map(DeliveryAddressResponseDto::toResponseVo).
+                        map(DeliveryAddressResponseDto::toVo).
                         toList());
 
     }
@@ -67,9 +69,9 @@ public class MemberController {
     }
 
     @PutMapping("delivery/{memberUUID}/{memberAddressId}")
-    public CommonResponseEntity<Void> updateDeliveryAddress(@PathVariable String memberUUID, @PathVariable Long memberAddressId, @RequestBody MemberAddressRequestVo memberAddressRequestVo) {
+    public CommonResponseEntity<Void> updateDeliveryAddress(@PathVariable String memberUUID, @PathVariable Long memberAddressId, @RequestBody MemberDeliveryAddressRequestVo memberDeliveryAddressRequestVo) {
 
-        deliveryAddressService.updateDeliveryAddress(memberUUID, memberAddressId, memberAddressRequestVo);
+        deliveryAddressService.updateDeliveryAddress(memberUUID, memberAddressId, memberDeliveryAddressRequestVo);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

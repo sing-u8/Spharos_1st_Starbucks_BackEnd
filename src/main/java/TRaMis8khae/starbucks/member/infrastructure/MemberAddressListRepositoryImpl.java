@@ -2,7 +2,7 @@ package TRaMis8khae.starbucks.member.infrastructure;
 
 import TRaMis8khae.starbucks.member.entity.QDeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.QMemberAddressList;
-import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ public class MemberAddressListRepositoryImpl implements MemberAddressListReposit
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<MemberAddressResponseVo> findMemberAddressWithDeliveryAddress(String memberUUID){
+    public List<MemberDeliveryAddressResponseVo> findMemberAddressWithDeliveryAddress(String memberUUID){
         QMemberAddressList qMemberAddressList = QMemberAddressList.memberAddressList;
         QDeliveryAddress qDeliveryAddress = QDeliveryAddress.deliveryAddress;
 
-        return jpaQueryFactory.select(Projections.constructor(MemberAddressResponseVo.class,
+        return jpaQueryFactory.select(Projections.constructor(MemberDeliveryAddressResponseVo.class,
                         qMemberAddressList.id,
                         qMemberAddressList.memberUUID,
                         qMemberAddressList.addressDefaultCheck,

@@ -1,11 +1,11 @@
 package TRaMis8khae.starbucks.member.infrastructure;
 
-import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
 
 import java.util.List;
 
 public interface MemberAddressListRepositoryCustom {
 
-    List<MemberAddressResponseVo> findMemberAddressWithDeliveryAddress(String memberUUID);
+    List<MemberDeliveryAddressResponseVo> findMemberAddressWithDeliveryAddress(String memberUUID);
 
 }

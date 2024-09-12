@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class MemberAddressResponseVo {
+public class MemberDeliveryAddressResponseVo {
 
     private Long memberAddressId;
 

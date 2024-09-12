@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MemberAddressRequestVo {
+public class MemberDeliveryAddressRequestVo {
 
     private String addressDetail;
 

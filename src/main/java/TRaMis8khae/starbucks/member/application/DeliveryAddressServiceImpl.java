@@ -1,6 +1,5 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
@@ -8,9 +7,8 @@ import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
-import TRaMis8khae.starbucks.member.vo.MemberAddressRequestVo;
-import TRaMis8khae.starbucks.member.vo.MemberAddressResponseVo;
-import jakarta.transaction.Transactional;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,33 +26,34 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
     private final MemberAddressListRepositoryCustom memberAddressListRepositoryCustom;
 
     @Override
-    public void addDeliveryAddress(String memberUUID, MemberAddressRequestVo memberAddressRequestVo) {
-        DeliveryAddress deliveryAddress = DeliveryAddress.builder()
-                .addressDetail(memberAddressRequestVo.getAddressDetail())
-                .deliveryMemo(memberAddressRequestVo.getDeliveryMemo())
-                .deliveryAddressNickname(memberAddressRequestVo.getDeliveryAddressNickname())
-                .recipient(memberAddressRequestVo.getRecipient())
-                .phone1(memberAddressRequestVo.getPhone1())
-                .phone2(memberAddressRequestVo.getPhone2())
-                .build();
+    public void addDeliveryAddress(String memberUUID, DeliveryAddressRequestDto deliveryAddressRequestDto) {
+//        DeliveryAddress deliveryAddress = DeliveryAddress.builder()
+//                .addressDetail(memberDeliveryAddressRequestVo.getAddressDetail())
+//                .deliveryMemo(memberDeliveryAddressRequestVo.getDeliveryMemo())
+//                .deliveryAddressNickname(memberDeliveryAddressRequestVo.getDeliveryAddressNickname())
+//                .recipient(memberDeliveryAddressRequestVo.getRecipient())
+//                .phone1(memberDeliveryAddressRequestVo.getPhone1())
+//                .phone2(memberDeliveryAddressRequestVo.getPhone2())
+//                .build();
+//
+//        deliveryAddressRepository.save(deliveryAddress);
+//
+//        MemberAddressList memberAddressList = MemberAddressList.builder()
+//                .memberUUID(memberUUID)
+//                .deliveryAddress(deliveryAddress)
+//                .addressDefaultCheck(memberDeliveryAddressRequestVo.isAddressDefaultCheck())
+//                .build();
+//
+//        memberAddressListRepository.save(memberAddressList);
 
-        deliveryAddressRepository.save(deliveryAddress);
-
-        MemberAddressList memberAddressList = MemberAddressList.builder()
-                .memberUUID(memberUUID)
-                .deliveryAddress(deliveryAddress)
-                .addressDefaultCheck(memberAddressRequestVo.isAddressDefaultCheck())
-                .build();
-
-        memberAddressListRepository.save(memberAddressList);
     }
 
     @Override
     public List<DeliveryAddressResponseDto> getMemberDeliveryAddress(String memberUUID) {
 
-        List<MemberAddressResponseVo> memberAddressResponseVoList = memberAddressListRepositoryCustom.findMemberAddressWithDeliveryAddress(memberUUID);
+        List<MemberDeliveryAddressResponseVo> memberDeliveryAddressResponseVoList = memberAddressListRepositoryCustom.findMemberAddressWithDeliveryAddress(memberUUID);
 
-        return memberAddressResponseVoList.stream()
+        return memberDeliveryAddressResponseVoList.stream()
                 .map(vo -> DeliveryAddressResponseDto.builder()
                         .addressDefaultCheck(vo.isAddressDefaultCheck())
                         .addressDetail(vo.getAddressDetail())
@@ -95,7 +94,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
     }
 
     @Override
-    public void updateDeliveryAddress(String memberUUID, Long id, MemberAddressRequestVo memberAddressRequestVo) {
+    public void updateDeliveryAddress(String memberUUID, Long id, MemberDeliveryAddressRequestVo memberDeliveryAddressRequestVo) {
 
         Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(id);
 
@@ -106,16 +105,16 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
         DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
 
         deliveryAddress.updateDeliveryAddress(
-                memberAddressRequestVo.getAddressDetail(),
-                memberAddressRequestVo.getDeliveryMemo(),
-                memberAddressRequestVo.getDeliveryAddressNickname(),
-                memberAddressRequestVo.getRecipient(),
-                memberAddressRequestVo.getPhone1(),
-                memberAddressRequestVo.getPhone2()
+                memberDeliveryAddressRequestVo.getAddressDetail(),
+                memberDeliveryAddressRequestVo.getDeliveryMemo(),
+                memberDeliveryAddressRequestVo.getDeliveryAddressNickname(),
+                memberDeliveryAddressRequestVo.getRecipient(),
+                memberDeliveryAddressRequestVo.getPhone1(),
+                memberDeliveryAddressRequestVo.getPhone2()
         );
 
         MemberAddressList memberAddressList = memberAddressListRepository.findByMemberUUIDAndId(memberUUID, id);
-        memberAddressList.updateMemberAddressList(memberAddressRequestVo.isAddressDefaultCheck());
+        memberAddressList.updateMemberAddressList(memberDeliveryAddressRequestVo.isAddressDefaultCheck());
 
         deliveryAddressRepository.save(deliveryAddress);
         memberAddressListRepository.save(memberAddressList);
