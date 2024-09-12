@@ -9,8 +9,10 @@ public class ProductCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String memberUUID;
 
+    @Column(nullable = false)
     private String productUUID;
 
     private Integer count;
@@ -23,6 +25,8 @@ public class ProductCart {
 
     private Long productOptionId;
 
-    private int quantity;
+    private Integer quantity;
+
+    private String engravingText;
 
 }

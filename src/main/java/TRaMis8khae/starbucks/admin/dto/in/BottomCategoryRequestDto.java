@@ -14,14 +14,14 @@ public class BottomCategoryRequestDto {
 
 	private String name;
 	private Integer sequence;
-	private String MiddleCategoryCode;
+	private String middleCategoryCode;
 
 
 	public static BottomCategoryRequestDto toDto(BottomCategoryRequestVo bottomCategoryRequestVo) {
 		return BottomCategoryRequestDto.builder()
 			.name(bottomCategoryRequestVo.getName())
 			.sequence(bottomCategoryRequestVo.getSequence())
-			.MiddleCategoryCode(bottomCategoryRequestVo.getMiddleCategoryCode())
+			.middleCategoryCode(bottomCategoryRequestVo.getMiddleCategoryCode())
 			.build();
 	}
 
@@ -29,7 +29,7 @@ public class BottomCategoryRequestDto {
 		return BottomCategory.builder()
 			.name(name)
 			.sequence(sequence)
-			.MiddleCategory(middleCategory)
+			.middleCategory(middleCategory)
 			.code(code)
 			.build();
 	}

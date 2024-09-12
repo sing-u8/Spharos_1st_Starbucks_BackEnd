@@ -24,13 +24,16 @@ public class ProductCategoryListRepositoryCustomImpl implements ProductCategoryL
 	BooleanBuilder builder = new BooleanBuilder();
 
 	@Override
-	public List<ProductCategoryList> findProductsByCategories(String topCode, String middleCode) {
+	public List<ProductCategoryList> findProductsByCategories(String topCode, String middleCode, String bottomCode) {
 
 		if (topCode != null) {
 			builder.and(productCategoryList.topCode.eq(topCode));
 		}
 		if (middleCode != null) {
 			builder.and(productCategoryList.middleCode.eq(middleCode));
+		}
+		if (bottomCode != null) {
+			builder.and(productCategoryList.bottomCode.eq(bottomCode));
 		}
 
 		return jpaQueryFactory.selectFrom(productCategoryList)

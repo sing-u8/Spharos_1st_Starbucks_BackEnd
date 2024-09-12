@@ -16,4 +16,5 @@ public interface ProductOptionRepository extends JpaRepository<ProductOption, Lo
 	Optional<ProductOption> findByProductUUID(String productUUID);
 
 	List<ProductOption> findByClosedChecked(Boolean closedChecked);
+
 }

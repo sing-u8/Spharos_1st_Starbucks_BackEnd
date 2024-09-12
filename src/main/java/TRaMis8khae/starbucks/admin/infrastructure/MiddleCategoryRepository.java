@@ -13,9 +13,10 @@ public interface MiddleCategoryRepository extends JpaRepository<MiddleCategory, 
     Optional<MiddleCategory> findByName(String name);
     Optional<MiddleCategory> findByCode(String code);
 
-    List<MiddleCategory> findByTopCategoryCode(String TopCategoryCode);
+    List<MiddleCategory> findByTopCategoryCode(String code);
+	Boolean existsByName(String name);
 
-//    Boolean existsByName(String name);
+	//    Boolean existsByName(String name);
 //    Boolean existsByCode(String code);
 
 }

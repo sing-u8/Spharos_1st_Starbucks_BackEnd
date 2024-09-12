@@ -4,19 +4,19 @@ import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import lombok.*;
 
-import java.time.LocalDate;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductRequestDto {
 
     private String productName;
     private Double price;
     private String description;
     private Boolean additionalChecked;
+    private Boolean isAdditionalTogether;
     private String productUUID;
+    private Boolean engravingChecked;
+//    private String volumeName;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
         return ProductRequestDto.builder()
@@ -24,6 +24,9 @@ public class ProductRequestDto {
             .price(productRequestVo.getPrice())
             .description(productRequestVo.getDescription())
             .additionalChecked(productRequestVo.getAdditionalChecked())
+            .isAdditionalTogether(productRequestVo.getIsAdditionalTogether())
+            .engravingChecked(productRequestVo.getEngravingChecked())
+//            .volumeName(productRequestVo.getVolumeName())
             .build();
     }
 
@@ -34,6 +37,8 @@ public class ProductRequestDto {
             .price(price)
             .description(description)
             .additionalChecked(additionalChecked)
+            .isAdditionalTogether(isAdditionalTogether)
+            .engravingChecked(engravingChecked)
             .build();
     }
 

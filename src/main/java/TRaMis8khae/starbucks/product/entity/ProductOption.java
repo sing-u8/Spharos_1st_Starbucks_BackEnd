@@ -1,11 +1,17 @@
 package TRaMis8khae.starbucks.product.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductOption {
 
     @Id
@@ -25,9 +31,6 @@ public class ProductOption {
     private Integer stockQuantity;
 
     @Column(nullable = false)
-    private String productStatus;
-
-    @Column(nullable = false)
     private Integer limitCnt;
 
     private Boolean soldOutChecked;
@@ -37,11 +40,6 @@ public class ProductOption {
     private Boolean openChecked;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Engraving engraving;
+    private Volume volume;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Size size;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Color color;
 }

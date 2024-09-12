@@ -13,5 +13,5 @@ public class BottomCategoryRequestVo {
 
 	private Integer sequence;
 
-	private String MiddleCategoryCode;
+	private String middleCategoryCode;
 }

@@ -1,14 +1,10 @@
 package TRaMis8khae.starbucks.product.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductDetailResponseVo {
 
     private Long productOptionId;

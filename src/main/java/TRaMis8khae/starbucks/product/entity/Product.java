@@ -36,5 +36,7 @@ public class Product extends BaseEntity {
     private Boolean additionalChecked;
 
     private Boolean isAdditionalTogether;
+
+    private Boolean engravingChecked;
     
 }

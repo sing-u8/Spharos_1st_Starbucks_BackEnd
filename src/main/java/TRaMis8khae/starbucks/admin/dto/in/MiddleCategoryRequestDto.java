@@ -16,23 +16,23 @@ public class MiddleCategoryRequestDto {
 
     private String name;
     private Integer sequence;
-    private String TopCategoryCode;
+    private String topCategoryCode;
 
-    public static MiddleCategoryRequestDto toDto(MiddleCategoryRequestVo MiddleCategoryRequestVo) {
+    public static MiddleCategoryRequestDto toDto(MiddleCategoryRequestVo middleCategoryRequestVo) {
 
         return MiddleCategoryRequestDto.builder()
-                .name(MiddleCategoryRequestVo.getName())
-                .sequence(MiddleCategoryRequestVo.getSequence())
-                .TopCategoryCode(MiddleCategoryRequestVo.getTopCategoryCode())
+                .name(middleCategoryRequestVo.getName())
+                .sequence(middleCategoryRequestVo.getSequence())
+                .topCategoryCode(middleCategoryRequestVo.getTopCategoryCode())
                 .build();
     }
 
-    public MiddleCategory toEntity(TopCategory TopCategory, String code) {
+    public MiddleCategory toEntity(TopCategory topCategory, String code) {
 
         return MiddleCategory.builder()
                 .name(name)
                 .sequence(sequence)
-                .TopCategory(TopCategory)
+                .topCategory(topCategory)
                 .code(code)
                 .build();
     }

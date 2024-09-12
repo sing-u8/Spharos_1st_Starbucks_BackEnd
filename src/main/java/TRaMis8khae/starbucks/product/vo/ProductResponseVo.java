@@ -10,8 +10,6 @@ import java.util.UUID;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductResponseVo {
 
     private String productName;
@@ -19,17 +17,5 @@ public class ProductResponseVo {
     private String productUUID;
 
     private Double price;
-
-    private Long optionId;
-
-    private Boolean soldOutChecked;
-
-    private Boolean closedChecked;
-
-    private Boolean openChecked;
-
-    private Boolean thumbChecked;
-
-    private String path;
 
 }

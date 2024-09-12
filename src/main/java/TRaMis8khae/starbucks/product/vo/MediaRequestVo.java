@@ -1,10 +1,10 @@
 package TRaMis8khae.starbucks.product.vo;
 
-
+import lombok.Builder;
 import lombok.Getter;
 
-
 @Getter
+@Builder
 public class MediaRequestVo {
 
 	private String path;
@@ -16,5 +16,7 @@ public class MediaRequestVo {
 	private Boolean detailChecked;
 
 	private Boolean productChecked;
+
+	private String productUUID;
 
 }

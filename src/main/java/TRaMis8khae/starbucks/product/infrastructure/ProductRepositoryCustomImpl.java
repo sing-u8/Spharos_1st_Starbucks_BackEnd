@@ -32,14 +32,4 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 			.fetch();
 	}
 
-//	List<Member> teamA = queryFactory
-//		.selectFrom(member)
-//		.join(member.team, team)
-//		.where(team.name.eq("teamA"))
-//		.fetch();
-	public List<ProductResponseDto> getProducts() {
-		return null;
-
-	}
-
 }

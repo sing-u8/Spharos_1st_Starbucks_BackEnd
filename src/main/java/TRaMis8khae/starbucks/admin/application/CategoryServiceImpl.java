@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void addTopCategory(TopCategoryRequestDto requestDto) {
 
         if (topCategoryRepository.existsByName(requestDto.getName())) {
-            throw new IllegalArgumentException("이미 해당 카테고리의 이름이 존재합니다.");
+            throw new IllegalArgumentException("해당 카테고리의 이름이 존재합니다.");
         }
         if (topCategoryRepository.existsBySequence(requestDto.getSequence())) {
             throw new IllegalArgumentException("순서가 존재합니다. ");
@@ -48,12 +48,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
-    @Override // 이름 겹쳐도 됨
+    @Override
     public void addMiddleCategory(MiddleCategoryRequestDto requestDto) {
 
         TopCategory topCategory = topCategoryRepository.findByCode(requestDto.getTopCategoryCode())
                     .orElseThrow(
-                        () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+                        () -> new IllegalArgumentException("해당 top 카테고리가 존재하지 않습니다.")
                     );
 
         middleCategoryRepository.save(requestDto.toEntity(
@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         MiddleCategory middleCategory = middleCategoryRepository.findByCode(requestDto.getMiddleCategoryCode())
             .orElseThrow(
-                () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("해당 middle 카테고리가 존재하지 않습니다.")
             );
 
         bottomCategoryRepository.save(requestDto.toEntity(
@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
     public TopCategoryResponseDto findTopCategoryByName(String name) {
 
         TopCategory topCategory = topCategoryRepository.findByName(name).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new IllegalArgumentException("해당 bottom 카테고리가 존재하지 않습니다.")
         );
 
         return TopCategoryResponseDto.toDto(topCategory);

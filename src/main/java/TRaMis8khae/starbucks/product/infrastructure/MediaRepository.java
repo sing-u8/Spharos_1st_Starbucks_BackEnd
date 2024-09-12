@@ -15,5 +15,5 @@ public interface MediaRepository extends JpaRepository<ProductMedia, Long> {
 
 	Optional<ProductMedia> findByProductUUID(String productUUID);
 
-//	List<ProductMedia> findByThumbChecked(Boolean thumbChecked);
+//	Optional<ProductMedia> findByThumbChecked(Boolean thumbChecked);
 }

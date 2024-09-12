@@ -15,7 +15,7 @@ public class MiddleCategoryRequestVo {
 
     private Integer sequence;
 
-    private String TopCategoryCode;
+    private String topCategoryCode;
 
 //    private String description;
 

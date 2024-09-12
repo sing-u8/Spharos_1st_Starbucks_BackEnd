@@ -29,5 +29,5 @@ public class BottomCategory {
 	private String code;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private MiddleCategory MiddleCategory;
+	private MiddleCategory middleCategory;
 }
