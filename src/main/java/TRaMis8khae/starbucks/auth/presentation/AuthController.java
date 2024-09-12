@@ -49,14 +49,6 @@ public class AuthController {
 
         String accessToken = token.replace("Bearer ", "");
 
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-
-        String memberUuidFromToken = claims.get("memberUUID", String.class);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
-            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 UUID", null);
-        }
-
         authService.signOut(memberUUID, accessToken);
 
         return new CommonResponseEntity<>(

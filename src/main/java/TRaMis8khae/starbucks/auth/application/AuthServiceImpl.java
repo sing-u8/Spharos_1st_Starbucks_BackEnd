@@ -42,6 +42,10 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     public void signOut(String memberUUID, String accessToken) {
 
+        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+        );
+
         Claims claims = jwtTokenProvider.getClaims(accessToken);
 
         String memberUuidFromToken = claims.get("memberUUID", String.class);
