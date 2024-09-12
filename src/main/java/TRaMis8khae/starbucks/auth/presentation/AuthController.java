@@ -30,7 +30,7 @@ public class AuthController {
     @PostMapping("/signup")
     public CommonResponseEntity<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto().toDto(signUpRequestVo);
+        SignUpRequestDto signUpRequestDto = SignUpRequestDto.toDto(signUpRequestVo);
 
         authService.signUp(signUpRequestDto);
 
@@ -70,7 +70,7 @@ public class AuthController {
     @PostMapping("/login")
     public CommonResponseEntity<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
-        LogInRequestDto logInRequestDto = new LogInRequestDto().toDto(logInRequestVo);
+        LogInRequestDto logInRequestDto = LogInRequestDto.toDto(logInRequestVo);
 
         LogInResponseDto logInResponseDto = authService.logIn(logInRequestDto);
 
@@ -99,7 +99,7 @@ public class AuthController {
             return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 UUID", null);
         }
 
-        ModifyMemberInfoRequestDto modifyMemberInfoRequestDto = new ModifyMemberInfoRequestDto()
+        ModifyMemberInfoRequestDto modifyMemberInfoRequestDto = ModifyMemberInfoRequestDto
                 .toDto(modifyMemberInfoRequestVo);
 
         try {
@@ -121,7 +121,7 @@ public class AuthController {
     @PostMapping("/find_member")
     public CommonResponseEntity<FindMemberResponseVo> findMember(@RequestBody FindMemberRequestVo findMemberRequestVo) {
 
-        FindMemberRequestDto findMemberRequestDto = new FindMemberRequestDto().toDto(findMemberRequestVo);
+        FindMemberRequestDto findMemberRequestDto = FindMemberRequestDto.toDto(findMemberRequestVo);
 
         FindMemberResponseDto findMemberResponseDto = authService.findMember(findMemberRequestDto);
 
@@ -139,7 +139,7 @@ public class AuthController {
     @PutMapping("/reset_password") // 본인 인증에 관한 처리로 인해 보류
     public CommonResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequestVo resetPasswordRequestVo) {
 
-        ResetPasswordRequestDto resetPasswordRequestDto = new ResetPasswordRequestDto().toDto(resetPasswordRequestVo);
+        ResetPasswordRequestDto resetPasswordRequestDto = ResetPasswordRequestDto.toDto(resetPasswordRequestVo);
 
         authService.resetPassword(resetPasswordRequestDto);
 

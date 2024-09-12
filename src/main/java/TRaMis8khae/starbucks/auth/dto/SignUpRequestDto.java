@@ -28,7 +28,7 @@ public class SignUpRequestDto {
     private Boolean marketingConsentEmail;
     private Boolean marketingConsentSms;
 
-    public SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
+    public static SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
         return SignUpRequestDto.builder()
                 .name(signUpRequestVo.getName())
                 .loginId(signUpRequestVo.getLoginId())

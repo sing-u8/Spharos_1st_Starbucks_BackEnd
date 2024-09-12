@@ -17,7 +17,7 @@ public class ModifyMemberInfoRequestDto {
 
     private String phoneNumber;
 
-    public ModifyMemberInfoRequestDto toDto(ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
+    public static ModifyMemberInfoRequestDto toDto(ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
         return ModifyMemberInfoRequestDto.builder()
                 .nickname(modifyMemberInfoRequestVo.getNickname())
                 .phoneNumber(modifyMemberInfoRequestVo.getPhoneNumber())

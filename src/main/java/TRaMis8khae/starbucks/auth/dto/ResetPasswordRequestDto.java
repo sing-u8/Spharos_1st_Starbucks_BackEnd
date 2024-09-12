@@ -13,7 +13,7 @@ public class ResetPasswordRequestDto {
 
     private String password;
 
-    public ResetPasswordRequestDto toDto(ResetPasswordRequestVo resetPasswordRequestVo) {
+    public static ResetPasswordRequestDto toDto(ResetPasswordRequestVo resetPasswordRequestVo) {
         return ResetPasswordRequestDto.builder()
                 .password(resetPasswordRequestVo.getLoginId())
                 .build();

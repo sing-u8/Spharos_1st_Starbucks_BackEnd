@@ -15,7 +15,7 @@ public class LogInRequestDto {
     private String loginId;
     private String password;
 
-    public LogInRequestDto toDto(LogInRequestVo logInRequestVo) {
+    public static LogInRequestDto toDto(LogInRequestVo logInRequestVo) {
         return LogInRequestDto.builder()
                 .loginId(logInRequestVo.getLoginId())
                 .password(logInRequestVo.getPassword())

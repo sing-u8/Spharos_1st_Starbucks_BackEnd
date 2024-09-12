@@ -14,7 +14,7 @@ public class FindMemberRequestDto {
 
     private String phoneNumber;
 
-    public FindMemberRequestDto toDto(FindMemberRequestVo findMemberRequestVo) {
+    public static FindMemberRequestDto toDto(FindMemberRequestVo findMemberRequestVo) {
         return FindMemberRequestDto.builder()
                 .name(findMemberRequestVo.getName())
                 .phoneNumber(findMemberRequestVo.getPhoneNumber())
