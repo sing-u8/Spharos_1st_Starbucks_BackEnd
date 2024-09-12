@@ -1,26 +1,21 @@
 package TRaMis8khae.starbucks.auth.dto;
 
-import TRaMis8khae.starbucks.auth.vo.ModifyMemberInfoRequestVo;
+import TRaMis8khae.starbucks.auth.vo.ResetPasswordRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyMemberInfoRequestDto {
+public class ResetPasswordRequestDto {
 
-    private String nickname;
+    private String password;
 
-    private String phoneNumber;
-
-    public ModifyMemberInfoRequestDto toDto(ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
-        return ModifyMemberInfoRequestDto.builder()
-                .nickname(modifyMemberInfoRequestVo.getNickname())
-                .phoneNumber(modifyMemberInfoRequestVo.getPhoneNumber())
+    public ResetPasswordRequestDto toDto(ResetPasswordRequestVo resetPasswordRequestVo) {
+        return ResetPasswordRequestDto.builder()
+                .password(resetPasswordRequestVo.getLoginId())
                 .build();
     }
 
@@ -31,13 +26,13 @@ public class ModifyMemberInfoRequestDto {
                 .name(member.getName())
                 .memberStatus(member.getMemberStatus())
                 .loginId(member.getLoginId())
-                .password(member.getPassword())
                 .memberUUID(member.getMemberUUID())
                 .birth(member.getBirth())
                 .address(member.getAddress())
                 .paymentPassword(member.getPaymentPassword())
-                .nickname(this.nickname)
-                .phoneNumber(this.phoneNumber)
+                .nickname(member.getNickname())
+                .phoneNumber(member.getPhoneNumber())
+                .password(this.password)
                 .build();
     }
 

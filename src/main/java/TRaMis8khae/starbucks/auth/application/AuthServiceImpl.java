@@ -14,8 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,30 +25,22 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
+    public void  signUp(SignUpRequestDto signUpRequestDto) {
 
-        Member member = authRepository.findByLoginId(signInRequestDto.getLoginId()).orElse(null);
+        Member member = authRepository.findByLoginId(signUpRequestDto.getLoginId()).orElse(null);
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
 
-        Member newMember = signInRequestDto.toEntity(passwordEncoder);
+        Member newMember = signUpRequestDto.toEntity(passwordEncoder);
 
         authRepository.save(newMember);
-
-        return SignInResponseDto.builder()
-                .nickname(signInRequestDto.getNickname())
-                .build();
 
     }
 
     @Override
     @Transactional
     public void signOut(String memberUUID, String accessToken) {
-
-        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
-        );
 
         Claims claims = jwtTokenProvider.getClaims(accessToken);
 
@@ -76,21 +66,19 @@ public class AuthServiceImpl implements AuthService{
         }
 
         try {
-            log.info("try 실행");
-
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             member.getMemberUUID(),
                             logInRequestDto.getPassword()
                     )
-
             );
-            return LogInResponseDto.builder()
-                    .accessToken(generateAccessToken(member.getMemberUUID()))
-                    .refreshToken(generateRefreshToken(authentication))
-                    .nickname(member.getNickname())
-                    .memberUUID(member.getMemberUUID())
-                    .build();
+            LogInResponseDto logInResponseDto = LogInResponseDto.toDto(
+                    member,
+                    generateAccessToken(member.getMemberUUID()),
+                    generateRefreshToken(authentication));
+
+            return logInResponseDto;
+
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -99,7 +87,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void updateMemberInfo(String memberUUID, String accessToken, ModifyMemberInfoRequestDto modifyMemberInfoRequestDto) {
+    public void updateMemberInfo(String memberUUID, String accessToken, ModifyMemberInfoRequestDto requestDto) {
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
@@ -112,22 +100,29 @@ public class AuthServiceImpl implements AuthService{
             throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
         }
 
-        member.updateNickname(modifyMemberInfoRequestDto.getNickname());
-        member.updatePhoneNumber(modifyMemberInfoRequestDto.getPhoneNumber());
+        Member updatedMember = requestDto.toEntity(member);
 
+        authRepository.save(updatedMember);
     }
 
     @Override
     public FindMemberResponseDto findMember(FindMemberRequestDto findMemberRequestDto) {
+
         Member member = authRepository.findByNameAndPhoneNumber(
                 findMemberRequestDto.getName(),
                 findMemberRequestDto.getPhoneNumber()).orElseThrow(
                 () -> new IllegalArgumentException("해당 이름과 전화번호를 가진 회원이 없습니다.")
         );
 
-        return FindMemberResponseDto.builder()
-                .loginId(member.getNickname())
-                .build();
+        FindMemberResponseDto findMemberResponseDto = FindMemberResponseDto.toDto(member);
+
+        return findMemberResponseDto;
+
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+
     }
 
     public String generateAccessToken(String memberUUID) {

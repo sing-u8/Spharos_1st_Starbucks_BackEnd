@@ -1,10 +1,10 @@
 package TRaMis8khae.starbucks.auth.dto;
 
+import TRaMis8khae.starbucks.auth.vo.SignUpRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Date;
 
 @Getter
@@ -13,7 +13,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignInRequestDto {
+public class SignUpRequestDto {
 
     private String name;
     private String loginId;
@@ -25,7 +25,24 @@ public class SignInRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
-    private String UUID;
+    private Boolean marketingConsentEmail;
+    private Boolean marketingConsentSms;
+
+    public SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
+        return SignUpRequestDto.builder()
+                .name(signUpRequestVo.getName())
+                .loginId(signUpRequestVo.getLoginId())
+                .password(signUpRequestVo.getPassword())
+                .birth(signUpRequestVo.getBirth())
+                .phoneNumber(signUpRequestVo.getPhoneNumber())
+                .email(signUpRequestVo.getEmail())
+                .nickname(signUpRequestVo.getNickname())
+                .address(signUpRequestVo.getAddress())
+                .marketingConsentEmail(signUpRequestVo.getEmailMarketingConsent())
+                .marketingConsentSms(signUpRequestVo.getSMSMarketingConsent())
+                .build();
+    }
+
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
@@ -38,7 +55,7 @@ public class SignInRequestDto {
                 .nickname(nickname)
                 .address(address)
                 .paymentPassword(paymentPassword)
-                .memberUUID(UUID)
+                .memberStatus(Boolean.TRUE)
                 .build();
     }
 

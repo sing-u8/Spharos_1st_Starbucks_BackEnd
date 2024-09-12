@@ -31,28 +31,42 @@ public class Member implements UserDetails {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private Date birth;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String phoneNumber;
 
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String nickname;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String address;
 
-    @Column(nullable = false, length = 6)
+    @Column(length = 6)
     private String paymentPassword;
 
     private Boolean memberStatus;
 
     @Builder
-    public Member(Long id, String memberUUID, String name, String loginId, String password, Date birth, String phoneNumber, String email, String nickname, String address, String paymentPassword, Boolean memberStatus) {
+    public Member(Long id,
+                  String memberUUID,
+                  String name,
+                  String loginId,
+                  String password,
+                  Date birth,
+                  String phoneNumber,
+                  String email,
+                  String nickname,
+                  String address,
+                  String paymentPassword,
+                  Boolean memberStatus,
+                  Boolean marketingConsentEmail,
+                  Boolean marketingConsentSms
+    ) {
         this.id = id;
         this.memberUUID = memberUUID;
         this.name = name;
@@ -65,14 +79,6 @@ public class Member implements UserDetails {
         this.address = address;
         this.paymentPassword = paymentPassword;
         this.memberStatus = memberStatus;
-    }
-
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void updatePhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     // memberUUID 값이 없을 경우 자동으로 생성

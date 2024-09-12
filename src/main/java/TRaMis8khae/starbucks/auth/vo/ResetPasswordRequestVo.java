@@ -5,11 +5,8 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class LogInRequestVo {
+public class ResetPasswordRequestVo {
 
     private String loginId;
-
-    private String password;
-
 
 }

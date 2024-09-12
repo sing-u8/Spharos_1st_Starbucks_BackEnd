@@ -7,11 +7,7 @@ import java.util.Date;
 
 @Getter
 @ToString
-public class SignInRequestVo {
-
-    private Long id;
-
-    private String memberUUID;
+public class SignUpRequestVo {
 
     private String name;
 
@@ -31,6 +27,8 @@ public class SignInRequestVo {
 
     private String paymentPassword;
 
-    private Boolean memberStatus;
+    private Boolean EmailMarketingConsent;
+
+    private Boolean SMSMarketingConsent;
 
 }

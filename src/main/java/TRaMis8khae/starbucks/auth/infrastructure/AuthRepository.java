@@ -11,6 +11,5 @@ public interface AuthRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByNameAndPhoneNumber(String name, String phoneNumber);
 
     void deleteByMemberUUID(String memberUUID);
-//    void updateByMemberUUID(String memberUUID);
 
 }
