@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.event.entity;
 
+import TRaMis8khae.starbucks.product.entity.Product;
 import jakarta.persistence.*;
 
 @Entity

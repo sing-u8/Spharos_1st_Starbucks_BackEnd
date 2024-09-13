@@ -89,17 +89,22 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     }
 
     @Override
-    public void updateDeliveryAddress(Long deliveryAddressId, UpdateDeliveryAddressRequestDto requestDto) {
+    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressRequestDto deliveryAddressRequestDto) {
 
-        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
+    }
 
-        if(updateDeliveryAddress.isEmpty()){
-            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
-        }
-
-        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
-
-        UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto = UpdateDeliveryAddressRequestDto.toEntity(requestDto, deliveryAddress);
+//    @Override
+//    public void updateDeliveryAddress(Long deliveryAddressId, UpdateDeliveryAddressRequestDto requestDto) {
+//
+//        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
+//
+//        if(updateDeliveryAddress.isEmpty()){
+//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
+//        }
+//
+//        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
+//
+//        UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto = UpdateDeliveryAddressRequestDto.toEntity(requestDto, deliveryAddress);
 
 
 //
@@ -120,6 +125,6 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 //        deliveryAddressRepository.save(deliveryAddress);
 //        memberAddressListRepository.save(memberAddressList);
 
-    }
+//    }
 
 }
