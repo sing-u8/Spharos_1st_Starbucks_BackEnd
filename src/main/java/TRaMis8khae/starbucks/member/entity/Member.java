@@ -31,28 +31,42 @@ public class Member implements UserDetails {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private Date birth;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String phoneNumber;
 
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String nickname;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String address;
 
-    @Column(nullable = false, length = 6)
+    @Column(length = 6)
     private String paymentPassword;
 
     private Boolean memberStatus;
 
     @Builder
-    public Member(Long id, String memberUUID, String name, String loginId, String password, Date birth, String phoneNumber, String email, String nickname, String address, String paymentPassword, Boolean memberStatus) {
+    public Member(Long id,
+                  String memberUUID,
+                  String name,
+                  String loginId,
+                  String password,
+                  Date birth,
+                  String phoneNumber,
+                  String email,
+                  String nickname,
+                  String address,
+                  String paymentPassword,
+                  Boolean memberStatus,
+                  Boolean marketingConsentEmail,
+                  Boolean marketingConsentSms
+    ) {
         this.id = id;
         this.memberUUID = memberUUID;
         this.name = name;
@@ -72,7 +86,6 @@ public class Member implements UserDetails {
     public void prePersist() {
         this.memberUUID = UUID.randomUUID().toString();
     }
-    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -81,9 +94,6 @@ public class Member implements UserDetails {
     }
 
     @Override
-//    public String getUsername() {
-//        return loginId;
-//    }
     public String getUsername() {
         return memberUUID;
     }

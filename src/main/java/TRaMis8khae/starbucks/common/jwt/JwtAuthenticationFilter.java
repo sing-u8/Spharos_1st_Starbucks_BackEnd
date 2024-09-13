@@ -27,9 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        log.info("JwtAuthenticationFilter.doFilterInternal");
+    public void doFilterInternal(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -40,11 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        log.info("authHeader : {}", authHeader);
 
         jwt = authHeader.substring(7); // "Bearer " 제거
-
-        log.info("jwt : {}", jwt);
 
         memberUUID = Jwts.parser()
                 .verifyWith((SecretKey) jwtTokenProvider.getSignKey())
