@@ -12,6 +12,7 @@ import lombok.*;
 public class DeliveryAddressResponseDto {
 
     private boolean addressDefaultCheck;
+    private Long deliveryAddressId;
     private String addressDetail;
     private String deliveryMemo;
     private String deliveryAddressNickname;
@@ -22,6 +23,7 @@ public class DeliveryAddressResponseDto {
     public DeliveryAddressResponseVo toVo() {
         return DeliveryAddressResponseVo.builder()
                 .addressDefaultCheck(addressDefaultCheck)
+                .deliveryAddressId(deliveryAddressId)
                 .addressDetail(addressDetail)
                 .deliveryMemo(deliveryMemo)
                 .deliveryAddressNickname(deliveryAddressNickname)
@@ -33,6 +35,8 @@ public class DeliveryAddressResponseDto {
 
     public static DeliveryAddressResponseDto toDto(DeliveryAddressResponseVo deliveryAddressResponseVo) {
         return DeliveryAddressResponseDto.builder()
+                .addressDefaultCheck(deliveryAddressResponseVo.isAddressDefaultCheck())
+                .deliveryAddressId(deliveryAddressResponseVo.getDeliveryAddressId())
                 .addressDetail(deliveryAddressResponseVo.getAddressDetail())
                 .deliveryMemo(deliveryAddressResponseVo.getDeliveryMemo())
                 .deliveryAddressNickname(deliveryAddressResponseVo.getDeliveryAddressNickname())

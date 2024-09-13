@@ -3,6 +3,7 @@ package TRaMis8khae.starbucks.member.application;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.dto.MemberAddressListRequestDto;
+import TRaMis8khae.starbucks.member.dto.UpdateDeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
@@ -58,9 +59,9 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public void deleteDeliveryAddress(Long deliveryAddressId) {
 
-        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
 
-        if(deliveryAddress == null){
+        if (deliveryAddress == null) {
             throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
         }
 
@@ -69,7 +70,6 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         MemberAddressList memberAddressList = memberAddressListRepository.findByDeliveryAddress(deliveryAddress);
 
         memberAddressListRepository.delete(memberAddressList);
-
 
 
 //        MemberAddressList memberAddressList = findMemberAddressList.get();
@@ -89,13 +89,19 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     }
 
     @Override
-    public void updateDeliveryAddress(String memberUUID, Long id, DeliveryAddressRequestDto deliveryAddressRequestDto) {
+    public void updateDeliveryAddress(Long deliveryAddressId, UpdateDeliveryAddressRequestDto requestDto) {
 
-//        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(id);
-//
-//        if(updateDeliveryAddress.isEmpty()){
-//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
-//        }
+        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
+
+        if(updateDeliveryAddress.isEmpty()){
+            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
+        }
+
+        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
+
+        UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto = UpdateDeliveryAddressRequestDto.toEntity(requestDto, deliveryAddress);
+
+
 //
 //        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
 //
@@ -115,12 +121,5 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 //        memberAddressListRepository.save(memberAddressList);
 
     }
-
-
-//    @Override
-//    public void deleteDeliveryAddress(String memberUUID, Long deliveryAddressId) {
-//        MemberAddressList memberAddressList = memberAddressListRepository.find
-//
-//    }
 
 }
