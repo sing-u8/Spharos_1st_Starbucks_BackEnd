@@ -41,7 +41,7 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
 
     @Override
     public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
-        //메인 카테고리에 해당하는 상품 리스트 찾기
+
         List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
 
         return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();

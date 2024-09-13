@@ -2,10 +2,7 @@ package TRaMis8khae.starbucks.product.infrastructure;
 
 
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
-import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.entity.QProduct;
-import TRaMis8khae.starbucks.product.entity.QProductMedia;
-import TRaMis8khae.starbucks.product.entity.QProductOption;
+import TRaMis8khae.starbucks.product.entity.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -30,6 +27,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 			.selectFrom(product)
 			.where(product.price.between(minPrice, maxPrice))
 			.fetch();
+	}
+
+
+	public List<ProductOption> getProductListWithVolume() {
+
+		return null;
 	}
 
 }
