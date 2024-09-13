@@ -11,15 +11,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MainCategory {
+public class TopCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 50)
-    private String mainCategoryName;
+    private String name;
 
-    private Integer mainCategorySeq;
+    @Column(nullable = false)
+    private Integer sequence;
+
+    @Column(nullable = false)
+    private String code;
 
 }

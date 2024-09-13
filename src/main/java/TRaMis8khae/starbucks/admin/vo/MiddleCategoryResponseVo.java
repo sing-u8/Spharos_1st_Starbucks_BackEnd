@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubCategoryRequestVo {
+public class MiddleCategoryResponseVo {
 
-    private String subCategoryName;
+    private String name;
+//    private Integer sequence;
+    private String code;
 
-    private Integer subCategorySeq;
-
-    private Integer mainCategoryId;
-
+//    private String description;
 }

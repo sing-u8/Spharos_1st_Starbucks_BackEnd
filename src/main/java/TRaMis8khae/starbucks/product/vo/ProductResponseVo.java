@@ -10,16 +10,12 @@ import java.util.UUID;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductResponseVo {
 
     private String productName;
 
-    private LocalDate date;
-
     private String productUUID;
 
-    private Integer productScore;
+    private Double price;
 
 }

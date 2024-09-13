@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MainCategoryRequestVo {
+public class TopCategoryResponseVo {
 
-    private String mainCategoryName;
+    private String name;
 
-    private Integer mainCategorySeq;
+    private Integer sequence;
+
+    private String code;
 
 }

@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProductDetailInfoResponseDto {
+public class ProductDetailResponseDto {
 
     private Long productOptionId;
     private String productUUID;
