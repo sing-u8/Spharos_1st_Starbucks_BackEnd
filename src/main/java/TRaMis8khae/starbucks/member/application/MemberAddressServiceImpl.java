@@ -59,72 +59,33 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public void deleteDeliveryAddress(Long deliveryAddressId) {
 
+
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
+        MemberAddressList memberAddressList = memberAddressListRepository.findByDeliveryAddress(deliveryAddress);
+
+        if (deliveryAddress == null) {
+            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
+        }
+
+        memberAddressListRepository.delete(memberAddressList);
+        deliveryAddressRepository.delete(deliveryAddress);
+
+    }
+
+    @Override
+    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressRequestDto requestDto) {
+
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
 
         if (deliveryAddress == null) {
             throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
         }
 
-        deliveryAddressRepository.delete(deliveryAddress);
+        DeliveryAddress updateDeliveryAddress = requestDto.toEntity(requestDto);
 
-        MemberAddressList memberAddressList = memberAddressListRepository.findByDeliveryAddress(deliveryAddress);
-
-        memberAddressListRepository.delete(memberAddressList);
-
-
-//        MemberAddressList memberAddressList = findMemberAddressList.get();
-//
-//        memberAddressListRepository.delete(memberAddressList);
-//
-//        Optional<DeliveryAddress> findDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
-//
-//        if(findDeliveryAddress.isEmpty()){
-//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
-//        }
-//
-//        DeliveryAddress deliveryAddress = findDeliveryAddress.get();
-//
-//        deliveryAddressRepository.delete(deliveryAddress);
+        deliveryAddressRepository.save(updateDeliveryAddress);
+        memberAddressListRepository.save(updateDeliveryAddress, memberUUID, deliveryAddressId); // uuid 설정 필요
 
     }
-
-    @Override
-    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressRequestDto deliveryAddressRequestDto) {
-
-    }
-
-//    @Override
-//    public void updateDeliveryAddress(Long deliveryAddressId, UpdateDeliveryAddressRequestDto requestDto) {
-//
-//        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
-//
-//        if(updateDeliveryAddress.isEmpty()){
-//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
-//        }
-//
-//        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
-//
-//        UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto = UpdateDeliveryAddressRequestDto.toEntity(requestDto, deliveryAddress);
-
-
-//
-//        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
-//
-//        deliveryAddress.updateDeliveryAddress(
-//                deliveryAddressRequestDto.getAddressDetail(),
-//                deliveryAddressRequestDto.getDeliveryMemo(),
-//                deliveryAddressRequestDto.getDeliveryAddressNickname(),
-//                deliveryAddressRequestDto.getRecipient(),
-//                deliveryAddressRequestDto.getPhone1(),
-//                deliveryAddressRequestDto.getPhone2()
-//        );
-//
-//        MemberAddressList memberAddressList = memberAddressListRepository.findByMemberUUIDAndId(memberUUID, id);
-////        memberAddressList.updateMemberAddressList(deliveryAddressRequestDto.isAddressDefaultCheck());
-//
-//        deliveryAddressRepository.save(deliveryAddress);
-//        memberAddressListRepository.save(memberAddressList);
-
-//    }
 
 }
