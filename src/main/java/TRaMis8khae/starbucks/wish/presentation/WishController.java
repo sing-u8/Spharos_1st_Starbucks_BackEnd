@@ -5,7 +5,7 @@ import TRaMis8khae.starbucks.wish.application.WishService;
 import TRaMis8khae.starbucks.wish.dto.WishAddRequestDto;
 import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
 import TRaMis8khae.starbucks.wish.vo.WishAddRequestVo;
-import TRaMis8khae.starbucks.wish.vo.WishResponseVo;
+import TRaMis8khae.starbucks.wish.vo.WishAddResponseVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -41,7 +41,7 @@ public class WishController {
 
     // 찜 목록 조회
     @GetMapping("/find")
-    public CommonResponseEntity<Page<WishResponseVo>> findWishes(
+    public CommonResponseEntity<Page<WishAddResponseVo>> findWishes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -49,9 +49,9 @@ public class WishController {
 
         Page<WishReadResponseDto> responseDtos = wishService.findWishes(pageable);
 
-        List<WishResponseVo> responseVoList = responseDtos.stream().map(WishReadResponseDto::toVo).toList();
+        List<WishAddResponseVo> responseVoList = responseDtos.stream().map(WishReadResponseDto::toVo).toList();
 
-        Page<WishResponseVo> pageResponse = new PageImpl<>(
+        Page<WishAddResponseVo> pageResponse = new PageImpl<>(
                 responseVoList,
                 pageable,
                 responseDtos.getTotalElements()  // 총 요소 수
