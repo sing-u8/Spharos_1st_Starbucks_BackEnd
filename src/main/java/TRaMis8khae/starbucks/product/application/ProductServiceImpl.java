@@ -79,10 +79,9 @@ public class ProductServiceImpl implements ProductService{
             throw new IllegalArgumentException("해당 상품이 존재하지 않습니다.");
         }
 
-        Volume volume = requestDto.toVolumeEntity();
-        volumeRepository.save(volume);
+        volumeRepository.save(requestDto.toVolumeEntity());
 
-        productOptionRepository.save(requestDto.toEntity(volume));
+        productOptionRepository.save(requestDto.toEntity( requestDto.toVolumeEntity()));
 
     }
 

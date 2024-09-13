@@ -40,5 +40,4 @@ public abstract class Media {
 		this.productChecked = productChecked;
 	}
 
-
 }
