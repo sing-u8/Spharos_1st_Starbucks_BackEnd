@@ -166,7 +166,6 @@ public class ProductServiceImpl implements ProductService{
             () -> new IllegalArgumentException("해당 상품의 이미지를 찾을 수 없습니다.")
         );
 
-
         if (productMedia.getProductChecked() == Boolean.FALSE) {
             return null;
         }
