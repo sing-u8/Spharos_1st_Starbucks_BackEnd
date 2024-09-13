@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class WishReadResponseVo {
+public class WishResponseVo {
 
     private String productUUID;
 

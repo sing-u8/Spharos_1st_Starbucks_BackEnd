@@ -5,8 +5,6 @@ import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
 import TRaMis8khae.starbucks.wish.dto.WishUpdateRequestDto;
 import TRaMis8khae.starbucks.wish.entity.Wish;
 import TRaMis8khae.starbucks.wish.infrastructure.WishRepository;
-import TRaMis8khae.starbucks.wish.vo.WishAddRequestVo;
-import TRaMis8khae.starbucks.wish.vo.WishReadResponseVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
