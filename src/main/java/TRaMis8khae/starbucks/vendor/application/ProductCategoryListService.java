@@ -10,4 +10,6 @@ public interface ProductCategoryListService {
     List<ProductCategoryListResponseDto> findProductsByCategories(String topCode, String middleCode, String bottomCode);
     List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode);
 
+    List<ProductCategoryListResponseDto> findProductsByBottomCategory(String bottomCode);
+
 }

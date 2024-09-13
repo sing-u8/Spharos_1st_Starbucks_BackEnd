@@ -38,7 +38,7 @@ public class ProductCategoryListController {
 	}
 
 	@GetMapping("/{topCode}/products")
-	public CommonResponseEntity<List<ProductCategoryListResponseVo>> getProductsByTopCategories(@PathVariable String topCode) {
+	public CommonResponseEntity<List<ProductCategoryListResponseVo>> getProductsByTopCategory(@PathVariable String topCode) {
 
 		return new CommonResponseEntity<>(
 			HttpStatus.OK,
@@ -47,5 +47,5 @@ public class ProductCategoryListController {
 			productCategoryListService.findProductsByTopCategory(topCode).stream().map(ProductCategoryListResponseDto::toVo).toList()
 		);
 	}
-
+//getProductByBottomCategory(bottomCode), 용량 - short 355미만, tall 473미만, grande 591미만, venti 591이상, 종류
 }

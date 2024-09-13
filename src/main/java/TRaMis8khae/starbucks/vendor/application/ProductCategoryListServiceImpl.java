@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,13 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
         List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
 
         return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
+    }
+
+
+    @Override
+    public List<ProductCategoryListResponseDto> findProductsByBottomCategory(String bottomCode) {
+
+        return null;
     }
 
 }

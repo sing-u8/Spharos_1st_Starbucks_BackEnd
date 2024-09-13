@@ -174,7 +174,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
 
-    @Override
+    @Override //썸네일
     public MediaResponseDto findMedia(String productUUID) {
 
         ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
@@ -185,7 +185,7 @@ public class ProductServiceImpl implements ProductService{
             return null;
         }
 
-        if (productMedia.getThumbChecked() == Boolean.FALSE) { //썸네일
+        if (productMedia.getThumbChecked() == Boolean.FALSE) {
             return null;
         }
 
