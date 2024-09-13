@@ -5,8 +5,10 @@ import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.MemberAddressService;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.dto.UpdateDeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.UpdateDeliveryAddressRequestVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +37,6 @@ public class MemberController {
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 null);
-
     }
 
     @GetMapping("delivery/{memberUUID}")
@@ -61,9 +62,13 @@ public class MemberController {
                         toList());
     }
 
-    @DeleteMapping("delivery/{memberAddressId}")
-    public CommonResponseEntity<Void> deleteDeliveryAddress(@PathVariable Long memberAddressId) {
-        memberAddressService.deleteDeliveryAddress(memberAddressId);
+    @DeleteMapping("delivery/{deliveryAddressId}")
+    public CommonResponseEntity<Void> deleteDeliveryAddress(@PathVariable Long deliveryAddressId) {
+
+        memberAddressService.deleteDeliveryAddress(deliveryAddressId);
+
+
+
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
@@ -71,13 +76,14 @@ public class MemberController {
                 null);
     }
 
-    @PutMapping("delivery/{memberUUID}/{memberAddressId}")
+    @PutMapping("delivery/{deliveryAddressId}")
     public CommonResponseEntity<Void> updateDeliveryAddress(
-            @PathVariable String memberUUID,
-            @PathVariable Long memberAddressId,
-            @RequestBody DeliveryAddressRequestDto deliveryAddressRequestDto) {
+            @PathVariable Long deliveryAddressId,
+            @RequestBody UpdateDeliveryAddressRequestVo requestVo) {
 
-        memberAddressService.updateDeliveryAddress(memberUUID, memberAddressId, deliveryAddressRequestDto);
+        UpdateDeliveryAddressRequestDto requestDto = UpdateDeliveryAddressRequestDto.toDto(requestVo);
+
+        memberAddressService.updateDeliveryAddress(deliveryAddressId, deliveryAddressRequestDto);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
