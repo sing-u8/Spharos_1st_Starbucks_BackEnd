@@ -76,20 +76,20 @@ public class MemberController {
                 null);
     }
 
-    @PutMapping("delivery/{deliveryAddressId}")
-    public CommonResponseEntity<Void> updateDeliveryAddress(
-            @PathVariable Long deliveryAddressId,
-            @RequestBody UpdateDeliveryAddressRequestVo requestVo) {
-
-        UpdateDeliveryAddressRequestDto requestDto = UpdateDeliveryAddressRequestDto.toDto(requestVo);
-
-        memberAddressService.updateDeliveryAddress(deliveryAddressId, deliveryAddressRequestDto);
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
-    }
+//    @PutMapping("delivery/{deliveryAddressId}")
+//    public CommonResponseEntity<Void> updateDeliveryAddress(
+//            @PathVariable Long deliveryAddressId,
+//            @RequestBody UpdateDeliveryAddressRequestVo requestVo) {
+//
+//        UpdateDeliveryAddressRequestDto requestDto = UpdateDeliveryAddressRequestDto.toDto(requestVo);
+//
+//        memberAddressService.updateDeliveryAddress(deliveryAddressId, deliveryAddressRequestDto);
+//
+//        return new CommonResponseEntity<>(
+//                HttpStatus.OK,
+//                true,
+//                CommonResponseMessage.SUCCESS.getMessage(),
+//                null);
+//    }
 
 }
