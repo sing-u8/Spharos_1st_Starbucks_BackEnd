@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Builder
 public class UpdateDeliveryAddressRequestDto {
-    // test
+    // test1
     private String addressDetail;
     private String deliveryMemo;
     private String deliveryAddressNickname;
