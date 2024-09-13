@@ -1,6 +1,6 @@
 package TRaMis8khae.starbucks.member.dto;
 
-import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
 import lombok.*;
 
 @Getter
@@ -18,8 +18,8 @@ public class DeliveryAddressResponseDto {
     private String phone1;
     private String phone2;
 
-    public MemberDeliveryAddressResponseVo toVo() {
-        return MemberDeliveryAddressResponseVo.builder()
+    public DeliveryAddressResponseVo toVo() {
+        return DeliveryAddressResponseVo.builder()
                 .addressDefaultCheck(addressDefaultCheck)
                 .addressDetail(addressDetail)
                 .deliveryMemo(deliveryMemo)

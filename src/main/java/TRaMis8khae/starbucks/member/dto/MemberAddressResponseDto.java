@@ -4,10 +4,4 @@ public class MemberAddressResponseDto {
 
     private boolean addressDefaultCheck;
 
-    public MemberAddressResponseDto toVo() {
-        return MemberAddressResponseDto.builder()
-                .addressDefaultCheck(addressDefaultCheck)
-                .build();
-    }
-
 }

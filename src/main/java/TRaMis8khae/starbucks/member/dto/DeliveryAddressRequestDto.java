@@ -1,10 +1,9 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
-import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @ToString
@@ -19,25 +18,25 @@ public class DeliveryAddressRequestDto {
     private String phone2;
     private boolean addressDefaultCheck;
 
-    public static DeliveryAddressRequestDto toDto(MemberDeliveryAddressRequestVo memberDeliveryAddressRequestVo) {
+    public static DeliveryAddressRequestDto toDto(DeliveryAddressRequestVo deliveryAddressRequestVo) {
         return DeliveryAddressRequestDto.builder()
-                .addressDetail(memberDeliveryAddressRequestVo.getAddressDetail())
-                .deliveryMemo(memberDeliveryAddressRequestVo.getDeliveryMemo())
-                .deliveryAddressNickname(memberDeliveryAddressRequestVo.getDeliveryAddressNickname())
-                .recipient(memberDeliveryAddressRequestVo.getRecipient())
-                .phone1(memberDeliveryAddressRequestVo.getPhone1())
-                .phone2(memberDeliveryAddressRequestVo.getPhone2())
+                .addressDetail(deliveryAddressRequestVo.getAddressDetail())
+                .deliveryMemo(deliveryAddressRequestVo.getDeliveryMemo())
+                .deliveryAddressNickname(deliveryAddressRequestVo.getDeliveryAddressNickname())
+                .recipient(deliveryAddressRequestVo.getRecipient())
+                .phone1(deliveryAddressRequestVo.getPhone1())
+                .phone2(deliveryAddressRequestVo.getPhone2())
                 .build();
     }
 
     public DeliveryAddress toEntity() {
         return DeliveryAddress.builder()
-                .addressDetail(addressDetail)
-                .deliveryMemo(deliveryMemo)
-                .deliveryAddressNickname(deliveryAddressNickname)
-                .recipient(recipient)
-                .phone1(phone1)
-                .phone2(phone2)
+                .addressDetail(this.getAddressDetail())
+                .deliveryMemo(this.getDeliveryMemo())
+                .deliveryAddressNickname(this.getDeliveryAddressNickname())
+                .recipient(this.getRecipient())
+                .phone1(this.getPhone1())
+                .phone2(this.getPhone2())
                 .build();
     }
 

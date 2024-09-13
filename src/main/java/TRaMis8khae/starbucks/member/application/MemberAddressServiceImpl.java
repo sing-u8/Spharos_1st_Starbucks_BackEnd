@@ -2,28 +2,30 @@ package TRaMis8khae.starbucks.member.application;
 
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.dto.MemberAddressListRequestDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
+import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
-import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressRequestVo;
-import TRaMis8khae.starbucks.member.vo.MemberDeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
+import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeliveryAddressServiceImpl implements DeliveryAddressService{
+public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final MemberAddressListRepository memberAddressListRepository;
     private final MemberAddressListRepositoryCustom memberAddressListRepositoryCustom;
+    private final MemberRepository memberRepository;
 
     @Override
     public void addDeliveryAddress(String memberUUID, DeliveryAddressRequestDto deliveryAddressRequestDto) {
@@ -45,26 +47,41 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
 //                .build();
 //
 //        memberAddressListRepository.save(memberAddressList);
+        Member member = memberRepository.findByMemberUUID(memberUUID) // memberUUID로 Member를 찾아옴
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다.")); // 없으면 예외 발생
+
+
+        log.info("member!!! : {}", member);
+        log.info("requestDto!!! : {}", deliveryAddressRequestDto);
+
+//        DeliveryAddress addDeliveryAddress = deliveryAddressRequestDto.toEntity();
+//        MemberAddressList memberAddressList = deliveryAddressRequestDto.toEntity();
+
+//        deliveryAddressRepository.save(addDeliveryAddress);
+//        memberAddressListRepository.save(memberAddressList);
 
     }
 
     @Override
     public List<DeliveryAddressResponseDto> getMemberDeliveryAddress(String memberUUID) {
 
-        List<MemberDeliveryAddressResponseVo> memberDeliveryAddressResponseVoList = memberAddressListRepositoryCustom.findMemberAddressWithDeliveryAddress(memberUUID);
+        List<DeliveryAddressResponseVo> deliveryAddressList = memberAddressListRepositoryCustom.findMemberAddressWithDeliveryAddress(memberUUID);
 
-        return memberDeliveryAddressResponseVoList.stream()
-                .map(vo -> DeliveryAddressResponseDto.builder()
-                        .addressDefaultCheck(vo.isAddressDefaultCheck())
-                        .addressDetail(vo.getAddressDetail())
-                        .deliveryMemo(vo.getDeliveryMemo())
-                        .deliveryAddressNickname(vo.getDeliveryAddressNickname())
-                        .recipient(vo.getRecipient())
-                        .phone1(vo.getPhone1())
-                        .phone2(vo.getPhone2())
-                        .build())
-                .collect(Collectors.toList());
+//        return
 
+//                memberDeliveryAddressResponseVoList.stream()
+//                .map(vo -> DeliveryAddressResponseDto.builder()
+//                        .addressDefaultCheck(vo.isAddressDefaultCheck())
+//                        .addressDetail(vo.getAddressDetail())
+//                        .deliveryMemo(vo.getDeliveryMemo())
+//                        .deliveryAddressNickname(vo.getDeliveryAddressNickname())
+//                        .recipient(vo.getRecipient())
+//                        .phone1(vo.getPhone1())
+//                        .phone2(vo.getPhone2())
+//                        .build())
+//                .collect(Collectors.toList());
+
+        return null;
     }
 
     @Override
@@ -94,7 +111,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
     }
 
     @Override
-    public void updateDeliveryAddress(String memberUUID, Long id, MemberDeliveryAddressRequestVo memberDeliveryAddressRequestVo) {
+    public void updateDeliveryAddress(String memberUUID, Long id, DeliveryAddressRequestDto deliveryAddressRequestDto) {
 
         Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(id);
 
@@ -105,16 +122,16 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService{
         DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
 
         deliveryAddress.updateDeliveryAddress(
-                memberDeliveryAddressRequestVo.getAddressDetail(),
-                memberDeliveryAddressRequestVo.getDeliveryMemo(),
-                memberDeliveryAddressRequestVo.getDeliveryAddressNickname(),
-                memberDeliveryAddressRequestVo.getRecipient(),
-                memberDeliveryAddressRequestVo.getPhone1(),
-                memberDeliveryAddressRequestVo.getPhone2()
+                deliveryAddressRequestDto.getAddressDetail(),
+                deliveryAddressRequestDto.getDeliveryMemo(),
+                deliveryAddressRequestDto.getDeliveryAddressNickname(),
+                deliveryAddressRequestDto.getRecipient(),
+                deliveryAddressRequestDto.getPhone1(),
+                deliveryAddressRequestDto.getPhone2()
         );
 
         MemberAddressList memberAddressList = memberAddressListRepository.findByMemberUUIDAndId(memberUUID, id);
-        memberAddressList.updateMemberAddressList(memberDeliveryAddressRequestVo.isAddressDefaultCheck());
+        memberAddressList.updateMemberAddressList(deliveryAddressRequestDto.isAddressDefaultCheck());
 
         deliveryAddressRepository.save(deliveryAddress);
         memberAddressListRepository.save(memberAddressList);

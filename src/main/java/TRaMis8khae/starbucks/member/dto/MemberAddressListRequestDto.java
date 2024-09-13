@@ -13,12 +13,21 @@ public class MemberAddressListRequestDto {
     private Long deliveryAddressId;
     private Boolean addressDefaultCheck;
 
-    public MemberAddressListRequestDto toDto() {
+//    public static MemberAddressListRequestDto toDto() {
+//        return MemberAddressListRequestDto.builder()
+//                .memberAddressId(memberAddressId)
+//                .memberUUID(memberUUID)
+//                .deliveryAddressId(deliveryAddressId)
+//                .addressDefaultCheck(addressDefaultCheck)
+//                .build();
+//    }
+
+    public MemberAddressListRequestDto toEntity() {
         return MemberAddressListRequestDto.builder()
-                .memberAddressId(memberAddressId)
-                .memberUUID(memberUUID)
-                .deliveryAddressId(deliveryAddressId)
-                .addressDefaultCheck(addressDefaultCheck)
+                .memberAddressId(this.getMemberAddressId())
+                .memberUUID(this.getMemberUUID())
+                .deliveryAddressId(this.getDeliveryAddressId())
+                .addressDefaultCheck(this.getAddressDefaultCheck())
                 .build();
     }
 
