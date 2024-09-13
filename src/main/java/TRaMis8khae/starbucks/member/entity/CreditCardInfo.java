@@ -15,7 +15,6 @@ public class CreditCardInfo {
     @Column(length = 50)
     private String cardCompany;
 
-    @Column(columnDefinition = "binary(16)")
     private String memberUUID;
 
 }

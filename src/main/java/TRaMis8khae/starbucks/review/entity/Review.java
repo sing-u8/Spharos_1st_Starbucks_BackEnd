@@ -1,10 +1,16 @@
 package TRaMis8khae.starbucks.review.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import java.time.LocalDateTime;
 
+@Getter
 @Entity
+@ToString
+@NoArgsConstructor
 public class Review {
 
     @Id
@@ -29,6 +35,16 @@ public class Review {
 
     private Integer reviewScore;
 
-    private Boolean reviewChecked; // 상품주문 테이블로
+    @Builder
+    public Review(Long id, String productUUID, String memberUUID, String memberMaskingId, String memberNickname, String reviewTitle, String reviewContext, Integer reviewScore) {
+        this.id = id;
+        this.productUUID = productUUID;
+        this.memberUUID = memberUUID;
+        this.memberMaskingId = memberMaskingId;
+        this.memberNickname = memberNickname;
+        this.reviewTitle = reviewTitle;
+        this.reviewContext = reviewContext;
+        this.reviewScore = reviewScore;
+    }
 
 }

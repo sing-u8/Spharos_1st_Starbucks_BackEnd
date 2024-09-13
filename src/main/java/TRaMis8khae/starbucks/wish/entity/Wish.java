@@ -1,22 +1,30 @@
 package TRaMis8khae.starbucks.wish.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
+@Getter
 @Entity
+@NoArgsConstructor
 public class Wish {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long wishId;
+    private Long id;
 
-    @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUUID;
 
-    @Column(columnDefinition = "binary(16)")
-    private UUID productUuid;
+    private String productUUID;
 
     private Boolean wishChecked;
 
+    @Builder
+    public Wish(Long id, String memberUUID, String productUUID, Boolean wishChecked) {
+        this.id = id;
+        this.memberUUID = memberUUID;
+        this.productUUID = productUUID;
+        this.wishChecked = wishChecked;
+    }
 }

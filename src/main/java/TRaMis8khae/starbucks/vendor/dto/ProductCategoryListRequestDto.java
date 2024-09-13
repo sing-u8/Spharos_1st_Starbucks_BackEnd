@@ -15,24 +15,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductCategoryListRequestDto {
 
-    private Integer subCategoryId;
-    private Integer mainCategoryId;
-    private Long productId;
+    private String topCode;
+    private String middleCode;
+    private String bottomCode;
+    private String productUUID;
 
     public static ProductCategoryListRequestDto toDto(ProductCategoryListRequestVo productCategoryListRequestVo) {
         return ProductCategoryListRequestDto.builder()
-                .mainCategoryId(productCategoryListRequestVo.getMainCategoryId())
-                .subCategoryId(productCategoryListRequestVo.getSubCategoryId())
-                .productId(productCategoryListRequestVo.getProductId())
-                .build();
+            .topCode(productCategoryListRequestVo.getTopCode())
+            .middleCode(productCategoryListRequestVo.getMiddleCode())
+            .bottomCode(productCategoryListRequestVo.getBottomCode())
+            .productUUID(productCategoryListRequestVo.getProductUUID())
+            .build();
     }
 
     public ProductCategoryList toEntity(Product product) {
         return ProductCategoryList.builder()
-                .mainCategoryId(mainCategoryId)
-                .subCategoryId(subCategoryId)
-                .product(product)
-                .build();
+            .topCode(topCode)
+            .middleCode(middleCode)
+            .bottomCode(bottomCode)
+            .product(product)
+            .build();
     }
 
 }

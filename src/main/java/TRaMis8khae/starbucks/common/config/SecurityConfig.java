@@ -44,31 +44,35 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests
-                                .requestMatchers(
-                                        "/api/v1/auth/**",
-                                        "/api/v1/product/**",
-                                        "/api/v1/member/**",
-                                        "/api/v1/delivery/**",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/error",
-                                        "/api/v1/category/**"
-                                )
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .sessionManagement(
-                        sessionManagement -> sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilter(corsFilter());
+        http.csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(
+                    authorizeRequests -> authorizeRequests
+                            .requestMatchers(
+                                    "/api/v1/auth/**",
+                                    "/api/v1/product/**",
+                                    "/api/v1/member/**",
+                                    "/swagger-ui/**",
+                                    "/v3/api-docs/**",
+                                    "/api/v1/delivery/**",
+                                    "/error",
+                                    "/api/v1/category/**",
+                                    "/purchase/**",
+                                    "/review/**",
+                                    "/voucher/**",
+                                    "/wish/**"
+                            )
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated()
+            )
+            .sessionManagement(
+                    sessionManagement -> sessionManagement
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilter(corsFilter());
+
         return http.build();
     }
 

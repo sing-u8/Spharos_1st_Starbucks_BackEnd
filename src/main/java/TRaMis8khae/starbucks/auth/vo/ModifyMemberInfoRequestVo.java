@@ -7,10 +7,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyMemberInfoRequestVo {
+public class SignInResponseVo {
 
+//    private String accessToken;
+//    private String refreshToken;
+//    private String uuid;
     private String nickname;
-
-    private String phoneNumber;
 
 }

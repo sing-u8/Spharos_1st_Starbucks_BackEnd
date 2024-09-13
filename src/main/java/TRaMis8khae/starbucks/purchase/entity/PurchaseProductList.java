@@ -25,6 +25,8 @@ public class PurchaseProductList {
 
     private Integer discountPrice;
 
+    private Boolean reviewChecked;
+
     @ManyToOne(fetch = FetchType.LAZY) // sql을 한번 더 날림
     private Purchase purchase;
 
