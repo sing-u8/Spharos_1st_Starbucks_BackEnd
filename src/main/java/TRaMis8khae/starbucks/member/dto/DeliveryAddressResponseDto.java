@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.dto;
 
+import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
 import lombok.*;
 
@@ -27,6 +28,17 @@ public class DeliveryAddressResponseDto {
                 .recipient(recipient)
                 .phone1(phone1)
                 .phone2(phone2)
+                .build();
+    }
+
+    public static DeliveryAddressResponseDto toDto(DeliveryAddressResponseVo deliveryAddressResponseVo) {
+        return DeliveryAddressResponseDto.builder()
+                .addressDetail(deliveryAddressResponseVo.getAddressDetail())
+                .deliveryMemo(deliveryAddressResponseVo.getDeliveryMemo())
+                .deliveryAddressNickname(deliveryAddressResponseVo.getDeliveryAddressNickname())
+                .recipient(deliveryAddressResponseVo.getRecipient())
+                .phone1(deliveryAddressResponseVo.getPhone1())
+                .phone2(deliveryAddressResponseVo.getPhone2())
                 .build();
     }
 

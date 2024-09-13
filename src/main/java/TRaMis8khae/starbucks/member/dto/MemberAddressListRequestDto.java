@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.member.dto;
 
+import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
+import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import lombok.*;
 
 @Getter
@@ -22,12 +24,11 @@ public class MemberAddressListRequestDto {
 //                .build();
 //    }
 
-    public MemberAddressListRequestDto toEntity() {
-        return MemberAddressListRequestDto.builder()
-                .memberAddressId(this.getMemberAddressId())
-                .memberUUID(this.getMemberUUID())
-                .deliveryAddressId(this.getDeliveryAddressId())
-                .addressDefaultCheck(this.getAddressDefaultCheck())
+    public static MemberAddressList toEntity(DeliveryAddressRequestDto deliveryAddressRequestDto, DeliveryAddress deliveryAddress, String memberUUID) {
+        return MemberAddressList.builder()
+                .deliveryAddress(deliveryAddress)
+                .memberUUID(memberUUID)
+                .addressDefaultCheck(deliveryAddressRequestDto.isAddressDefaultCheck())
                 .build();
     }
 

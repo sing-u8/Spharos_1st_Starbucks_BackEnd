@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface MemberAddressListRepository extends JpaRepository<MemberAddressList, Long> {
 
+    MemberAddressList findByDeliveryAddress(DeliveryAddress deliveryAddress);
     MemberAddressList findByMemberUUIDAndId(String memberUUID, Long id);
 
 }

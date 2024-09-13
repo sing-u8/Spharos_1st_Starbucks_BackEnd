@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
+import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class DeliveryAddressRequestDto {
 
     public static DeliveryAddressRequestDto toDto(DeliveryAddressRequestVo deliveryAddressRequestVo) {
         return DeliveryAddressRequestDto.builder()
+                .addressDefaultCheck(deliveryAddressRequestVo.isAddressDefaultCheck())
                 .addressDetail(deliveryAddressRequestVo.getAddressDetail())
                 .deliveryMemo(deliveryAddressRequestVo.getDeliveryMemo())
                 .deliveryAddressNickname(deliveryAddressRequestVo.getDeliveryAddressNickname())
@@ -29,15 +31,16 @@ public class DeliveryAddressRequestDto {
                 .build();
     }
 
-    public DeliveryAddress toEntity() {
+    public DeliveryAddress toEntity(DeliveryAddressRequestDto deliveryAddressRequestDto) {
         return DeliveryAddress.builder()
-                .addressDetail(this.getAddressDetail())
-                .deliveryMemo(this.getDeliveryMemo())
-                .deliveryAddressNickname(this.getDeliveryAddressNickname())
-                .recipient(this.getRecipient())
-                .phone1(this.getPhone1())
-                .phone2(this.getPhone2())
+                .addressDetail(deliveryAddressRequestDto.getAddressDetail())
+                .deliveryMemo(deliveryAddressRequestDto.getDeliveryMemo())
+                .deliveryAddressNickname(deliveryAddressRequestDto.getDeliveryAddressNickname())
+                .recipient(deliveryAddressRequestDto.getRecipient())
+                .phone1(deliveryAddressRequestDto.getPhone1())
+                .phone2(deliveryAddressRequestDto.getPhone2())
                 .build();
     }
+
 
 }

@@ -22,7 +22,9 @@ public class MemberController {
     private final MemberAddressService memberAddressService;
 
     @PostMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<Void> addDeliveryAddress(@PathVariable String memberUUID, @RequestBody DeliveryAddressRequestVo deliveryAddressRequestVo) {
+    public CommonResponseEntity<Void> addDeliveryAddress(
+            @PathVariable String memberUUID,
+            @RequestBody DeliveryAddressRequestVo deliveryAddressRequestVo) {
 
         DeliveryAddressRequestDto deliveryAddressRequestDto = DeliveryAddressRequestDto.toDto(deliveryAddressRequestVo);
 
@@ -37,7 +39,9 @@ public class MemberController {
     }
 
     @GetMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<List<DeliveryAddressResponseVo>> getMemberDeliveryAddress(@PathVariable String memberUUID) {
+    public CommonResponseEntity<List<DeliveryAddressResponseVo>> getMemberDeliveryAddress(
+            @PathVariable String memberUUID) {
+
         List<DeliveryAddressResponseDto> memberAddressList = memberAddressService.getMemberDeliveryAddress(memberUUID);
 
         if (memberAddressList.isEmpty()) {
@@ -55,7 +59,6 @@ public class MemberController {
                 memberAddressList.stream().
                         map(DeliveryAddressResponseDto::toVo).
                         toList());
-
     }
 
     @DeleteMapping("delivery/{memberAddressId}")
@@ -69,7 +72,10 @@ public class MemberController {
     }
 
     @PutMapping("delivery/{memberUUID}/{memberAddressId}")
-    public CommonResponseEntity<Void> updateDeliveryAddress(@PathVariable String memberUUID, @PathVariable Long memberAddressId, @RequestBody DeliveryAddressRequestDto deliveryAddressRequestDto) {
+    public CommonResponseEntity<Void> updateDeliveryAddress(
+            @PathVariable String memberUUID,
+            @PathVariable Long memberAddressId,
+            @RequestBody DeliveryAddressRequestDto deliveryAddressRequestDto) {
 
         memberAddressService.updateDeliveryAddress(memberUUID, memberAddressId, deliveryAddressRequestDto);
 
@@ -78,7 +84,6 @@ public class MemberController {
                 true,
                 CommonResponseMessage.SUCCESS.getMessage(),
                 null);
-
     }
 
 }

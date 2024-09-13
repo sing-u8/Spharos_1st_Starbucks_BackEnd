@@ -8,8 +8,8 @@ public interface AuthRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByLoginId(String loginId);
     Optional<Member> findByMemberUUID(String memberUUID);
+    Optional<Member> findByNameAndPhoneNumber(String name, String phoneNumber);
 
     void deleteByMemberUUID(String memberUUID);
-    //TEST!!!!
 
 }
