@@ -2,10 +2,7 @@ package TRaMis8khae.starbucks.common.jwt;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +64,7 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor( env.getProperty("jwt.secret-key").getBytes() );
     }
 
-    // 토큰에서 모든 클레임 추출
+
     public Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(getSignKey())
@@ -78,8 +75,21 @@ public class JwtTokenProvider {
 
     public String getMemberUUID(String token) throws BaseException {
         try {
-            log.info(extractClaim(token, Claims::getSubject));
-        } catch (NullPointerException e) {
+            token = token.replace("Bearer ", "");
+            Claims claims = getClaims(token);
+            token = claims.get("memberUUID", String.class);
+            return token;
+        } catch (ExpiredJwtException e) {
+            log.error("만료된 토큰입니다");
+            throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            log.error("지원되지 않는 유형의 토큰입니다");
+            throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
+        } catch (MalformedJwtException | IllegalArgumentException e) {
+            log.error("잘못된 토큰입니다");
+            throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
+        } catch (io.jsonwebtoken.security.SignatureException e) {
+            log.error("SecretKey가 일치하지 않습니다");
             throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
         }
     }

@@ -28,6 +28,7 @@ public class AuthServiceImpl implements AuthService{
     public void  signUp(SignUpRequestDto signUpRequestDto) {
 
         Member member = authRepository.findByLoginId(signUpRequestDto.getLoginId()).orElse(null);
+
         if (member != null) {
             throw new IllegalArgumentException("이미 가입된 회원입니다.");
         }
@@ -57,6 +58,7 @@ public class AuthServiceImpl implements AuthService{
         authRepository.deleteByMemberUUID(memberUUID);
 
     }
+
 
     @Override
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
@@ -91,14 +93,13 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void updateMemberInfo(String memberUUID, String accessToken, ModifyMemberInfoRequestDto requestDto) {
+    public void updateMemberInfo(String memberUUID, String accessToken, UpdateMemberInfoRequestDto requestDto) {
+
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
         );
 
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-
-        String memberUuidFromToken = claims.get("memberUUID", String.class);
+        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
 
         if (!memberUUID.equals(memberUuidFromToken)) {
             throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
