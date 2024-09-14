@@ -18,11 +18,16 @@ public class ProductCategoryList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer subCategoryId;
+    @Column(length = 50)
+    private String middleCode;
 
-    private Integer mainCategoryId;
+    @Column(length = 50)
+    private String topCode;
 
-    @ManyToOne
+    @Column(length = 50)
+    private String bottomCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
 }

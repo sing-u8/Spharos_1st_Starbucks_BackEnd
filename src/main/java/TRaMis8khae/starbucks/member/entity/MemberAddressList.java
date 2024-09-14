@@ -20,6 +20,7 @@ public class MemberAddressList {
     private Boolean addressDefaultCheck;
 
     @ManyToOne
+    @JoinColumn(name = "deliveryAddressId")
     private DeliveryAddress deliveryAddress;
 
     @Builder
@@ -28,5 +29,9 @@ public class MemberAddressList {
         this.addressDefaultCheck = addressDefaultCheck;
         this.deliveryAddress = deliveryAddress;
     }
+
+//    public void updateMemberAddressList(Boolean addressDefaultCheck) {
+//        this.addressDefaultCheck = addressDefaultCheck;
+//    }
 
 }

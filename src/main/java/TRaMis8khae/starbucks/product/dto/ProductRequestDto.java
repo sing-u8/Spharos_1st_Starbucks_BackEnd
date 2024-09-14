@@ -4,33 +4,42 @@ import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import lombok.*;
 
-import java.time.LocalDate;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductRequestDto {
 
     private String productName;
-    private LocalDate date;
+    private Double price;
+    private String description;
+    private Boolean additionalChecked;
+    private Boolean isAdditionalTogether;
     private String productUUID;
-    //private Integer productScore;
+    private Boolean engravingChecked;
+//    private String volumeName;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
         return ProductRequestDto.builder()
-                .productName(productRequestVo.getProductName())
-                .date(productRequestVo.getDate())
-                .build();
+            .productName(productRequestVo.getProductName())
+            .price(productRequestVo.getPrice())
+            .description(productRequestVo.getDescription())
+            .additionalChecked(productRequestVo.getAdditionalChecked())
+            .isAdditionalTogether(productRequestVo.getIsAdditionalTogether())
+            .engravingChecked(productRequestVo.getEngravingChecked())
+//            .volumeName(productRequestVo.getVolumeName())
+            .build();
     }
 
     public Product toEntity(String productUUID) {
         return Product.builder()
-                .productUUID(productUUID)
-                .date(date)
-                .productName(productName)
-                //.productScore(productScore)
-                .build();
+            .productUUID(productUUID)
+            .productName(productName)
+            .price(price)
+            .description(description)
+            .additionalChecked(additionalChecked)
+            .isAdditionalTogether(isAdditionalTogether)
+            .engravingChecked(engravingChecked)
+            .build();
     }
 
 }

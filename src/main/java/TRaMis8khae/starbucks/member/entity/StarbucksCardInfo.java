@@ -12,7 +12,7 @@ public class StarbucksCardInfo {
     @Column(nullable = false, length = 50)
     private String StarbucksCardName;
 
-    @Column(columnDefinition = "binary(16)")
+    @Column(length = 36)
     private String memberUUID;
 
 }

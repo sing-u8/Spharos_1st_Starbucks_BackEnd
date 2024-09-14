@@ -11,10 +11,8 @@ public class MemberCouponList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "binary(16)")
     private String memberUUID;
 
-    @Column(columnDefinition = "binary(16)")
     private String productUUID;
 
     private LocalDateTime registerDate;

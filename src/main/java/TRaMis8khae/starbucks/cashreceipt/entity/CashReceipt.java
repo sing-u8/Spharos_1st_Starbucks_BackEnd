@@ -1,8 +1,9 @@
 package TRaMis8khae.starbucks.cashreceipt.entity;
 
-import jakarta.persistence.*;
-
-import java.util.UUID;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class CashReceipt {
@@ -13,7 +14,6 @@ public class CashReceipt {
 
     private Boolean checked;//현금영수증 발행여부
 
-    @Column(columnDefinition = "binary(16)")
-    private UUID memberUuid;
+    private String memberUuid;
 
 }

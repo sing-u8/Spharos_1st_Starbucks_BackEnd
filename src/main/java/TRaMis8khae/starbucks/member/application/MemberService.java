@@ -1,11 +1,9 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.member.dto.MemberSignUpDto;
-import TRaMis8khae.starbucks.member.vo.TermsConsentListRequestVo;
+import TRaMis8khae.starbucks.member.dto.AddTermsConsentListRequestDto;
 
 public interface MemberService {
 
-    void signUp(MemberSignUpDto memberSignUpDto);
-    void addTerms(TermsConsentListRequestVo termsConsentListRequestVo);
+    void addTerms(AddTermsConsentListRequestDto requestDto);
 
 }

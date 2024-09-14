@@ -2,8 +2,12 @@ package TRaMis8khae.starbucks.product.presentation;
 
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.product.application.ProductService;
+import TRaMis8khae.starbucks.product.dto.MediaRequestDto;
+import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
+import TRaMis8khae.starbucks.product.vo.MediaRequestVo;
+import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductResponseVo;
 import lombok.RequiredArgsConstructor;
@@ -34,24 +38,72 @@ public class ProductController {
         );
     }
 
-    @DeleteMapping
-    public CommonResponseEntity<Void> deleteProduct(@RequestBody String productUUID) {
 
-        productService.deleteProduct(productUUID);
+    @PostMapping("/media")
+    public CommonResponseEntity<Void> createProductMedia(@RequestBody MediaRequestVo mediaRequestVo) {
+
+        productService.addMedia(MediaRequestDto.toDto(mediaRequestVo));
 
         return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                "상품 삭제 성공",
-                null
+            HttpStatus.OK,
+            true,
+            "미디어 등록 성공",
+            null
         );
     }
 
-//    @PutMapping
-//    public CommonResponseEntity<Void> updateProduct(@RequestBody ProductRequestVo productRequestVo) {
-//
-//        return null;
-//    }
+
+    @PostMapping("/option")
+    public CommonResponseEntity<Void> createProductOption(@RequestBody ProductOptionRequestVo productOptionRequestVo) {
+
+        productService.addProductOption(ProductOptionRequestDto.toDto(productOptionRequestVo));
+
+        return new CommonResponseEntity<>(
+            HttpStatus.OK,
+            true,
+            "상품 옵션 등록 성공",
+            null
+        );
+    }
+
+    @DeleteMapping
+    public CommonResponseEntity<Void> deleteProduct(@RequestBody String productUUID) {
+        productService.deleteProduct(productUUID);
+
+        return new CommonResponseEntity<>(
+            HttpStatus.OK,
+            true,
+            "상품 삭제 성공",
+            null
+        );
+    }
+
+    @DeleteMapping("/media")
+    public CommonResponseEntity<Void> deleteMedia(@RequestBody String productUUID) {
+
+        productService.deleteMedia(productUUID);
+
+        return new CommonResponseEntity<>(
+            HttpStatus.OK,
+            true,
+            "상품 삭제 성공",
+            null
+        );
+    }
+
+    @DeleteMapping("/option")
+    public CommonResponseEntity<Void> deleteOption(@RequestBody String productUUID) {
+
+        productService.deleteProductOption(productUUID);
+
+        return new CommonResponseEntity<>(
+            HttpStatus.OK,
+            true,
+            "상품 삭제 성공",
+            null
+        );
+    }
+
 
     @GetMapping("/{productUUID}")
     public CommonResponseEntity<ProductResponseVo> getProduct(@PathVariable String productUUID) {

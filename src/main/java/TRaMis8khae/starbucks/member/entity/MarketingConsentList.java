@@ -14,7 +14,9 @@ public class MarketingConsentList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean marketingConsentChecked;
+    private Boolean EmailConsentChecked;
+
+    private Boolean SMSConsentChecked;
 
     @ManyToOne
     private Marketing marketing;
@@ -23,8 +25,9 @@ public class MarketingConsentList {
     private Member member;
 
     @Builder
-    public MarketingConsentList(Boolean marketingAgreementChecked, Marketing marketing, Member member) {
-        this.marketingConsentChecked = marketingAgreementChecked;
+    public MarketingConsentList(Boolean emailConsentChecked, Boolean smsConsentChecked, Marketing marketing, Member member) {
+        this.EmailConsentChecked = emailConsentChecked;
+        this.SMSConsentChecked = smsConsentChecked;
         this.marketing = marketing;
         this.member = member;
     }

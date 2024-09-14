@@ -42,4 +42,13 @@ public class DeliveryAddress {
         this.phone2 = phone2;
     }
 
+    public void updateDeliveryAddress(String addressDetail, String deliveryMemo, String deliveryAddressNickname, String recipient, String phone1, String phone2) {
+        this.addressDetail = addressDetail;
+        this.deliveryMemo = deliveryMemo;
+        this.deliveryAddressNickname = deliveryAddressNickname;
+        this.recipient = recipient;
+        this.phone1 = phone1;
+        this.phone2 = phone2;
+    }
+
 }
