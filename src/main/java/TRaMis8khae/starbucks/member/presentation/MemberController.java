@@ -4,9 +4,11 @@ import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.MemberAddressService;
 import TRaMis8khae.starbucks.member.application.MemberService;
+import TRaMis8khae.starbucks.member.dto.AddMarketingConsentListRequestDto;
 import TRaMis8khae.starbucks.member.dto.AddTermsConsentListRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.vo.AddMarketingConsentListRequestVo;
 import TRaMis8khae.starbucks.member.vo.AddTermsConsentListRequestVo;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
@@ -103,6 +105,20 @@ public class MemberController {
         AddTermsConsentListRequestDto requestDto = AddTermsConsentListRequestDto.toDto(requestVo);
 
         memberService.addTerms(requestDto);
+
+        return new CommonResponseEntity<>(
+                HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
+    }
+
+    @PostMapping("/marketing")
+    public CommonResponseEntity<Void> addMarketingTerms(@RequestBody AddMarketingConsentListRequestVo requestVo) {
+
+        AddMarketingConsentListRequestDto requestDto = AddMarketingConsentListRequestDto.toDto(requestVo);
+
+        memberService.addMarketingConsent(requestDto);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
