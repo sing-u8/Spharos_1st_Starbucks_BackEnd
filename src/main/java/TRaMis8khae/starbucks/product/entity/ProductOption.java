@@ -42,4 +42,7 @@ public class ProductOption {
     @ManyToOne(fetch = FetchType.LAZY)
     private Volume volume;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Color color;
+
 }
