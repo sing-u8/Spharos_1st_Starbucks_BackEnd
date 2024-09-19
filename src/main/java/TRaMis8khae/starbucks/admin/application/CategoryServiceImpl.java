@@ -12,6 +12,8 @@ import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CategoryCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +39,10 @@ public class CategoryServiceImpl implements CategoryService {
     public void addTopCategory(TopCategoryRequestDto requestDto) {
 
         if (topCategoryRepository.existsByName(requestDto.getName())) {
-            throw new IllegalArgumentException("해당 카테고리의 이름이 존재합니다.");
+            throw new BaseException(BaseResponseStatus.DUPLICATED_CATEGORY);
         }
         if (topCategoryRepository.existsBySequence(requestDto.getSequence())) {
-            throw new IllegalArgumentException("순서가 존재합니다. ");
+            throw new BaseException(BaseResponseStatus.DUPLICATED_CATEGORY_ORDER);
         }
 
         topCategoryRepository.save(requestDto.toEntity(
@@ -53,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         TopCategory topCategory = topCategoryRepository.findByCode(requestDto.getTopCategoryCode())
                     .orElseThrow(
-                        () -> new IllegalArgumentException("해당 top 카테고리가 존재하지 않습니다.")
+                        () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
                     );
 
         middleCategoryRepository.save(requestDto.toEntity(
@@ -66,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         MiddleCategory middleCategory = middleCategoryRepository.findByCode(requestDto.getMiddleCategoryCode())
             .orElseThrow(
-                () -> new IllegalArgumentException("해당 middle 카테고리가 존재하지 않습니다.")
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
             );
 
         bottomCategoryRepository.save(requestDto.toEntity(
@@ -78,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     public TopCategoryResponseDto findTopCategoryByName(String name) {
 
         TopCategory topCategory = topCategoryRepository.findByName(name).orElseThrow(
-            () -> new IllegalArgumentException("해당 bottom 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return TopCategoryResponseDto.toDto(topCategory);
@@ -89,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
     public TopCategoryResponseDto findTopCategoryByCode(String code) {
 
         TopCategory topCategory = topCategoryRepository.findByCode(code).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return TopCategoryResponseDto.toDto(topCategory);
@@ -101,7 +103,7 @@ public class CategoryServiceImpl implements CategoryService {
     public MiddleCategoryResponseDto findMiddleCategoryByName(String name) {
 
         MiddleCategory middleCategory = middleCategoryRepository.findByName(name).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return MiddleCategoryResponseDto.toDto(middleCategory);
@@ -112,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
     public MiddleCategoryResponseDto findMiddleCategoryByCode(String code) {
 
         MiddleCategory middleCategory = middleCategoryRepository.findByCode(code).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return MiddleCategoryResponseDto.toDto(middleCategory);
@@ -124,7 +126,7 @@ public class CategoryServiceImpl implements CategoryService {
     public BottomCategoryResponseDto findBottomCategoryByName(String name) {
 
         BottomCategory bottomCategory = bottomCategoryRepository.findByName(name).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return BottomCategoryResponseDto.toDto(bottomCategory);
@@ -135,7 +137,7 @@ public class CategoryServiceImpl implements CategoryService {
     public BottomCategoryResponseDto findBottomCategoryByCode(String code) {
 
         BottomCategory bottomCategory = bottomCategoryRepository.findByCode(code).orElseThrow(
-            () -> new IllegalArgumentException("해당 카테고리가 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
         );
 
         return BottomCategoryResponseDto.toDto(bottomCategory);
