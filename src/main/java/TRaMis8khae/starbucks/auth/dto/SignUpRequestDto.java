@@ -52,8 +52,6 @@ public class SignUpRequestDto {
                 .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
-                .address(address)
-                .paymentPassword(paymentPassword)
                 .memberStatus(Boolean.TRUE)
                 .build();
     }
