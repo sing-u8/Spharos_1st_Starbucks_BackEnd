@@ -6,6 +6,7 @@ import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
+import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.*;
+
 
 @Slf4j
 @Service
@@ -29,6 +32,7 @@ public class ProductServiceImpl implements ProductService{
     private final MediaRepository mediaRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
     private final VolumeRepository volumeRepository;
+    private final ColorRepository colorRepository;
 
     @Override
     public void addProduct(ProductRequestDto requestDto) {
@@ -76,9 +80,17 @@ public class ProductServiceImpl implements ProductService{
             throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
-        volumeRepository.save(requestDto.toVolumeEntity());
 
-        productOptionRepository.save(requestDto.toEntity(requestDto.toVolumeEntity()));
+        volumeRepository.save(VolumeRequestDto.toDto(VolumeRequestVo.builder()
+            .name(requestDto.getVolumeName())
+            .build()).toEntity()
+        );
+        colorRepository.save(ColorRequestDto.toDto(ColorRequestVo.builder()
+                .name(requestDto.getColorName())
+            .build()).toEntity()
+        );
+
+        productOptionRepository.save(requestDto.toEntity());
     }
 
     @Transactional
@@ -122,71 +134,74 @@ public class ProductServiceImpl implements ProductService{
     }
 
 
-    @Override
-    public void addMedia(MediaRequestDto requestDto) {
-
-        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
-
-        mediaRepository.save(requestDto.toEntity());
-    }
-
-
-    @Override
-    public void deleteMedia(String productUUID) {
-
-        if (!productRepository.existsByProductUUID(productUUID)) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
-
-        mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-    }
-
-
-    @Override
-    public MediaResponseDto findDetailMedia(String productUUID) {
-
-        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-
-        if (productMedia.getProductChecked() == Boolean.FALSE) {
-            return null;
-        }
-
-        return MediaResponseDto.builder().build();
-    }
-
-
-    @Override
-    public MediaResponseDto findMedia(String productUUID) {
-
-        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-
-        if (productMedia.getProductChecked() == Boolean.FALSE) {
-            return null;
-        }
-
-        if (productMedia.getThumbChecked() == Boolean.FALSE) { //썸네일
-            return null;
-        }
-
-        return MediaResponseDto.builder().build();
-    }
+//    @Override
+//    public void addMedia(MediaRequestDto requestDto) {
+//
+//        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
+//            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
+//        }
+//
+//        mediaRepository.save(requestDto.toEntity());
+//    }
+//
+//
+//    @Override
+//    public void deleteMedia(String productUUID) {
+//
+//        if (!productRepository.existsByProductUUID(productUUID)) {
+//            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
+//        }
+//
+//        mediaRepository.findByProductUUID(productUUID).orElseThrow(
+//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+//        );
+//    }
+//
+//
+//    @Override
+//    public MediaResponseDto findDetailMedia(String productUUID) {
+//
+//        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
+//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+//        );
+//
+//        if (productMedia.getProductChecked() == Boolean.FALSE) {
+//            return null;
+//        }
+//
+//        return MediaResponseDto.builder().build();
+//    }
+//
+//
+//    @Override
+//    public MediaResponseDto findMedia(String productUUID) {
+//
+//        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
+//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+//        );
+//
+//        if (productMedia.getProductChecked() == Boolean.FALSE) {
+//            return null;
+//        }
+//
+//        if (productMedia.getThumbChecked() == Boolean.FALSE) { //썸네일
+//            return null;
+//        }
+//
+//        return MediaResponseDto.builder().build();
+//    }
 
 
     @Override
     public List<Product> findProductsByProductUUID(List<String> productUUID) {
+
         return productUUID.stream()
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
             .toList();
 
     }
+
+
 
 }

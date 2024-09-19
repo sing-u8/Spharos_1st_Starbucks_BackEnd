@@ -25,4 +25,6 @@ public class ProductOptionRequestVo {
 
 	private String volumeName;
 
+	private String colorName;
+
 }
