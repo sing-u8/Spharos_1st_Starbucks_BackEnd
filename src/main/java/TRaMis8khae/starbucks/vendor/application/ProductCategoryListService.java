@@ -8,6 +8,5 @@ import java.util.List;
 public interface ProductCategoryListService {
     void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto);
     List<ProductCategoryListResponseDto> findProductsByCategories(String topCode, String middleCode, String bottomCode);
-    List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode);
 
 }

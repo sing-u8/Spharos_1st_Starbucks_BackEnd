@@ -38,15 +38,11 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
 
     @Override
     public List<ProductCategoryListResponseDto> findProductsByCategories(String topCode, String middleCode, String bottomCode) {
-        return null;
-    }
 
-    @Override
-    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
-
-        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
+        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, middleCode, bottomCode);
 
         return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
     }
+
 
 }
