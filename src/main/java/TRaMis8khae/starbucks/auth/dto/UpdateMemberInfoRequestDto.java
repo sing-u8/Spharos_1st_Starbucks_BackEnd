@@ -1,6 +1,6 @@
 package TRaMis8khae.starbucks.auth.dto;
 
-import TRaMis8khae.starbucks.auth.vo.ModifyMemberInfoRequestVo;
+import TRaMis8khae.starbucks.auth.vo.UpdateMemberInfoRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyMemberInfoRequestDto {
+public class UpdateMemberInfoRequestDto {
 
     private String nickname;
 
     private String phoneNumber;
 
-    public static ModifyMemberInfoRequestDto toDto(ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
-        return ModifyMemberInfoRequestDto.builder()
-                .nickname(modifyMemberInfoRequestVo.getNickname())
-                .phoneNumber(modifyMemberInfoRequestVo.getPhoneNumber())
+    public static UpdateMemberInfoRequestDto toDto(UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
+        return UpdateMemberInfoRequestDto.builder()
+                .nickname(UpdateMemberInfoRequestVo.getNickname())
+                .phoneNumber(UpdateMemberInfoRequestVo.getPhoneNumber())
                 .build();
     }
 

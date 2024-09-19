@@ -37,7 +37,6 @@ public class SignUpRequestDto {
                 .phoneNumber(signUpRequestVo.getPhoneNumber())
                 .email(signUpRequestVo.getEmail())
                 .nickname(signUpRequestVo.getNickname())
-                .address(signUpRequestVo.getAddress())
                 .marketingConsentEmail(signUpRequestVo.getEmailMarketingConsent())
                 .marketingConsentSms(signUpRequestVo.getSMSMarketingConsent())
                 .build();
@@ -53,8 +52,6 @@ public class SignUpRequestDto {
                 .phoneNumber(phoneNumber)
                 .email(email)
                 .nickname(nickname)
-                .address(address)
-                .paymentPassword(paymentPassword)
                 .memberStatus(Boolean.TRUE)
                 .build();
     }

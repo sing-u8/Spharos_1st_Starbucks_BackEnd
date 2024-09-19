@@ -23,10 +23,6 @@ public class SignUpRequestVo {
 
     private String nickname;
 
-    private String address;
-
-    private String paymentPassword;
-
     private Boolean EmailMarketingConsent;
 
     private Boolean SMSMarketingConsent;
