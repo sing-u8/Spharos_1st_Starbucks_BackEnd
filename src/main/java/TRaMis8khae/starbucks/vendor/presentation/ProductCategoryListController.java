@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.vendor.presentation;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
@@ -25,27 +26,17 @@ public class ProductCategoryListController {
 	private final ProductCategoryListService productCategoryListService;
 
 	@PostMapping("/category")
-	public CommonResponseEntity<Void> createProductByCategory(@RequestBody ProductCategoryListRequestVo productCategoryListRequestVo) {
+	public BaseResponse<Void> createProductByCategory(@RequestBody ProductCategoryListRequestVo productCategoryListRequestVo) {
 
 		productCategoryListService.addProductByCategory(ProductCategoryListRequestDto.toDto(productCategoryListRequestVo));
 
-		return new CommonResponseEntity<>(
-			HttpStatus.OK,
-			true,
-			CommonResponseMessage.SUCCESS.getMessage(),
-			null
-		);
+		return new BaseResponse<>();
 	}
 
 	@GetMapping("/{topCode}/products")
-	public CommonResponseEntity<List<ProductCategoryListResponseVo>> getProductsByTopCategories(@PathVariable String topCode) {
+	public BaseResponse<List<ProductCategoryListResponseVo>> getProductsByTopCategories(@PathVariable String topCode) {
 
-		return new CommonResponseEntity<>(
-			HttpStatus.OK,
-			true,
-			CommonResponseMessage.SUCCESS.getMessage(),
-			productCategoryListService.findProductsByTopCategory(topCode).stream().map(ProductCategoryListResponseDto::toVo).toList()
-		);
+		return new BaseResponse<>(productCategoryListService.findProductsByTopCategory(topCode).stream().map(ProductCategoryListResponseDto::toVo).toList());
 	}
 
 }
