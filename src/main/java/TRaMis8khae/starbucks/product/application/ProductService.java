@@ -30,13 +30,13 @@ public interface ProductService {
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-    void addMedia(MediaRequestDto requestDto);
-
-    void deleteMedia(String productUUID);
-
-    MediaResponseDto findDetailMedia(String productUUID);
-
-    MediaResponseDto findMedia(String productUUID);
+//    void addMedia(MediaRequestDto requestDto);
+//
+//    void deleteMedia(String productUUID);
+//
+//    MediaResponseDto findDetailMedia(String productUUID);
+//
+//    MediaResponseDto findMedia(String productUUID);
 
     List<Product> findProductsByProductUUID(List<String> productUUID);
 
