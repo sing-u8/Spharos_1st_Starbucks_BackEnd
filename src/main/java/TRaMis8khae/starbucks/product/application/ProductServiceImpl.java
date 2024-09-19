@@ -1,5 +1,8 @@
 package TRaMis8khae.starbucks.product.application;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
@@ -11,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
+
 
 @Slf4j
 @Service
@@ -28,7 +34,7 @@ public class ProductServiceImpl implements ProductService{
     public void addProduct(ProductRequestDto requestDto) {
 
         if (productRepository.existsByproductName(requestDto.getProductName())) {
-            throw new IllegalArgumentException("해당 상품이 이미 존재합니다");
+            throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
         }
 
         String productUUID = UUID.randomUUID().toString();
@@ -36,20 +42,11 @@ public class ProductServiceImpl implements ProductService{
         productRepository.save(requestDto.toEntity(productUUID));
     }
 
-//    @Override
-//    public void updateProduct(ProductRequestDto requestDto) {
-//
-//        productRepository.findByProductUUID(requestDto.getProductUUID())
-//                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-//
-//        productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
-//    }
-
     @Override
     public void deleteProduct(String productUUID) {
 
         Product product = productRepository.findByProductUUID(productUUID)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
 
         productRepository.delete(product);
     }
@@ -58,7 +55,7 @@ public class ProductServiceImpl implements ProductService{
     public ProductResponseDto findProduct(String productUUID) {
 
         Product product = productRepository.findByProductUUID(productUUID)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
 
         return ProductResponseDto.toDto(product);
     }
@@ -76,29 +73,20 @@ public class ProductServiceImpl implements ProductService{
     public void addProductOption(ProductOptionRequestDto requestDto) {
 
         if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new IllegalArgumentException("해당 상품이 존재하지 않습니다.");
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
         volumeRepository.save(requestDto.toVolumeEntity());
 
-        productOptionRepository.save(requestDto.toEntity( requestDto.toVolumeEntity()));
-
+        productOptionRepository.save(requestDto.toEntity(requestDto.toVolumeEntity()));
     }
-
-
-//    @Override
-//    public void updateProductOption(ProductOptionRequestDto requestDto) {
-//
-//
-//    }
-
 
     @Transactional
     @Override
     public void deleteProductOption(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         volumeRepository.delete(productOption.getVolume());
@@ -109,7 +97,7 @@ public class ProductServiceImpl implements ProductService{
     public ProductOptionResponseDto findProductOption(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         return ProductOptionResponseDto.toDto(productOption);
@@ -119,7 +107,7 @@ public class ProductServiceImpl implements ProductService{
     public VolumeResponseDto findVolume(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품이 존재하지 않습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         return VolumeResponseDto.toDto(productOption.getVolume());
@@ -138,7 +126,7 @@ public class ProductServiceImpl implements ProductService{
     public void addMedia(MediaRequestDto requestDto) {
 
         if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new IllegalArgumentException("해당 상품이 존재하지 않습니다.");
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
         mediaRepository.save(requestDto.toEntity());
@@ -149,11 +137,11 @@ public class ProductServiceImpl implements ProductService{
     public void deleteMedia(String productUUID) {
 
         if (!productRepository.existsByProductUUID(productUUID)) {
-            throw new IllegalArgumentException("해당 상품이 존재하지 않습니다.");
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
         mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품의 이미지를 찾을 수 없습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
         );
     }
 
@@ -162,7 +150,7 @@ public class ProductServiceImpl implements ProductService{
     public MediaResponseDto findDetailMedia(String productUUID) {
 
         ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품의 이미지를 찾을 수 없습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
         );
 
         if (productMedia.getProductChecked() == Boolean.FALSE) {
@@ -177,7 +165,7 @@ public class ProductServiceImpl implements ProductService{
     public MediaResponseDto findMedia(String productUUID) {
 
         ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new IllegalArgumentException("해당 상품의 이미지를 찾을 수 없습니다.")
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
         );
 
         if (productMedia.getProductChecked() == Boolean.FALSE) {
@@ -190,4 +178,15 @@ public class ProductServiceImpl implements ProductService{
 
         return MediaResponseDto.builder().build();
     }
+
+
+    @Override
+    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+        return productUUID.stream()
+            .map(productRepository::findByProductUUID)
+            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+            .toList();
+
+    }
+
 }

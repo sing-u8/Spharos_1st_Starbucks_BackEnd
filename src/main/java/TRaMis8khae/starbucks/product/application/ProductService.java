@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.product.application;
 
 import TRaMis8khae.starbucks.product.dto.*;
+import TRaMis8khae.starbucks.product.entity.Product;
 
 import java.util.List;
 
@@ -36,5 +37,7 @@ public interface ProductService {
     MediaResponseDto findDetailMedia(String productUUID);
 
     MediaResponseDto findMedia(String productUUID);
+
+    List<Product> findProductsByProductUUID(List<String> productUUID);
 
 }

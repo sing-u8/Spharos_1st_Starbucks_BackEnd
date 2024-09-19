@@ -23,4 +23,6 @@ public class ProductRequestVo {
 
     private String volumeName;
 
+    private Integer maxOrderCount;
+
 }
