@@ -42,37 +42,10 @@ public class EventController {
 
     }
 
-//    public CommonResponseEntity<List<EventInfoResponseVo>> getEventList() {
-//
-//        return new CommonResponseEntity<>(
-//                HttpStatus.OK,
-//                true,
-//                CommonResponseMessage.SUCCESS.getMessage() ,
-//                eventInfoService.getEventList().stream().map(EventInfoResponseDto::toVo).toList()
-//        );
-//
-//    }
-
-//    @GetMapping("/event/product/{eventId}")
-//    public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
-//
-//        log.info("eventId : {}", eventId);
-//
-//        List<String> productUUID = eventInfoService.getEventUUID(eventId);
-//        List<Product> products = productService.findProductsByProductUUID(productUUID);
-//
-//        return new BaseResponse<>(
-//                products.stream().map(EventProductResponseDto::toVo).toList()
-//        );
-//
-//    }
-
     @GetMapping("/event/product/{eventId}")
     public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
-        log.info("eventId : {}", eventId);
 
         List<String> productUUID = eventInfoService.getEventUUID(eventId);
-//        List<Product> products = productService.findProductsByProductUUID(productUUID);
 
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -87,20 +60,7 @@ public class EventController {
         );
 
         return new BaseResponse<>(responseVos);
+
     }
-
-
-//    public CommonResponseEntity<List<EventProductResponseVo>> getEventList(
-//            @RequestParam Long eventId
-//    ) {
-//
-//        return new CommonResponseEntity<>(
-//                HttpStatus.OK,
-//                true,
-//                CommonResponseMessage.SUCCESS.getMessage() ,
-//                eventInfoService.getEventList(eventId).stream().map(EventInfoResponseDto::toVo).toList()
-//        );
-//
-//    }
 
 }

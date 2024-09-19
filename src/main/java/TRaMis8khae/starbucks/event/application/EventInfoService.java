@@ -9,8 +9,5 @@ import java.util.List;
 public interface EventInfoService {
 
     List<EventInfoResponseDto> getEventList(Long eventId);
-//    List<EventProductResponseDto> getEventProductList(String productUUID);
-//    Slice<EventProductResponseDto> getEventProductList(List<String> productUUID);
-
     List<String> getEventUUID(Long eventId);
 }

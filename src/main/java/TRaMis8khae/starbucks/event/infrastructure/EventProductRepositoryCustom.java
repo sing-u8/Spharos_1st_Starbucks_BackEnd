@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface EventProductRepositoryCustom {
 
-//    List<Product> getEventProductList(String productUUID);
-
     Slice<Product> findByProductUUID(String productUUID, PageRequest pageRequest);
 
 }
