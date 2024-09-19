@@ -112,7 +112,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{topCode}/middleCategories")
-    public CommonResponseEntity<List<MiddleCategoryResponseVo>> getSubCategories(@PathVariable String topCode) {
+    public CommonResponseEntity<List<MiddleCategoryResponseVo>> getMiddleCategories(@PathVariable String topCode) {
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
