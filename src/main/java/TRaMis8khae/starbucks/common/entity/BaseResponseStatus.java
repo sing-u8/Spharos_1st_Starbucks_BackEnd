@@ -89,6 +89,18 @@ public enum BaseResponseStatus {
      */
     // Gpt
     GPT_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 6001, "GPT API 호출에 실패했습니다."),
+
+    /**
+     * 7000: review service error
+     */
+    DUPLICATED_REVIEW(HttpStatus.CONFLICT, false, 7001, "이미 리뷰를 작성하셨습니다."),
+    NO_EXIST_REVIEW(HttpStatus.NOT_FOUND, false, 7002, "존재하지 않는 리뷰입니다."),
+
+    /**
+     * 8000: media service error
+     */
+    NO_EXIST_MEDIA(HttpStatus.NOT_FOUND, false, 8001, "존재하지 않는 미디어입니다."),
+
     ;
 
     private final HttpStatusCode httpStatusCode;
