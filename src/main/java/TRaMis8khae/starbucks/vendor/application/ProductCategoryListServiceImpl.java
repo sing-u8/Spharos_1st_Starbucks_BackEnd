@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.vendor.application;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListRequestDto;
@@ -27,7 +29,7 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
     public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
         Product product = productRepository.findByProductUUID(productCategoryListRequestDto.getProductUUID())
-            .orElseThrow( () -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+            .orElseThrow( () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
 
         productCategoryListRepository.save(productCategoryListRequestDto.toEntity(product));
 
