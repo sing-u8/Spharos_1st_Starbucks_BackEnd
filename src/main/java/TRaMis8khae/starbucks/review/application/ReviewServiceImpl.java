@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.review.application;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
 import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
 import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
@@ -12,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,6 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = requestDto.toEntity();
         log.info("review: {}", review);
 
+        if(checkWriteReview(review)) {
+            throw new BaseException(BaseResponseStatus.DUPLICATED_REVIEW);
+        }
+
         reviewRepository.save(review);
     }
 
@@ -42,7 +46,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewUpdateResponseDto updateReview(Long id, ReviewUpdateRequestDto requestDto) {
 
-        Review review = reviewRepository.findById(id).orElseThrow();
+        Review review = reviewRepository.findById(id).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_REVIEW)
+        );
 
         Review updateReviewFromDto = requestDto.toEntity(review);
 
@@ -55,6 +61,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(Long id) {
         reviewRepository.deleteById(id);
+    }
+
+    private Boolean checkWriteReview(Review review) {
+        return reviewRepository.existsReviewByMemberUUIDAndProductUUID(review);
     }
 
 }
