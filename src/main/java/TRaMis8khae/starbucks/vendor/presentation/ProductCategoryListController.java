@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,15 +29,23 @@ public class ProductCategoryListController {
 	@PostMapping("/category")
 	public BaseResponse<Void> createProductByCategory(@RequestBody ProductCategoryListRequestVo productCategoryListRequestVo) {
 
-		productCategoryListService.addProductByCategory(ProductCategoryListRequestDto.toDto(productCategoryListRequestVo));
+		productCategoryListService.addProductByCategory(
+			ProductCategoryListRequestDto.toDto(productCategoryListRequestVo)
+		);
 
 		return new BaseResponse<>();
 	}
 
-	@GetMapping("/{topCode}/products")
-	public BaseResponse<List<ProductCategoryListResponseVo>> getProductsByTopCategories(@PathVariable String topCode) {
+	@GetMapping("/products")
+	public BaseResponse<List<ProductCategoryListResponseVo>> getProductsByCategories(
+		@RequestParam( value = "topCategoryCode", required = false ) String topCode,
+		@RequestParam( value = "middleCategoryCode", required = false ) String middleCode,
+		@RequestParam( value = "bottomCategoryCode", required = false ) String bottomCode) {
 
-		return new BaseResponse<>(productCategoryListService.findProductsByTopCategory(topCode).stream().map(ProductCategoryListResponseDto::toVo).toList());
+		return new BaseResponse<>(productCategoryListService.findProductsByCategories(
+			topCode, middleCode, bottomCode)
+			.stream().map(ProductCategoryListResponseDto::toVo).toList()
+		);
 	}
 
 }
