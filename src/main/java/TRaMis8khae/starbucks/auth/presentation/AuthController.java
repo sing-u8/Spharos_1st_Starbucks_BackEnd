@@ -45,11 +45,11 @@ public class AuthController {
     @DeleteMapping("/signout/{memberUUID}")
     public CommonResponseEntity<Void> signOut(
             @PathVariable String memberUUID,
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader("Authorization") String accessToken) {
 
-        String accessToken = token.replace("Bearer ", "");
+        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
 
-        authService.signOut(memberUUID, accessToken);
+        authService.signOut(memberUUID, memberUuidFromToken);
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
@@ -79,34 +79,17 @@ public class AuthController {
     @PutMapping("/member_info/{memberUUID}")
     public CommonResponseEntity<Void> updateMemberInfo(@RequestHeader("Authorization") String accessToken,
                                                        @PathVariable String memberUUID,
-                                                       @RequestBody ModifyMemberInfoRequestVo modifyMemberInfoRequestVo) {
+                                                       @RequestBody UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
 
-        String token = accessToken.replace("Bearer ", "");
+        UpdateMemberInfoRequestDto updateMemberInfoRequestDto = UpdateMemberInfoRequestDto
+                .toDto(UpdateMemberInfoRequestVo);
 
-        Claims claims = jwtTokenProvider.getClaims(token);
+        authService.updateMemberInfo(memberUUID, accessToken, updateMemberInfoRequestDto);
 
-        String memberUuidFromToken = claims.get("memberUUID", String.class);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
-            return new CommonResponseEntity<>(HttpStatus.UNAUTHORIZED, false, "잘못된 UUID", null);
-        }
-
-        ModifyMemberInfoRequestDto modifyMemberInfoRequestDto = ModifyMemberInfoRequestDto
-                .toDto(modifyMemberInfoRequestVo);
-
-        try {
-            authService.updateMemberInfo(memberUUID, token, modifyMemberInfoRequestDto);
-            return new CommonResponseEntity<>(HttpStatus.OK,
-                    true,
-                    CommonResponseMessage.SUCCESS.getMessage(),
-                    null);
-        } catch (Exception e) {
-            return new CommonResponseEntity<>(HttpStatus.BAD_REQUEST,
-                    false,
-                    e.getMessage(),
-                    null);
-
-        }
+        return new CommonResponseEntity<>(HttpStatus.OK,
+                true,
+                CommonResponseMessage.SUCCESS.getMessage(),
+                null);
 
     }
 
