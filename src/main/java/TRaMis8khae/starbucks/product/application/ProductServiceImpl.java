@@ -182,6 +182,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<Product> findProductsByProductUUID(List<String> productUUID) {
+
         return productUUID.stream()
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))

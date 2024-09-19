@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.event.dto;
 
 import TRaMis8khae.starbucks.event.entity.Event;
-import TRaMis8khae.starbucks.event.vo.EventResponseVo;
+import TRaMis8khae.starbucks.event.vo.EventInfoResponseVo;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,12 +25,12 @@ public class EventInfoResponseDto {
                 .build();
     }
 
-    public EventResponseVo toVo() {
-        return EventResponseVo.builder()
-                .eventName(eventName)
-                .discountRate(discountRate)
-                .startDate(startDate)
-                .endDate(endDate)
+    public EventInfoResponseVo toVo() {
+        return EventInfoResponseVo.builder()
+                .eventName(this.eventName)
+                .discountRate(this.discountRate)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
                 .build();
     }
 }

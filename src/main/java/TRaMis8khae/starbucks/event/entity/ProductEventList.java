@@ -22,6 +22,10 @@ public class ProductEventList {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Event eventId;
+    private Event event;
+
+    public String getProductUUID() {
+        return product.getProductUUID();
+    }
 
 }

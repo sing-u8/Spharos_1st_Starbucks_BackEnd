@@ -7,9 +7,9 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
 @Builder
-public class EventResponseVo {
+@ToString
+public class EventInfoResponseVo {
 
     private String eventName;
 
