@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
+
 
 @Slf4j
 @Service
@@ -38,15 +41,6 @@ public class ProductServiceImpl implements ProductService{
 
         productRepository.save(requestDto.toEntity(productUUID));
     }
-
-//    @Override
-//    public void updateProduct(ProductRequestDto requestDto) {
-//
-//        productRepository.findByProductUUID(requestDto.getProductUUID())
-//                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-//
-//        productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
-//    }
 
     @Override
     public void deleteProduct(String productUUID) {
@@ -84,17 +78,8 @@ public class ProductServiceImpl implements ProductService{
 
         volumeRepository.save(requestDto.toVolumeEntity());
 
-        productOptionRepository.save(requestDto.toEntity( requestDto.toVolumeEntity()));
-
+        productOptionRepository.save(requestDto.toEntity(requestDto.toVolumeEntity()));
     }
-
-
-//    @Override
-//    public void updateProductOption(ProductOptionRequestDto requestDto) {
-//
-//
-//    }
-
 
     @Transactional
     @Override
@@ -193,4 +178,15 @@ public class ProductServiceImpl implements ProductService{
 
         return MediaResponseDto.builder().build();
     }
+
+
+    @Override
+    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+        return productUUID.stream()
+            .map(productRepository::findByProductUUID)
+            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+            .toList();
+
+    }
+
 }
