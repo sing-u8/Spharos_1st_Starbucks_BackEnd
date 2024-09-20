@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @Entity
 @Builder
@@ -26,7 +24,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String productUUID;
 
-    private Integer productScore = 0;
+    private Double productScore = 0.0;
 
     @Column(nullable = false)
     private Double price;
@@ -42,6 +40,10 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer maxOrderCount;
 
+    @Column(nullable = false)
     private Integer minOrderCount = 1;
+
+    @Column(nullable = false)
+    private Long mediaId;
     
 }
