@@ -84,8 +84,8 @@ public class ProductServiceImpl implements ProductService{
 
 
         volumeRepository.save(VolumeRequestDto.toDto(VolumeRequestVo.builder()
-            .name(requestDto.getVolumeName())
-            .build()).toEntity()
+                .name(requestDto.getVolumeName())
+                .build()).toEntity()
         );
 //        colorRepository.save(ColorRequestDto.toDto(ColorRequestVo.builder()
 //                .name(requestDto.getColorName())
@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService{
     public void deleteProductOption(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         volumeRepository.delete(productOption.getVolume());
@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService{
     public ProductOptionResponseDto findProductOption(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         return ProductOptionResponseDto.toDto(productOption);
@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService{
     public VolumeResponseDto findVolume(String productUUID) {
 
         ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
         return VolumeResponseDto.toDto(productOption.getVolume());
@@ -139,9 +139,9 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> findProductsByProductUUID(List<String> productUUID) {
 
         return productUUID.stream()
-            .map(productRepository::findByProductUUID)
-            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
-            .toList();
+                .map(productRepository::findByProductUUID)
+                .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+                .toList();
 
     }
 
