@@ -58,7 +58,8 @@ public class SecurityConfig {
                                     "/purchase/**",
                                 "/review/**",
                                 "/voucher/**",
-                                "/wish/**"
+                                "/wish/**",
+                                "/media/**"
 
 
                             )

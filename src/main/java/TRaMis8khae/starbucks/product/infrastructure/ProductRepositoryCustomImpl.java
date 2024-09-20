@@ -18,7 +18,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 
 	QProduct product = QProduct.product;
 	QProductOption productOption = QProductOption.productOption;
-	QProductMedia productMedia = QProductMedia.productMedia;
 
 	@Override
 	public List<Product> getProductListWithPrice(Double minPrice, Double maxPrice) {

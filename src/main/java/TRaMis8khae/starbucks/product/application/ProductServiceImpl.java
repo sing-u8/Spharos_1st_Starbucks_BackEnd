@@ -3,6 +3,9 @@ package TRaMis8khae.starbucks.product.application;
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
+import TRaMis8khae.starbucks.media.dto.MediaAddRequestDto;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
@@ -28,21 +31,21 @@ public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
-    private final MediaRepository mediaRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
     private final VolumeRepository volumeRepository;
     private final ColorRepository colorRepository;
 
     @Override
+    @Transactional
     public void addProduct(ProductRequestDto requestDto) {
 
         if (productRepository.existsByproductName(requestDto.getProductName())) {
             throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
         }
 
-        String productUUID = UUID.randomUUID().toString();
-
+        String productUUID = CodeGenerator.generateCode(36);
         productRepository.save(requestDto.toEntity(productUUID));
+
     }
 
     @Override
@@ -131,65 +134,6 @@ public class ProductServiceImpl implements ProductService{
 
         return products.stream().map(ProductResponseDto::toDto).toList();
     }
-
-
-//    @Override
-//    public void addMedia(MediaAddRequestDto requestDto) {
-//
-//        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-//            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-//        }
-//
-//        mediaRepository.save(requestDto.toEntity());
-//    }
-//
-//
-//    @Override
-//    public void deleteMedia(String productUUID) {
-//
-//        if (!productRepository.existsByProductUUID(productUUID)) {
-//            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-//        }
-//
-//        mediaRepository.findByProductUUID(productUUID).orElseThrow(
-//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-//        );
-//    }
-//
-//
-//    @Override
-//    public MediaResponseDto findDetailMedia(String productUUID) {
-//
-//        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-//        );
-//
-//        if (productMedia.getProductChecked() == Boolean.FALSE) {
-//            return null;
-//        }
-//
-//        return MediaResponseDto.builder().build();
-//    }
-//
-//
-//    @Override
-//    public MediaResponseDto findMedia(String productUUID) {
-//
-//        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-//            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-//        );
-//
-//        if (productMedia.getProductChecked() == Boolean.FALSE) {
-//            return null;
-//        }
-//
-//        if (productMedia.getThumbChecked() == Boolean.FALSE) { //썸네일
-//            return null;
-//        }
-//
-//        return MediaResponseDto.builder().build();
-//    }
-
 
     @Override
     public List<Product> findProductsByProductUUID(List<String> productUUID) {

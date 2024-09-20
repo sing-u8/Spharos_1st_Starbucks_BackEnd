@@ -17,6 +17,8 @@ public class ProductRequestDto {
     private String productUUID;
     private Boolean engravingChecked;
     private Integer maxOrderCount;
+    private Integer minOrderCount;
+    private Long mediaId;
 //    private String volumeName;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
@@ -28,6 +30,8 @@ public class ProductRequestDto {
             .isAdditionalTogether(productRequestVo.getIsAdditionalTogether())
             .engravingChecked(productRequestVo.getEngravingChecked())
             .maxOrderCount(productRequestVo.getMaxOrderCount())
+            .minOrderCount(productRequestVo.getMinOrderCount())
+            .mediaId(productRequestVo.getMediaId())
             .build();
     }
 
@@ -41,6 +45,8 @@ public class ProductRequestDto {
             .isAdditionalTogether(isAdditionalTogether)
             .engravingChecked(engravingChecked)
             .maxOrderCount(maxOrderCount)
+            .minOrderCount(minOrderCount)
+            .mediaId(mediaId)
             .build();
     }
 

@@ -25,4 +25,8 @@ public class ProductRequestVo {
 
     private Integer maxOrderCount;
 
+    private Integer minOrderCount;
+
+    private Long mediaId;
+
 }

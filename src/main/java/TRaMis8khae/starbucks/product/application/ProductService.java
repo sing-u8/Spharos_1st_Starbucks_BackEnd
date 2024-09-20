@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.product.application;
 
+import TRaMis8khae.starbucks.media.dto.MediaAddRequestDto;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.Product;
 
@@ -29,14 +31,6 @@ public interface ProductService {
     VolumeResponseDto findVolume(String productUUID);
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
-
-//    void addMedia(MediaAddRequestDto requestDto);
-//
-//    void deleteMedia(String productUUID);
-//
-//    MediaResponseDto findDetailMedia(String productUUID);
-//
-//    MediaResponseDto findMedia(String productUUID);
 
     List<Product> findProductsByProductUUID(List<String> productUUID);
 

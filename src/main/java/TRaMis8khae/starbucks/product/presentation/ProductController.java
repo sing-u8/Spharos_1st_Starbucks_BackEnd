@@ -1,19 +1,18 @@
 package TRaMis8khae.starbucks.product.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
+import TRaMis8khae.starbucks.media.application.MediaService;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
+import TRaMis8khae.starbucks.media.vo.MediaAddRequestVo;
 import TRaMis8khae.starbucks.product.application.ProductService;
-import TRaMis8khae.starbucks.product.dto.MediaRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
-import TRaMis8khae.starbucks.product.vo.MediaRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1/product")
 public class ProductController {
     private final ProductService productService;
+    private final MediaService mediaService;
 
     @PostMapping
     public BaseResponse<Void> createProduct(@RequestBody ProductRequestVo productRequestVo) {
@@ -36,9 +36,9 @@ public class ProductController {
 
 
     @PostMapping("/media")
-    public BaseResponse<Void> createProductMedia(@RequestBody MediaRequestVo mediaRequestVo) {
+    public BaseResponse<Void> createProductMedia(@RequestBody MediaAddRequestVo mediaAddRequestVo) {
 
-        productService.addMedia(MediaRequestDto.toDto(mediaRequestVo));
+//        productService.addMedia(MediaRequestDto.toDto(mediaRequestVo));
 
         return new BaseResponse<>();
     }
@@ -62,7 +62,7 @@ public class ProductController {
     @DeleteMapping("/media")
     public BaseResponse<Void> deleteMedia(@RequestBody String productUUID) {
 
-        productService.deleteMedia(productUUID);
+
 
         return new BaseResponse<>();
     }
