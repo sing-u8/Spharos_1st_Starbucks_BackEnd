@@ -4,19 +4,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @ToString
-public class EventInfoResponseVo {
+public class EventResponseVo {
 
     private String eventName;
 
     private Integer discountRate;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
 }
