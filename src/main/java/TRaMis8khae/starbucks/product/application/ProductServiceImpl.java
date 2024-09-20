@@ -157,12 +157,21 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID) {
+    public List<ProductResponseDto> findProductsDtoByProductUUID(List<String> productUUID) {
 
         return productUUID.stream()
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
             .map(ProductResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+
+        return productUUID.stream()
+            .map(productRepository::findByProductUUID)
+            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+            .toList();
     }
 
     @Override
