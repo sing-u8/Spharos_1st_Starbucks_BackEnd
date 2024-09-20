@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,23 +32,33 @@ public class EventController {
     private final ProductService productService;
 
     @PostMapping("/event")
-    public BaseResponse<EventRequestVo> createEvent(@RequestBody EventRequestVo requestVo) {
+    public BaseResponse<EventRequestVo> createEvent(@RequestBody EventRequestVo requestVo,
+                                                    @RequestParam MultipartFile image) {
 
         EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
 
-        eventService.addEvent(requestDto);
+        eventService.addEvent(requestDto, image);
 
         return null;
 
     }
 
-    @GetMapping("/event")
-    public BaseResponse<List<EventResponseVo>> getEventList(Long eventId) {
+//    @GetMapping("/event/{eventId}")
+//    public BaseResponse<List<EventResponseVo>> getEventList(@PathVariable Long eventId) {
+//
+//        return new BaseResponse<>(
+//                eventService.getEventList(eventId).stream().map(EventInfoResponseDto::toVo).toList()
+//        );
+//
+//    }
 
-        return new BaseResponse<>(
-                eventService.getEventList(eventId).stream().map(EventInfoResponseDto::toVo).toList()
-        );
+    @GetMapping("/event/{eventId}")
+    public BaseResponse<List<EventResponseVo>> getEventList(@PathVariable Long eventId) {
 
+        EventInfoResponseDto responseDto = eventService.getEvent(eventId);
+        EventResponseVo responseVo = responseDto.toVo();
+
+        return new BaseResponse<>(List.of(responseVo));
     }
 
     @GetMapping("/event/product/{eventId}")

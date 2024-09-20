@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -19,5 +20,7 @@ public class EventResponseVo {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private List<String> mediaPath;
 
 }

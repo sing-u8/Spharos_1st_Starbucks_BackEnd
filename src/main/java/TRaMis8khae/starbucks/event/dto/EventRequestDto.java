@@ -14,12 +14,11 @@ import java.util.Date;
 public class EventRequestDto {
 
     private String eventName;
-
     private Integer discountRate;
-
     private LocalDate startDate;
-
     private LocalDate endDate;
+    private String imagePath;
+
 
     public static EventRequestDto toDto(EventRequestVo requestVo) {
         return EventRequestDto.builder()

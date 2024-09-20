@@ -4,10 +4,9 @@ import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Builder
@@ -21,5 +20,7 @@ public class EventRequestVo {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private MultipartFile image;
 
 }

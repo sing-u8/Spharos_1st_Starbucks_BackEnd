@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -16,6 +17,12 @@ public class EventInfoResponseDto {
     private Integer discountRate;
     private LocalDate startDate;
     private LocalDate endDate;
+
+    private List<String> eventImage;
+
+    public void setEventImage(List<String> eventImages) {
+        this.eventImage = eventImages;
+    }
 
     public static EventInfoResponseDto toDto(Event event) {
         return EventInfoResponseDto.builder()
@@ -32,6 +39,16 @@ public class EventInfoResponseDto {
                 .discountRate(this.discountRate)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
+                .build();
+    }
+
+    public static EventInfoResponseDto fromEntity(Event event, List<String> eventImage) {
+        return EventInfoResponseDto.builder()
+                .eventName(event.getEventName())
+                .discountRate(event.getDiscountRate())
+                .startDate(event.getStartDate())
+                .endDate(event.getEndDate())
+                .eventImage(eventImage)
                 .build();
     }
 }
