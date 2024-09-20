@@ -69,10 +69,14 @@ public class EventController {
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<ProductResponseDto> productSlice = productService.findProductsByProductUUID(productUUID); // product코드 사용
+        List<ProductResponseDto> products = productService.findProductsByProductUUID(productUUID); // product코드 사용
+
+        List<ProductResponseDto> productSlice = products.subList(0, Math.min(10, products.size()));
 
         Slice<EventProductResponseVo> responseVos = new SliceImpl<>(
-                productSlice.stream().map(EventProductResponseDto::toVo).toList(),
+                productSlice.stream()
+                        .map(EventProductResponseDto::toVo)
+                        .toList(),
                 pageable,
                 productSlice.size() > 10
         );

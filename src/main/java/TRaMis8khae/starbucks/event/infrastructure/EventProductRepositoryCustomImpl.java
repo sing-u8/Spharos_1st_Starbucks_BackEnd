@@ -2,8 +2,6 @@ package TRaMis8khae.starbucks.event.infrastructure;
 
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.entity.QProduct;
-import TRaMis8khae.starbucks.product.entity.QProductMedia;
-import TRaMis8khae.starbucks.product.entity.QProductOption;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

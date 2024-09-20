@@ -1,6 +1,8 @@
 package TRaMis8khae.starbucks.event.entity;
 
-import TRaMis8khae.starbucks.common.entity.Media;
+import TRaMis8khae.starbucks.media.entity.Media;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
+import TRaMis8khae.starbucks.media.entity.MediaType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -19,14 +21,13 @@ public class EventMedia extends Media {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @Builder
     public EventMedia(
-            String path, Boolean thumbChecked,
-            Boolean mainChecked, Boolean detailChecked,
-            Boolean eventChecked, Long id) {
+            String mediaUrl, Boolean thumbChecked, MediaType mediaType,
+            MediaKind mediaKind, Integer mediaSeq, Event event) {
 
-        super(path, thumbChecked, mainChecked, detailChecked, eventChecked);
-        this.id = id;
+        super(mediaUrl, thumbChecked, mediaType, mediaKind, mediaSeq);  // 상위 클래스 Media의 필드를 초기화
+        this.event = event;  // Event와의 관계 설정
     }
+
 
 }

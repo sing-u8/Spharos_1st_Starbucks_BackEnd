@@ -57,14 +57,14 @@ public class EventServiceImpl implements EventService {
         String fileName = image.getOriginalFilename();
         File file = new File(imagePath, fileName);
 
-        try {
-            image.transferTo(file);
-            EventMedia eventMedia = EventMedia.builder()
-                    .path(file.getAbsolutePath())
-                    .build();
-        } catch (Exception e) {
-            log.error("이미지 저장 실패", e);
-        }
+//        try {
+//            image.transferTo(file);
+//            EventMedia eventMedia = EventMedia.builder()
+//                    .mediaUrl(file.getAbsolutePath())
+//                    .build();
+//        } catch (Exception e) {
+//            log.error("이미지 저장 실패", e);
+//        }
 
     }
 
@@ -82,7 +82,7 @@ public class EventServiceImpl implements EventService {
         List<EventMedia> eventMediaList = eventMediaRepository.findByEventId(eventId);
 
         List<String> mediaPath = eventMediaList.stream()
-                .map(EventMedia::getPath)
+                .map(EventMedia::getMediaUrl)
                 .collect(Collectors.toList());
 
         return EventInfoResponseDto.fromEntity(event, mediaPath);

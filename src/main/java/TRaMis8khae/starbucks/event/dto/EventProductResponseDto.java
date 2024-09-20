@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.event.dto;
 
 import TRaMis8khae.starbucks.event.vo.EventProductResponseVo;
+import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +21,9 @@ public class EventProductResponseDto {
                 .build();
     }
 
-    public EventProductResponseVo toVo() {
+    public static EventProductResponseVo toVo(ProductResponseDto responseDto) {
         return EventProductResponseVo.builder()
-                .productName(this.productName)
-                .discountRate(this.discountRate)
-                .price(this.price)
+                .productName(responseDto.getProductName())
                 .build();
     }
 
