@@ -27,4 +27,5 @@ public class Wish {
         this.productUUID = productUUID;
         this.wishChecked = wishChecked;
     }
+    // nginx test
 }

@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModifyMemberInfoRequestVo {
+public class UpdateMemberInfoRequestVo {
 
     private String nickname;
     private String phoneNumber;

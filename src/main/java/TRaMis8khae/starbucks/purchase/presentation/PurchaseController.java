@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.purchase.presentation;
 
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -29,7 +28,7 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @PostMapping("/add")
-    public CommonResponseEntity<Void> addPurchase(@RequestBody PurchaseAddRequestVo vo) {
+    public BaseResponse<Void> addPurchase(@RequestBody PurchaseAddRequestVo vo) {
 
         log.info("PurchaseAddRequestVo: {}", vo);
         String serialNum = UUID.randomUUID().toString();
@@ -40,16 +39,14 @@ public class PurchaseController {
 
         purchaseService.addPurchase(requestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
+        );
     }
 
     // 주문 단 건 조회 - 캐싱?
     @GetMapping("/find/{serialNum}")
-    public CommonResponseEntity<PurchaseReadResponseVo> findPurchase(@PathVariable String serialNum) {
+    public BaseResponse<PurchaseReadResponseVo> findPurchase(@PathVariable String serialNum) {
 
         PurchaseReadRequestVo requestVo = PurchaseReadRequestVo.builder()
                 .serialNum(serialNum)
@@ -57,46 +54,32 @@ public class PurchaseController {
 
         PurchaseReadRequestDto requestDto = PurchaseReadRequestDto.toDto(requestVo);
 
-        PurchaseReadResponseDto responseDto = purchaseService.findPurchase(requestDto);
-
-        PurchaseReadResponseVo responseVo = responseDto.toVo();
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                responseVo);
+        return new BaseResponse<>(
+                purchaseService.findPurchase(requestDto).toVo()
+        );
     }
 
     // 주문 전체 조회 - 페이징
     @GetMapping("/find")
-    public CommonResponseEntity<Page<PurchaseReadResponseVo>> findPurchases(
+    public BaseResponse<Page<PurchaseReadResponseVo>> findPurchases(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<PurchaseReadResponseDto> responseDtos = purchaseService.findPurchases(pageable);
 
-        Page<PurchaseReadResponseVo> responseVos = responseDtos.map(PurchaseReadResponseDto::toVo);
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                responseVos);
+        return new BaseResponse<>(
+                purchaseService.findPurchases(pageable).map(PurchaseReadResponseDto::toVo)
+        );
     }
 
     // 주문 삭제
     @DeleteMapping("/delete/{serialNum}")
-    public CommonResponseEntity<Void> deletePurchase(@PathVariable String serialNum) {
+    public BaseResponse<Void> deletePurchase(@PathVariable String serialNum) {
 
         purchaseService.deletePurchase(serialNum);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
+        );
     }
-
 }
