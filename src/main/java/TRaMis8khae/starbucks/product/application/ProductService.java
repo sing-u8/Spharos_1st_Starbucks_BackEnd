@@ -30,7 +30,7 @@ public interface ProductService {
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-//    void addMedia(MediaRequestDto requestDto);
+//    void addMedia(MediaAddRequestDto requestDto);
 //
 //    void deleteMedia(String productUUID);
 //

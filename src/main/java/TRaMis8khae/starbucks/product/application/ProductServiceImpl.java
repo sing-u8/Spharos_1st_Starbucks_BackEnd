@@ -135,7 +135,7 @@ public class ProductServiceImpl implements ProductService{
 
 
 //    @Override
-//    public void addMedia(MediaRequestDto requestDto) {
+//    public void addMedia(MediaAddRequestDto requestDto) {
 //
 //        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
 //            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
