@@ -6,7 +6,6 @@ import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
-import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
