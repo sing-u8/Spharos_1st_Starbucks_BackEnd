@@ -85,12 +85,12 @@ public class ProductServiceImpl implements ProductService{
             .name(requestDto.getVolumeName())
             .build()).toEntity()
         );
-        colorRepository.save(ColorRequestDto.toDto(ColorRequestVo.builder()
-                .name(requestDto.getColorName())
-            .build()).toEntity()
-        );
+//        colorRepository.save(ColorRequestDto.toDto(ColorRequestVo.builder()
+//                .name(requestDto.getColorName())
+//            .build()).toEntity()
+//        );
 
-        productOptionRepository.save(requestDto.toEntity());
+//        productOptionRepository.save(requestDto.toEntity());
     }
 
     @Transactional
