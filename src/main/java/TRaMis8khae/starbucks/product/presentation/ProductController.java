@@ -35,15 +35,6 @@ public class ProductController {
     }
 
 
-    @PostMapping("/media")
-    public BaseResponse<Void> createProductMedia(@RequestBody MediaAddRequestVo mediaAddRequestVo) {
-
-//        productService.addMedia(MediaRequestDto.toDto(mediaRequestVo));
-
-        return new BaseResponse<>();
-    }
-
-
     @PostMapping("/option")
     public BaseResponse<Void> createProductOption(@RequestBody ProductOptionRequestVo productOptionRequestVo) {
 
@@ -55,14 +46,6 @@ public class ProductController {
     @DeleteMapping
     public BaseResponse<Void> deleteProduct(@RequestBody String productUUID) {
         productService.deleteProduct(productUUID);
-
-        return new BaseResponse<>();
-    }
-
-    @DeleteMapping("/media")
-    public BaseResponse<Void> deleteMedia(@RequestBody String productUUID) {
-
-
 
         return new BaseResponse<>();
     }
