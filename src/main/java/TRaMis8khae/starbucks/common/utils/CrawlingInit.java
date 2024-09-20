@@ -6,13 +6,15 @@ import TRaMis8khae.starbucks.media.entity.MediaType;
 import TRaMis8khae.starbucks.product.entity.Product;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,62 +23,117 @@ import java.util.List;
 
 @Slf4j
 @Profile("crawling")  // "crawling" 프로파일이 활성화되었을 때만 이 설정이 적용됨
+@Component
 public class CrawlingInit {
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
+
+        log.info("start!!!!!");
+
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
+        String excelFilePath = "D:\\starbucks_products2.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
-        parseExcelData(excelFilePath);
+        try {
+            parseExcelData(excelFilePath);
+        } catch (IOException e) {
+            log.error("파일 읽기 오류 : {}", e.getMessage());
+        }
     }
 
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
     public void parseExcelData(String excelFilePath) throws IOException {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
-        Sheet sheet = workbook.getSheetAt(0);
 
-        for (Row row : sheet) {
-            // 각 셀의 데이터 가져오기
-            String productName = row.getCell(2).getStringCellValue();
-            String price = row.getCell(3).getStringCellValue();
-            String descriptionImage = row.getCell(6).getStringCellValue();
-            String thumbnail = row.getCell(1).getStringCellValue();
-            String detailThumbnail = row.getCell(5).getStringCellValue();
+        for (Sheet sheet : workbook) {
+            log.info("Sheet name : {}", sheet.getSheetName());
 
-            log.info("productName : {}", productName);
-            log.info("price : {}", price);
-            log.info("descriptionImage : {}", descriptionImage);
-            log.info("thumbnail : {}", thumbnail);
-            log.info("detailThumbnail : {}", detailThumbnail);
+            // todo heet 이름별로 topCode 생성
 
-            // Media 객체 생성
-            List<Media> mediaList = parseMedia(thumbnail, detailThumbnail);
-            for (Media media : mediaList) {
-                log.info("media : {}", media);
+            for (Row row : sheet) {
+                // media
+                String thumbNailMedia = getCellValue(row.getCell(0));
+                String mainMedia = getCellValue(row.getCell(5));
+                log.info("thumbNailMedia : {}", thumbNailMedia);
+                log.info("mainMedia : {}", mainMedia);
+
+                // product
+                String productName = getCellValue(row.getCell(1));
+                String productUUID = getCellValue(row.getCell(3));
+                String price = getCellValue(row.getCell(2));
+                String descriptionImage = getCellValue(row.getCell(6));
+                String descriptionTag = getCellValue(row.getCell(7));
+                log.info("productName : {}", productName);
+                log.info("productUUID : {}", productUUID);
+                log.info("price : {}", price);
+                log.info("descriptionImage : {}", descriptionImage);
+                log.info("descriptionTag : {}", descriptionTag);
+
+                // event
+                String discountRate = getCellValue(row.getCell(4));
+                log.info("discountRate : {}", discountRate);
+
+                // review
+                String review = getCellValue(row.getCell(8));
+                log.info("review : {}", review);
+
+                List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
+                for (Media media : mediaList) {
+                    log.info("media : {}", media);
+                }
+
             }
 
-            // Product 객체 생성
-            Product product = parseProduct(productName, price, descriptionImage);
-            log.info("product : {}", product);
+            for (Row row : sheet) {
+                // 각 셀의 데이터 가져오기
 
-            // 데이터 저장 (saveProduct, saveMedia는 각각의 repository 또는 service를 통해 DB에 저장)
-            saveProduct(product);
-            saveMedia(mediaList);
+                String productName = getCellValue(row.getCell(2));
+                String price = getCellValue(row.getCell(3));
+                String descriptionImage = getCellValue(row.getCell(6));
+                String thumbnail = getCellValue(row.getCell(1));
+                String detailThumbnail = getCellValue(row.getCell(5));
+
+
+                log.info("productName : {}", productName);
+                log.info("price : {}", price);
+
+                log.info("descriptionImage : {}", descriptionImage);
+                log.info("thumbnail : {}", thumbnail);
+                log.info("detailThumbnail : {}", detailThumbnail);
+
+                // Media 객체 생성
+                List<Media> mediaList = parseMedia(thumbnail, detailThumbnail);
+                for (Media media : mediaList) {
+                    log.info("media : {}", media);
+                }
+
+                // Product 객체 생성
+                Product product = parseProduct(productName, price, descriptionImage);
+                log.info("product : {}", product);
+
+                // 데이터 저장 (saveProduct, saveMedia는 각각의 repository 또는 service를 통해 DB에 저장)
+                saveProduct(product);
+                saveMedia(mediaList);
+            }
+
         }
 
         workbook.close();
         file.close();
     }
 
+    private String getCellValue(Cell cell) {
+        return cell == null ? "" : cell.getStringCellValue();
+    }
+
     // Media 파싱 메서드 (위에서 작성한 것과 동일)
-    public List<Media> parseMedia(String thumbnailUrl, String detailThumbnailUrl) {
+    public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
         List<Media> mediaList = new ArrayList<>();
 
         Media thumbMedia = Media.builder()
-                .mediaUrl(thumbnailUrl)
+                .mediaUrl(thumbnailMedia)
                 .thumbChecked(true)
                 .mediaType(MediaType.IMAGE)
                 .mediaKind(MediaKind.PRODUCT)
@@ -84,7 +141,7 @@ public class CrawlingInit {
                 .build();
 
         Media detailMedia = Media.builder()
-                .mediaUrl(detailThumbnailUrl)
+                .mediaUrl(mainMedia)
                 .thumbChecked(false)
                 .mediaType(MediaType.IMAGE)
                 .mediaKind(MediaKind.PRODUCT)
@@ -109,7 +166,12 @@ public class CrawlingInit {
     }
 
     private Double parsePrice(String price) {
-        return Double.parseDouble(price.replace("원", "").replace(",", ""));
+        try {
+            return Double.parseDouble(price.replace("원", "").replace(",", ""));
+        } catch (NumberFormatException e) {
+            log.error("Invalid price format: {}", price);
+            return 0.0; // 기본값 설정
+        }
     }
 
     // DB 저장 메서드 (예시로 정의)

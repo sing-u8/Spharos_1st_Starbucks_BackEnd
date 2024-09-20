@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.review.entity;
 
+import TRaMis8khae.starbucks.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.ToString;
 @Entity
 @ToString
 @NoArgsConstructor
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,27 +24,20 @@ public class Review {
     @Column(nullable = false, length = 50)
     private String memberMaskingId; // masking을 프론트에서 하거나 db 넣을 때 바로 masking
 
-    @Column(length = 30)
-    private String memberNickname;
-
-    @Column(nullable = false, length = 50)
-    private String reviewTitle;
-
     @Column(nullable = false, length = 50)
     private String reviewContext;
 
     private Integer reviewScore;
 
+    private Long mediaID;
+
     @Builder
-    public Review(Long id, String productUUID, String memberUUID, String memberMaskingId, String memberNickname, String reviewTitle, String reviewContext, Integer reviewScore) {
-        this.id = id;
+    public Review(String productUUID, String memberUUID, String memberMaskingId, String reviewContext, Integer reviewScore, Long mediaID) {
         this.productUUID = productUUID;
         this.memberUUID = memberUUID;
         this.memberMaskingId = memberMaskingId;
-        this.memberNickname = memberNickname;
-        this.reviewTitle = reviewTitle;
         this.reviewContext = reviewContext;
         this.reviewScore = reviewScore;
+        this.mediaID = mediaID;
     }
-
 }
