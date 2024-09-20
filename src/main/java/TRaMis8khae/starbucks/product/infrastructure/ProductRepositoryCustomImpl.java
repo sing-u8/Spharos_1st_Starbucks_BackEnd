@@ -18,7 +18,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 
 	QProduct product = QProduct.product;
 	QProductOption productOption = QProductOption.productOption;
-	QProductMedia productMedia = QProductMedia.productMedia;
 
 	@Override
 	public List<Product> getProductListWithPrice(Double minPrice, Double maxPrice) {
@@ -35,4 +34,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 		return null;
 	}
 
+	@Override
+	public List<Product> getProductListWithPage(Long offset, Integer pageSize) {
+
+		return jpaQueryFactory.selectFrom(product)
+			.offset(offset)
+			.limit(pageSize)
+			.fetch();
+	}
 }

@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.review.presentation;
 
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.review.application.ReviewService;
 import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
 import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,40 +26,33 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/add")
-    public CommonResponseEntity<Void> addReview(@RequestBody ReviewAddRequestVo requestVo) {
+    public BaseResponse<Void> addReview(@RequestBody ReviewAddRequestVo requestVo) {
 
         ReviewAddRequestDto requestDto = ReviewAddRequestDto.toDto(requestVo);
 
         reviewService.addReview(requestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
+        );
     }
 
     // 리뷰 조회
     @GetMapping("/find")
-    public CommonResponseEntity<Page<ReviewReadResponseVo>> findReviews(
+    public BaseResponse<Page<ReviewReadResponseVo>> findReviews(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ReviewReadResponseDto> responseDtos = reviewService.findReviews(pageable);
 
-        Page<ReviewReadResponseVo> responseVos = responseDtos.map(ReviewReadResponseDto::toVo);
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                responseVos);
+        return new BaseResponse<>(
+                reviewService.findReviews(pageable).map(ReviewReadResponseDto::toVo)
+        );
     }
 
     // 리뷰 수정
     @PutMapping("/update/{id}")
-    public CommonResponseEntity<Void> updateReview(
+    public BaseResponse<Void> updateReview(
             @PathVariable Long id,
             @RequestBody ReviewUpdateRequestVo requestVo) {
 
@@ -71,23 +63,20 @@ public class ReviewController {
         // 수정된 값 확인 차 생성
         ReviewUpdateResponseVo responseVo = responseDto.toVo();
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
+        );
     }
 
     // 리뷰 삭제
     @DeleteMapping("/delete/{id}")
-    public CommonResponseEntity<Void> deleteReview(@PathVariable Long id) {
+    public BaseResponse<Void> deleteReview(@PathVariable Long id) {
+
         reviewService.deleteReview(id);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
+        );
     }
 
 }

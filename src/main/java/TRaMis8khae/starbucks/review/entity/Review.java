@@ -46,10 +46,4 @@ public class Review {
         this.reviewScore = reviewScore;
     }
 
-    public void updateReview(String reviewTitle, String reviewContext, Integer reviewScore) {
-        this.reviewTitle = reviewTitle;
-        this.reviewContext = reviewContext;
-        this.reviewScore = reviewScore;
-    }
-
 }

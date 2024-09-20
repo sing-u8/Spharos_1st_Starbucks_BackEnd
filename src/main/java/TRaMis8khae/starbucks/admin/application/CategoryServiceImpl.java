@@ -12,15 +12,12 @@ import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
-import TRaMis8khae.starbucks.common.utils.CategoryCodeGenerator;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
-import static TRaMis8khae.starbucks.admin.entity.QBottomCategory.bottomCategory;
 
 
 @Slf4j
@@ -44,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         topCategoryRepository.save(requestDto.toEntity(
-            CategoryCodeGenerator.generateCategoryCode()));
+            CodeGenerator.generateCode(8)));
     }
 
 
@@ -57,7 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
                     );
 
         middleCategoryRepository.save(requestDto.toEntity(
-            topCategory, CategoryCodeGenerator.generateCategoryCode()));
+            topCategory, CodeGenerator.generateCode(8)));
     }
 
 
@@ -70,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
             );
 
         bottomCategoryRepository.save(requestDto.toEntity(
-            middleCategory, CategoryCodeGenerator.generateCategoryCode()));
+            middleCategory, CodeGenerator.generateCode(8)));
     }
 
 

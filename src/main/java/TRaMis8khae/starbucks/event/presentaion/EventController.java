@@ -10,6 +10,7 @@ import TRaMis8khae.starbucks.event.vo.EventRequestVo;
 import TRaMis8khae.starbucks.event.vo.EventResponseVo;
 import TRaMis8khae.starbucks.event.vo.EventProductResponseVo;
 import TRaMis8khae.starbucks.product.application.ProductService;
+import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,14 +69,12 @@ public class EventController {
 
         Pageable pageable = PageRequest.of(0, 10);
 
-        List<Product> productSlice = productService.findProductsByProductUUID(productUUID);
+        List<ProductResponseDto> productSlice = productService.findProductsByProductUUID(productUUID); // product코드 사용
 
         Slice<EventProductResponseVo> responseVos = new SliceImpl<>(
-                productSlice.stream()
-                        .map(EventProductResponseDto::toDto)
-                        .map(EventProductResponseDto::toVo).toList(),
+                productSlice.stream().map(EventProductResponseDto::toVo).toList(),
                 pageable,
-                true
+                productSlice.size() > 10
         );
 
         return new BaseResponse<>(responseVos);

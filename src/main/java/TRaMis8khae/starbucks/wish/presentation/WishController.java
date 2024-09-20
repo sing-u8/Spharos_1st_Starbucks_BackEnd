@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.wish.presentation;
 
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.wish.application.WishService;
 import TRaMis8khae.starbucks.wish.dto.WishAddRequestDto;
 import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,23 +25,20 @@ public class WishController {
 
     // 찜 하기
     @PostMapping("/add")
-    public CommonResponseEntity<Void> addWish(@RequestBody WishAddRequestVo requestVo) {
+    public BaseResponse<Void> addWish(@RequestBody WishAddRequestVo requestVo) {
 
         WishAddRequestDto requestDto = WishAddRequestDto.toDto(requestVo);
 
         wishService.addWish(requestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.ACCEPTED,
-                true,
-                "위시리스트 추가 성공",
-                null
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
         );
     }
 
     // 찜 목록 조회
     @GetMapping("/find")
-    public CommonResponseEntity<Page<WishAddResponseVo>> findWishes(
+    public BaseResponse<Page<WishAddResponseVo>> findWishes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -57,25 +54,19 @@ public class WishController {
                 responseDtos.getTotalElements()  // 총 요소 수
         );
 
-        return new CommonResponseEntity<>(
-                HttpStatus.ACCEPTED,
-                true,
-                "위시리스트 조회 성공",
+        return new BaseResponse<>(
                 pageResponse
         );
     }
 
     // 찜 해제/삭제
     @PutMapping("/unwish/{productUUID}")
-    public CommonResponseEntity<Void> updateWish(@PathVariable String productUUID) {
+    public BaseResponse<Void> updateWish(@PathVariable String productUUID) {
 
         wishService.unwish(productUUID);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.ACCEPTED,
-                true,
-                "위시리스트 삭제 성공",
-                null
+        return new BaseResponse<>(
+                BaseResponseStatus.SUCCESS
         );
     }
 
