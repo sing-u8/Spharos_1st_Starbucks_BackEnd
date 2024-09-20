@@ -8,6 +8,7 @@ import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
+import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import TRaMis8khae.starbucks.product.vo.ProductResponseVo;
@@ -71,5 +72,7 @@ public class ProductController {
         return new BaseResponse<>(productService.findProducts().stream().map(
             ProductResponseDto::toVo).toList());
     }
+
+
 
 }

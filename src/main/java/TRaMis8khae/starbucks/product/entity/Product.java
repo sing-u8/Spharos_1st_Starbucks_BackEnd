@@ -40,7 +40,6 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer maxOrderCount;
 
-    @Column(nullable = false)
     private Integer minOrderCount = 1;
 
     @Column(nullable = false)

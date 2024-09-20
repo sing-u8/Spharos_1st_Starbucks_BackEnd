@@ -34,4 +34,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 		return null;
 	}
 
+	@Override
+	public List<Product> getProductListWithPage(Long offset, Integer pageSize) {
+
+		return jpaQueryFactory.selectFrom(product)
+			.offset(offset)
+			.limit(pageSize)
+			.fetch();
+	}
 }

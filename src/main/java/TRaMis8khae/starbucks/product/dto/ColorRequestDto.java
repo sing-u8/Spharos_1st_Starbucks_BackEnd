@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.product.dto;
 
 
+import TRaMis8khae.starbucks.product.entity.Color;
 import TRaMis8khae.starbucks.product.entity.Volume;
 import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import lombok.Builder;
@@ -20,11 +21,11 @@ public class ColorRequestDto {
 			.build();
 	}
 
+	public Color toEntity() {
 
-	public Volume toEntity() {
-
-		return Volume.builder()
+		return Color.builder()
 			.name(name)
 			.build();
 	}
+
 }

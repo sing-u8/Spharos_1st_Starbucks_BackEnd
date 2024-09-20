@@ -21,8 +21,6 @@ public class ProductRequestVo {
 
     private Boolean engravingChecked;
 
-    private String volumeName;
-
     private Integer maxOrderCount;
 
     private Integer minOrderCount;
