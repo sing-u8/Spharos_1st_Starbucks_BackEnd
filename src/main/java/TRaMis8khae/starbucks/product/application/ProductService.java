@@ -32,6 +32,14 @@ public interface ProductService {
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-    List<Product> findProductsByProductUUID(List<String> productUUID);
+    List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID);
+
+    void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
+
+    void updateProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
+
+    void deleteProductAdditionalProduct(String uuid);
+
+    List<String> findProductAdditionalProduct(String uuid);
 
 }

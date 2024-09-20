@@ -10,6 +10,7 @@ import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
 import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
+import TRaMis8khae.starbucks.product.vo.ProductAdditionalProductListRequestVo;
 import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepositoryCustom productRepositoryCustom;
     private final VolumeRepository volumeRepository;
     private final ColorRepository colorRepository;
+    private final ProductAdditionalProductListRepository productAdditionalProductListRepository;
 
     @Override
     @Transactional
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService{
         }
 
         String productUUID = CodeGenerator.generateCode(36);
+
         productRepository.save(requestDto.toEntity(productUUID));
     }
 
@@ -100,14 +103,11 @@ public class ProductServiceImpl implements ProductService{
 
         Color color = colorRepository.findByName(requestDto.getColorName())
             .orElseGet(() -> colorRepository.save(
-                ColorRequestDto.toDto(ColorRequestVo.builder()
+                toDto(ColorRequestVo.builder()
                     .name(requestDto.getColorName())
                     .build()).toEntity()
             ));
 
-
-        volumeRepository.save(volume);
-        colorRepository.save(color);
         productOptionRepository.save(requestDto.toEntity(volume, color));
     }
 
@@ -157,13 +157,48 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+    public List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID) {
 
         return productUUID.stream()
-                .map(productRepository::findByProductUUID)
-                .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
-                .toList();
+            .map(productRepository::findByProductUUID)
+            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+            .map(ProductResponseDto::toDto).toList();
+    }
 
+    @Override
+    public void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto) {
+
+        productAdditionalProductListRepository.save(requestDto.toEntity());
+    }
+
+
+    @Override
+    public void updateProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto) {
+    }
+
+
+    @Override
+    public void deleteProductAdditionalProduct(String uuid) {
+
+    }
+
+
+    @Override
+    public List<String> findProductAdditionalProduct(String uuid) {
+
+        Product product = productRepository.findByProductUUID(uuid).orElseThrow(
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+        );
+
+        List<String> UUIDs = null;
+
+        if (product.getIsAdditionalTogether()) {
+            UUIDs = productAdditionalProductListRepository.findAllByProductUUID(uuid)
+                .stream().map(ProductAdditionalProductList::getAdditionalUUID).toList();
+
+        }
+
+        return UUIDs;
     }
 
 }
