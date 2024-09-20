@@ -11,7 +11,7 @@ public interface ProductService {
 
     void addProduct(ProductRequestDto requestDto);
 
-//    void updateProduct(ProductRequestDto requestDto);
+    void updateProduct(String uuid, ProductUpdateRequestDto requestDto);
 
     void deleteProduct(String productUUID);
 
@@ -21,7 +21,7 @@ public interface ProductService {
 
     void addProductOption(ProductOptionRequestDto requestDto);
 
-//    void updateProductOption(ProductOptionRequestDto requestDto);
+    void updateProductOption(ProductOptionRequestDto requestDto);
 
     void deleteProductOption(String productUUID);
 

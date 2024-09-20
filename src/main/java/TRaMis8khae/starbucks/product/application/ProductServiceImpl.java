@@ -9,6 +9,7 @@ import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
+import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.*;
-
 
 @Slf4j
 @Service
@@ -45,7 +45,16 @@ public class ProductServiceImpl implements ProductService{
 
         String productUUID = CodeGenerator.generateCode(36);
         productRepository.save(requestDto.toEntity(productUUID));
+    }
 
+    @Override
+    public void updateProduct(String uuid, ProductUpdateRequestDto requestDto) {
+
+        Product product = productRepository.findByProductUUID(uuid).orElseThrow(
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+        );
+
+        productRepository.save(requestDto.toEntity(product));
     }
 
     @Override
@@ -82,17 +91,29 @@ public class ProductServiceImpl implements ProductService{
             throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
+        Volume volume = volumeRepository.findByName(requestDto.getVolumeName())
+            .orElseGet(() -> volumeRepository.save(
+                VolumeRequestDto.toDto(VolumeRequestVo.builder()
+                    .name(requestDto.getVolumeName())
+                    .build()).toEntity()
+            ));
 
-        volumeRepository.save(VolumeRequestDto.toDto(VolumeRequestVo.builder()
-                .name(requestDto.getVolumeName())
-                .build()).toEntity()
-        );
-//        colorRepository.save(ColorRequestDto.toDto(ColorRequestVo.builder()
-//                .name(requestDto.getColorName())
-//            .build()).toEntity()
-//        );
+        Color color = colorRepository.findByName(requestDto.getColorName())
+            .orElseGet(() -> colorRepository.save(
+                ColorRequestDto.toDto(ColorRequestVo.builder()
+                    .name(requestDto.getColorName())
+                    .build()).toEntity()
+            ));
 
-//        productOptionRepository.save(requestDto.toEntity());
+
+        volumeRepository.save(volume);
+        colorRepository.save(color);
+        productOptionRepository.save(requestDto.toEntity(volume, color));
+    }
+
+    @Override
+    public void updateProductOption(ProductOptionRequestDto requestDto) {
+
     }
 
     @Transactional
@@ -144,7 +165,5 @@ public class ProductServiceImpl implements ProductService{
                 .toList();
 
     }
-
-
 
 }
