@@ -3,10 +3,7 @@ package TRaMis8khae.starbucks.auth.vo;
 import lombok.*;
 
 @Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class UpdateMemberInfoRequestVo {
 
     private String nickname;

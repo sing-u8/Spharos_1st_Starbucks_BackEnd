@@ -8,15 +8,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class LogInResponseDto {
 
     private String accessToken;
     private String refreshToken;
     private String nickname;
     private String memberUUID;
+
+    @Builder
+    public LogInResponseDto(String accessToken, String refreshToken, String nickname, String memberUUID) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.nickname = nickname;
+        this.memberUUID = memberUUID;
+    }
 
     public static LogInResponseDto toDto(Member member, String accessToken, String refreshToken) {
         return LogInResponseDto.builder()
