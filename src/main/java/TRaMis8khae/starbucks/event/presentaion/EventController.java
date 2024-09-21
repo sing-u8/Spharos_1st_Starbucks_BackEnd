@@ -59,7 +59,10 @@ public class EventController {
         EventInfoResponseDto responseDto = eventService.getEvent(eventId);
         EventResponseVo responseVo = responseDto.toVo();
 
-        return new BaseResponse<>(List.of(responseVo));
+        return new BaseResponse<>(
+                List.of(responseVo)
+        );
+
     }
 
     @GetMapping("/event/product/{eventId}")
