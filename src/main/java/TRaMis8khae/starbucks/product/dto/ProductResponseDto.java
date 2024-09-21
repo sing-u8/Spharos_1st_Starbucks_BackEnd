@@ -1,13 +1,9 @@
 package TRaMis8khae.starbucks.product.dto;
 
 import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.entity.ProductMedia;
-import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.vo.ProductResponseVo;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 
 @Getter

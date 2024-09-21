@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.product.dto;
 
 
+import TRaMis8khae.starbucks.product.entity.Color;
 import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.entity.Volume;
 import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
@@ -30,6 +31,8 @@ public class ProductOptionRequestDto {
 
 	private String volumeName;
 
+	private String colorName;
+
 
 	public static ProductOptionRequestDto toDto(ProductOptionRequestVo productOptionRequestVo) {
 
@@ -43,17 +46,11 @@ public class ProductOptionRequestDto {
 			.openChecked(productOptionRequestVo.getOpenChecked())
 			.productUUID(productOptionRequestVo.getProductUUID())
 			.volumeName(productOptionRequestVo.getVolumeName())
+			.colorName(productOptionRequestVo.getColorName())
 			.build();
 	}
 
-
-	public Volume toVolumeEntity() {
-
-		return Volume.builder().name(volumeName).build();
-	}
-
-
-	public ProductOption toEntity(Volume volume) {
+	public ProductOption toEntity(Volume volume, Color color) {
 
 		return ProductOption.builder()
 			.productUUID(productUUID)
@@ -65,6 +62,7 @@ public class ProductOptionRequestDto {
 			.closedChecked(closedChecked)
 			.openChecked(openChecked)
 			.volume(volume)
+			.color(color)
 			.build();
 	}
 

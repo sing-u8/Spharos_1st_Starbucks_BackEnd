@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static TRaMis8khae.starbucks.common.utils.CodeGenerator.generateCode;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final VoucherRepository voucherRepository;
     private final MemberVoucherListRepository memberVoucherListRepository;
 
-    // 상품권 추가 (관리자)
+    // 상품권 추가 (관리자),
     @Override
     public List<VoucherAddResponseDto> addVoucher(List<VoucherAddRequestDto> requestDtos) {
 
@@ -30,7 +32,8 @@ public class VoucherServiceImpl implements VoucherService {
 
         for (VoucherAddRequestDto requestDto : requestDtos) {
 
-            String voucherCode = UUID.randomUUID().toString().substring(0, 12);
+            String voucherCode = generateCode(12);
+
             Voucher voucher = requestDto.toEntity(voucherCode);
 
             Voucher savedVoucher = voucherRepository.save(voucher);

@@ -63,6 +63,12 @@ public enum BaseResponseStatus {
     NO_EXIST_PRODUCT(HttpStatus.NOT_FOUND, false, 3001, "존재하지 않는 상품입니다"),
     NO_EXIST_OPTION(HttpStatus.NOT_FOUND, false, 3002, "존재하지 않는 옵션입니다"),
 
+    DUPLICATED_PRODUCT(HttpStatus.CONFLICT, false, 3004, "이미 등록된 상품입니다"),
+    DUPLICATED_OPTION(HttpStatus.CONFLICT, false, 3005, "이미 등록된 옵션입니다"),
+    DUPLICATED_CATEGORY(HttpStatus.CONFLICT, false, 3006, "이미 등록된 카테고리입니다"),
+
+    NO_EXIST_OPTIONS_IN_PRODUCT(HttpStatus.NOT_FOUND, false, 3007, "해당 상품에 옵션이 존재하지 않습니다"),
+
     /**
      * 4000: comment service error
      */
@@ -89,6 +95,17 @@ public enum BaseResponseStatus {
      */
     // Gpt
     GPT_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 6001, "GPT API 호출에 실패했습니다."),
+
+    /**
+     * 7000: review service error
+     */
+    DUPLICATED_REVIEW(HttpStatus.CONFLICT, false, 7001, "이미 리뷰를 작성하셨습니다."),
+    NO_EXIST_REVIEW(HttpStatus.NOT_FOUND, false, 7002, "존재하지 않는 리뷰입니다."),
+
+    /**
+     * 8000: media service error
+     */
+    NO_EXIST_MEDIA(HttpStatus.NOT_FOUND, false, 8001, "존재하지 않는 미디어입니다."),
     ;
 
     private final HttpStatusCode httpStatusCode;

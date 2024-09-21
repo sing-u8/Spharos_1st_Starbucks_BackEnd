@@ -1,6 +1,9 @@
 package TRaMis8khae.starbucks.product.application;
 
+import TRaMis8khae.starbucks.media.dto.MediaAddRequestDto;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.product.dto.*;
+import TRaMis8khae.starbucks.product.entity.Product;
 
 import java.util.List;
 
@@ -8,7 +11,7 @@ public interface ProductService {
 
     void addProduct(ProductRequestDto requestDto);
 
-//    void updateProduct(ProductRequestDto requestDto);
+    void updateProduct(String uuid, ProductUpdateRequestDto requestDto);
 
     void deleteProduct(String productUUID);
 
@@ -18,7 +21,7 @@ public interface ProductService {
 
     void addProductOption(ProductOptionRequestDto requestDto);
 
-//    void updateProductOption(ProductOptionRequestDto requestDto);
+    void updateProductOption(ProductOptionRequestDto requestDto);
 
     void deleteProductOption(String productUUID);
 
@@ -29,12 +32,14 @@ public interface ProductService {
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-    void addMedia(MediaRequestDto requestDto);
+    List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID);
 
-    void deleteMedia(String productUUID);
+    void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
 
-    MediaResponseDto findDetailMedia(String productUUID);
+    void updateProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
 
-    MediaResponseDto findMedia(String productUUID);
+    void deleteProductAdditionalProduct(String uuid);
+
+    List<String> findProductAdditionalProduct(String uuid);
 
 }
