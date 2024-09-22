@@ -28,7 +28,7 @@ public class ReviewAddRequestDto {
 
     private Integer reviewScore;
 
-    private List<Media> mediaList;
+    private List<Long> mediaList;
 
     private LocalDateTime registDate;
 
@@ -39,7 +39,6 @@ public class ReviewAddRequestDto {
                 .memberMaskingId(vo.getMemberMaskingId())
                 .reviewContext(vo.getReviewContext())
                 .reviewScore(vo.getReviewScore())
-                .mediaList(vo.getMediaList())
                 .registDate(vo.getRegistDate())
                 .build();
     }
@@ -51,9 +50,6 @@ public class ReviewAddRequestDto {
                 .memberMaskingId(this.memberMaskingId)
                 .reviewContext(this.reviewContext)
                 .reviewScore(this.reviewScore)
-                .mediaList(this.mediaList)
-                .registDate(this.registDate)
-
                 .build();
     }
 

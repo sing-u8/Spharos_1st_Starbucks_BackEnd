@@ -28,8 +28,6 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.productUUID,
                         review.memberUUID,
                         review.memberMaskingId,
-                        review.memberNickname,
-                        review.reviewTitle,
                         review.reviewContext,
                         review.reviewScore))
                 .from(review)

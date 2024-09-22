@@ -17,7 +17,6 @@ public class ReviewUpdateRequestDto {
 
     public static ReviewUpdateRequestDto toDto(ReviewUpdateRequestVo vo) {
         return ReviewUpdateRequestDto.builder()
-                .reviewTitle(vo.getReviewTitle())
                 .reviewContext(vo.getReviewContext())
                 .reviewScore(vo.getReviewScore())
                 .build();
@@ -27,10 +26,8 @@ public class ReviewUpdateRequestDto {
         return Review.builder()
                 .id(review.getId())
                 .memberMaskingId(review.getMemberMaskingId())
-                .memberNickname(review.getMemberNickname())
                 .memberUUID(review.getMemberUUID())
                 .productUUID(review.getProductUUID())
-                .reviewTitle(this.reviewTitle)
                 .reviewContext(this.reviewContext)
                 .reviewScore(this.reviewScore)
                 .build();

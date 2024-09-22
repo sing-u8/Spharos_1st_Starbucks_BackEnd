@@ -1,6 +1,5 @@
 package TRaMis8khae.starbucks.review.vo;
 
-import TRaMis8khae.starbucks.media.entity.Media;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,8 +24,6 @@ public class ReviewAddRequestVo {
     private String reviewContext;
 
     private Integer reviewScore;
-
-    private List<Long> mediaUrlList;
 
     private LocalDateTime registDate;
 

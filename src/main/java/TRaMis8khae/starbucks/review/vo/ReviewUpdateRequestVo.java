@@ -7,8 +7,6 @@ import lombok.Getter;
 @Builder
 public class ReviewUpdateRequestVo {
 
-    private String reviewTitle;
-
     private String reviewContext;
 
     private Integer reviewScore;

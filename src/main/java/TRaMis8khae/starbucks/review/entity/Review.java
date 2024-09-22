@@ -29,15 +29,13 @@ public class Review extends BaseEntity {
 
     private Integer reviewScore;
 
-    private Long mediaID;
-
     @Builder
-    public Review(String productUUID, String memberUUID, String memberMaskingId, String reviewContext, Integer reviewScore, Long mediaID) {
+    public Review(Long id, String productUUID, String memberUUID, String memberMaskingId, String reviewContext, Integer reviewScore) {
+        this.id = id;
         this.productUUID = productUUID;
         this.memberUUID = memberUUID;
         this.memberMaskingId = memberMaskingId;
         this.reviewContext = reviewContext;
         this.reviewScore = reviewScore;
-        this.mediaID = mediaID;
     }
 }

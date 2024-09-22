@@ -9,15 +9,12 @@ import lombok.Getter;
 @Builder
 public class ReviewUpdateResponseDto {
 
-    private String reviewTitle;
-
     private String reviewContext;
 
     private Integer reviewScore;
 
     public static ReviewUpdateResponseDto toDto(Review review) {
         return ReviewUpdateResponseDto.builder()
-                .reviewTitle(review.getReviewTitle())
                 .reviewContext(review.getReviewContext())
                 .reviewScore(review.getReviewScore())
                 .build();
@@ -25,7 +22,6 @@ public class ReviewUpdateResponseDto {
 
     public ReviewUpdateResponseVo toVo() {
         return ReviewUpdateResponseVo.builder()
-                .reviewTitle(this.reviewTitle)
                 .reviewContext(this.reviewContext)
                 .reviewScore(this.reviewScore)
                 .build();
