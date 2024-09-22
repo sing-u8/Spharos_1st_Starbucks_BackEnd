@@ -5,13 +5,9 @@ import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.vo.MediaAddRequestVo;
 import TRaMis8khae.starbucks.product.application.ProductService;
-import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
-import TRaMis8khae.starbucks.product.dto.ProductRequestDto;
-import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
+import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
-import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
-import TRaMis8khae.starbucks.product.vo.ProductResponseVo;
+import TRaMis8khae.starbucks.product.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +27,15 @@ public class ProductController {
 
         log.info("productRequestVo : {}", productRequestVo);
         productService.addProduct(ProductRequestDto.toDto(productRequestVo));
+
+        return new BaseResponse<>();
+    }
+
+    @PostMapping("/update")
+    public BaseResponse<Void> updateProduct(@RequestParam String UUID, @RequestBody ProductUpdateRequestVo requestVo) {
+
+        log.info("productRequestVo : {}", requestVo);
+        productService.updateProduct(UUID, ProductUpdateRequestDto.toDto(requestVo));
 
         return new BaseResponse<>();
     }
@@ -73,6 +78,21 @@ public class ProductController {
             ProductResponseDto::toVo).toList());
     }
 
+    @PostMapping("/additional")
+    public BaseResponse<Void> addAdditionalProduct(@RequestBody ProductAdditionalProductListRequestVo requestVo) {
 
+        productService.addProductAdditionalProduct(ProductAdditionalProductListRequestDto.toDto(requestVo));
+
+        return new BaseResponse<>();
+    }
+
+    @GetMapping("/additionProducts/{productUUID}")
+    public BaseResponse<List<ProductResponseVo>> getAdditionProducts(@PathVariable String productUUID) {
+        return new BaseResponse<>(productService.findProductDtosByProductUUID(
+                productService.findProductAdditionalProduct(productUUID))
+                .stream()
+                .map(ProductResponseDto::toVo).toList()
+        );
+    }
 
 }

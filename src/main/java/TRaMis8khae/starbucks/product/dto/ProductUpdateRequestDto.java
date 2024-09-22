@@ -49,7 +49,7 @@ public class ProductUpdateRequestDto {
 			.isAdditionalTogether(isAdditionalTogether)
 			.maxOrderCount(maxOrderCount)
 			.engravingChecked(engravingChecked)
-			.mediaId(product.getMediaId())
+			.mediaIds(product.getMediaIds())
 			.build();
 	}
 }

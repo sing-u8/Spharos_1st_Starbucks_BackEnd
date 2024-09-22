@@ -30,9 +30,13 @@ public interface ProductService {
 
     VolumeResponseDto findVolume(String productUUID);
 
+    ColorResponseDto findColor(String productUUID);
+
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-    List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID);
+    List<ProductResponseDto> findProductDtosByProductUUID(List<String> productUUID);
+
+    List<Product> findProductsByProductUUID(List<String> productUUID);
 
     void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
 

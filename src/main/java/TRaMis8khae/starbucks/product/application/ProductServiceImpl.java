@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService{
     public List<ProductResponseDto> findProducts() {
 
         List<Product> products = productRepository.findAll();
-
+        //추가상품이 아닌 상품들만 찾기로직 추가
         return products.stream().map(ProductResponseDto::toDto).toList();
     }
 
@@ -124,7 +124,6 @@ public class ProductServiceImpl implements ProductService{
                 () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
-        volumeRepository.delete(productOption.getVolume());
         productOptionRepository.delete(productOption);
     }
 
@@ -149,6 +148,16 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ColorResponseDto findColor(String productUUID) {
+
+        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+        );
+
+        return ColorResponseDto.toDto(productOption.getColor());
+    }
+
+    @Override
     public List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice) {
 
         List<Product> products = productRepositoryCustom.getProductListWithPrice(MinPrice, MaxPrice);
@@ -157,12 +166,21 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResponseDto> findProductsByProductUUID(List<String> productUUID) {
+    public List<ProductResponseDto> findProductDtosByProductUUID(List<String> productUUID) {
 
         return productUUID.stream()
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
             .map(ProductResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+
+        return productUUID.stream()
+                .map(productRepository::findByProductUUID)
+                .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT))).toList();
+
     }
 
     @Override
