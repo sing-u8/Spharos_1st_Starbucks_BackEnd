@@ -14,4 +14,6 @@ public class AddMarketingConsentListRequestVo {
 
     private boolean SMSConsentChecked;
 
+    private String memberUUID;
+
 }

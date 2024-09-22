@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.dto;
 
+import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.entity.Terms;
 import TRaMis8khae.starbucks.member.entity.TermsConsentList;
 import TRaMis8khae.starbucks.member.vo.AddTermsConsentListRequestVo;
@@ -9,20 +10,29 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class AddTermsConsentListRequestDto {
 
-    private boolean checked;
+    private boolean termsConsentChecked;
+    private String memberUUID;
+
+    @Builder
+    public AddTermsConsentListRequestDto(boolean termsConsentChecked, String memberUUID) {
+        this.termsConsentChecked = termsConsentChecked;
+        this.memberUUID = memberUUID;
+    }
 
     public static AddTermsConsentListRequestDto toDto(AddTermsConsentListRequestVo requestVo) {
         return AddTermsConsentListRequestDto.builder()
-                .checked(requestVo.isChecked())
+                .termsConsentChecked(requestVo.isChecked())
+                .memberUUID(requestVo.getMemberUUID())
                 .build();
     }
 
-    public TermsConsentList toEntity(AddTermsConsentListRequestDto requestDto) {
+    public TermsConsentList toEntity(Member member, Terms terms) {
         return TermsConsentList.builder()
-                .checked(requestDto.isChecked())
+                .termsConsentChecked(this.termsConsentChecked)
+                .terms(terms)
+                .member(member)
                 .build();
     }
 

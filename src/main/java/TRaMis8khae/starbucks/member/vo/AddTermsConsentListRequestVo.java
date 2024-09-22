@@ -12,5 +12,6 @@ public class AddTermsConsentListRequestVo {
 
     private boolean checked;
 
+    private String memberUUID;
 
 }

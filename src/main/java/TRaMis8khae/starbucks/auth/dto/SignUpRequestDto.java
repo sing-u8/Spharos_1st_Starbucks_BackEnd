@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.auth.dto;
 
 import TRaMis8khae.starbucks.auth.vo.SignUpRequestVo;
+import TRaMis8khae.starbucks.member.dto.AddMarketingConsentListRequestDto;
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,8 +26,8 @@ public class SignUpRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
-    private Boolean marketingConsentEmail;
-    private Boolean marketingConsentSms;
+    private Boolean EmailMarketingConsent;
+    private Boolean SMSMarketingConsent;
 
     public static SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
         return SignUpRequestDto.builder()
@@ -37,8 +38,8 @@ public class SignUpRequestDto {
                 .phoneNumber(signUpRequestVo.getPhoneNumber())
                 .email(signUpRequestVo.getEmail())
                 .nickname(signUpRequestVo.getNickname())
-                .marketingConsentEmail(signUpRequestVo.getEmailMarketingConsent())
-                .marketingConsentSms(signUpRequestVo.getSMSMarketingConsent())
+                .EmailMarketingConsent(signUpRequestVo.getEmailMarketingConsent())
+                .SMSMarketingConsent(signUpRequestVo.getSmsMarketingConsent())
                 .build();
     }
 

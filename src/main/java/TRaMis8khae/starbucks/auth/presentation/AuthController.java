@@ -30,7 +30,11 @@ public class AuthController {
     @PostMapping("/signup")
     public CommonResponseEntity<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 
+        log.info("controller 단 " + signUpRequestVo.toString());
+
         SignUpRequestDto signUpRequestDto = SignUpRequestDto.toDto(signUpRequestVo);
+
+        log.info("controller 단 " + signUpRequestDto.toString());
 
         authService.signUp(signUpRequestDto);
 

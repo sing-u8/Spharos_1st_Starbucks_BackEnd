@@ -14,17 +14,19 @@ public class TermsConsentList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean checked;
+    private Boolean termsConsentChecked;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
+    @JoinColumn(name = "terms_id")
     private Terms terms;
 
     @Builder
     public TermsConsentList(Boolean checked, Member member, Terms terms) {
-        this.checked = checked;
+        this.termsConsentChecked = checked;
         this.member = member;
         this.terms = terms;
     }

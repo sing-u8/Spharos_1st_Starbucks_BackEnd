@@ -23,8 +23,8 @@ public class SignUpRequestVo {
 
     private String nickname;
 
-    private Boolean EmailMarketingConsent;
+    private Boolean emailMarketingConsent;
 
-    private Boolean SMSMarketingConsent;
+    private Boolean smsMarketingConsent;
 
 }

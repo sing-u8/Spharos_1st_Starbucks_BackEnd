@@ -3,7 +3,13 @@ package TRaMis8khae.starbucks.auth.application;
 import TRaMis8khae.starbucks.auth.dto.*;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
+import TRaMis8khae.starbucks.member.application.MemberServiceImpl;
+import TRaMis8khae.starbucks.member.dto.AddMarketingConsentListRequestDto;
+import TRaMis8khae.starbucks.member.entity.Marketing;
+import TRaMis8khae.starbucks.member.entity.MarketingConsentList;
 import TRaMis8khae.starbucks.member.entity.Member;
+import TRaMis8khae.starbucks.member.infrastructure.MarketingConsentListRepository;
+import TRaMis8khae.starbucks.member.infrastructure.MarketingRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +29,7 @@ public class AuthServiceImpl implements AuthService{
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final MemberServiceImpl memberServiceImpl;
 
     @Override
     public void  signUp(SignUpRequestDto signUpRequestDto) {
@@ -36,6 +43,19 @@ public class AuthServiceImpl implements AuthService{
         Member newMember = signUpRequestDto.toEntity(passwordEncoder);
 
         authRepository.save(newMember);
+
+        log.info(signUpRequestDto.toString());
+        log.info(newMember.toString());
+
+        memberServiceImpl.addMarketingConsent(newMember,
+                signUpRequestDto.getEmailMarketingConsent(),
+                signUpRequestDto.getSMSMarketingConsent()
+        );
+
+        // 약관 동의 기능
+//        memberServiceImpl.addTerms(newMember,
+//                signUpRequestDto.getTermsConsent()
+//        );
 
     }
 
