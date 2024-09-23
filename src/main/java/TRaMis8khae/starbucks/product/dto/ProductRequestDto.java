@@ -4,6 +4,8 @@ import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -18,7 +20,7 @@ public class ProductRequestDto {
     private Boolean engravingChecked;
     private Integer maxOrderCount;
     private Integer minOrderCount;
-    private Long mediaId;
+    private List<Long> mediaIds;
 //    private String volumeName;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
@@ -31,7 +33,7 @@ public class ProductRequestDto {
             .engravingChecked(productRequestVo.getEngravingChecked())
             .maxOrderCount(productRequestVo.getMaxOrderCount())
             .minOrderCount(productRequestVo.getMinOrderCount())
-            .mediaId(productRequestVo.getMediaId())
+            .mediaIds(productRequestVo.getMediaIds())
             .build();
     }
 
@@ -46,7 +48,7 @@ public class ProductRequestDto {
             .engravingChecked(engravingChecked)
             .maxOrderCount(maxOrderCount)
             .minOrderCount(minOrderCount)
-            .mediaId(mediaId)
+            .mediaIds(mediaIds)
             .build();
     }
 

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Builder
@@ -25,6 +26,6 @@ public class ProductRequestVo {
 
     private Integer minOrderCount;
 
-    private Long mediaId;
+    private List<Long> mediaIds;
 
 }
