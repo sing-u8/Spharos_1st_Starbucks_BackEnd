@@ -16,17 +16,15 @@ public class TermsConsentList {
 
     private Boolean termsConsentChecked;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @ManyToOne
-    @JoinColumn(name = "terms_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Terms terms;
 
     @Builder
-    public TermsConsentList(Boolean checked, Member member, Terms terms) {
-        this.termsConsentChecked = checked;
+    public TermsConsentList(Boolean termsConsentChecked, Member member, Terms terms) {
+        this.termsConsentChecked = termsConsentChecked;
         this.member = member;
         this.terms = terms;
     }

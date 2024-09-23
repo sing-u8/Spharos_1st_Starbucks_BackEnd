@@ -8,24 +8,15 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class AddMarketingConsentListRequestDto {
 
     private boolean EmailConsentChecked;
     private boolean SMSConsentChecked;
     private String memberUUID;
     private Long marketingId;
-
-    @Builder
-    public AddMarketingConsentListRequestDto(boolean EmailConsentChecked,
-                                             boolean SMSConsentChecked,
-                                             String memberUUID,
-                                             Long marketingId) {
-        this.EmailConsentChecked = EmailConsentChecked;
-        this.SMSConsentChecked = SMSConsentChecked;
-        this.memberUUID = memberUUID;
-        this.marketingId = marketingId;
-    }
 
     public static AddMarketingConsentListRequestDto toDto(AddMarketingConsentListRequestVo requestVo) {
         return AddMarketingConsentListRequestDto.builder()

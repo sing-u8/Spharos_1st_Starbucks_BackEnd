@@ -8,18 +8,13 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddTermsConsentListRequestDto {
 
     private boolean termsConsentChecked;
     private String memberUUID;
-
-    @Builder
-    public AddTermsConsentListRequestDto(boolean termsConsentChecked, String memberUUID) {
-        this.termsConsentChecked = termsConsentChecked;
-        this.memberUUID = memberUUID;
-    }
 
     public static AddTermsConsentListRequestDto toDto(AddTermsConsentListRequestVo requestVo) {
         return AddTermsConsentListRequestDto.builder()
