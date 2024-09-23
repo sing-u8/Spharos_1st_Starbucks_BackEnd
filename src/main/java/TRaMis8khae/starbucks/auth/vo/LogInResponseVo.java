@@ -3,10 +3,7 @@ package TRaMis8khae.starbucks.auth.vo;
 import lombok.*;
 
 @Getter
-@Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class LogInResponseVo {
 
     private String accessToken;
@@ -16,5 +13,13 @@ public class LogInResponseVo {
     private String memberUUID;
 
     private String nickname;
+
+    @Builder
+    public LogInResponseVo(String accessToken, String refreshToken, String memberUUID, String nickname) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.memberUUID = memberUUID;
+        this.nickname = nickname;
+    }
 
 }

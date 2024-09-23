@@ -4,15 +4,19 @@ import TRaMis8khae.starbucks.auth.vo.FindMemberRequestVo;
 import lombok.*;
 
 @Getter
-@Builder
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class FindMemberRequestDto {
 
     private String name;
 
     private String phoneNumber;
+
+    @Builder
+    public FindMemberRequestDto(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
 
     public static FindMemberRequestDto toDto(FindMemberRequestVo findMemberRequestVo) {
         return FindMemberRequestDto.builder()

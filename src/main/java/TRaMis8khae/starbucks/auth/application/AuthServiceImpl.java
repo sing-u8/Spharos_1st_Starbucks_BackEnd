@@ -2,6 +2,8 @@ package TRaMis8khae.starbucks.auth.application;
 
 import TRaMis8khae.starbucks.auth.dto.*;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.application.MemberServiceImpl;
 import TRaMis8khae.starbucks.member.dto.AddMarketingConsentListRequestDto;
@@ -34,10 +36,9 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public void  signUp(SignUpRequestDto signUpRequestDto) {
 
-        Member member = authRepository.findByLoginId(signUpRequestDto.getLoginId()).orElse(null);
-
-        if (member != null) {
-            throw new IllegalArgumentException("이미 가입된 회원입니다.");
+        // 이미 존재하는 회원인지 확인
+        if (authRepository.findByLoginId(signUpRequestDto.getLoginId()).isPresent()) {
+            throw new BaseException(BaseResponseStatus.DUPLICATED_USER);
         }
 
         Member newMember = signUpRequestDto.toEntity(passwordEncoder);
@@ -63,15 +64,9 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     public void signOut(String memberUUID, String accessToken) {
 
-        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
-        );
+        String memberUUIDFromToken = jwtTokenProvider.getMemberUUID(accessToken);
 
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-
-        String memberUuidFromToken = claims.get("memberUUID", String.class);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
+        if (!memberUUID.equals(memberUUIDFromToken)) {
             throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
         }
 
@@ -84,12 +79,8 @@ public class AuthServiceImpl implements AuthService{
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
 
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+                () -> new BaseException(BaseResponseStatus.FAILED_TO_LOGIN)
         );
-
-        if (!passwordEncoder.matches(logInRequestDto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -98,15 +89,12 @@ public class AuthServiceImpl implements AuthService{
                             logInRequestDto.getPassword()
                     )
             );
-            LogInResponseDto logInResponseDto = LogInResponseDto.toDto(
-                    member,
-                    generateAccessToken(member.getMemberUUID()),
-                    generateRefreshToken(authentication));
-
+            String accessToken = generateAccessToken(member.getMemberUUID());
+            String refreshToken = generateRefreshToken(authentication);
+            LogInResponseDto logInResponseDto = LogInResponseDto.toDto(member, accessToken, refreshToken);
             return logInResponseDto;
-
         } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
 
     }
@@ -116,13 +104,13 @@ public class AuthServiceImpl implements AuthService{
     public void updateMemberInfo(String memberUUID, String accessToken, UpdateMemberInfoRequestDto requestDto) {
 
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_USER)
         );
 
         String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
 
         if (!memberUUID.equals(memberUuidFromToken)) {
-            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
+            throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
         }
 
         Member updatedMember = requestDto.toEntity(member);
@@ -136,7 +124,7 @@ public class AuthServiceImpl implements AuthService{
         Member member = authRepository.findByNameAndPhoneNumber(
                 findMemberRequestDto.getName(),
                 findMemberRequestDto.getPhoneNumber()).orElseThrow(
-                () -> new IllegalArgumentException("해당 이름과 전화번호를 가진 회원이 없습니다.")
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_USER)
         );
 
         FindMemberResponseDto findMemberResponseDto = FindMemberResponseDto.toDto(member);
