@@ -13,10 +13,13 @@ public class WishAddRequestDto {
 
     private String productUUID;
 
+    private Boolean wishChecked;
+
     public static WishAddRequestDto toDto(WishAddRequestVo vo) {
         return WishAddRequestDto.builder()
                 .memberUUID(vo.getMemberUUID())
                 .productUUID(vo.getProductUUID())
+                .wishChecked(vo.getWishChecked())
                 .build();
     }
 
@@ -24,7 +27,7 @@ public class WishAddRequestDto {
         return Wish.builder()
                 .memberUUID(this.memberUUID)
                 .productUUID(this.productUUID)
-                .wishChecked(true)
+                .wishChecked(!this.wishChecked)
                 .build();
     }
 

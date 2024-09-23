@@ -2,6 +2,7 @@ package TRaMis8khae.starbucks.purchase.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
@@ -31,7 +32,7 @@ public class PurchaseController {
     public BaseResponse<Void> addPurchase(@RequestBody PurchaseAddRequestVo vo) {
 
         log.info("PurchaseAddRequestVo: {}", vo);
-        String serialNum = UUID.randomUUID().toString();
+        String serialNum = CodeGenerator.generateCode(12);
         LocalDateTime purchaseDate = LocalDateTime.now();
 
         PurchaseAddRequestDto requestDto = PurchaseAddRequestDto.toDto(vo, serialNum, purchaseDate);
@@ -48,6 +49,7 @@ public class PurchaseController {
     @GetMapping("/find/{serialNum}")
     public BaseResponse<PurchaseReadResponseVo> findPurchase(@PathVariable String serialNum) {
 
+        // todo : 리펙토링
         PurchaseReadRequestVo requestVo = PurchaseReadRequestVo.builder()
                 .serialNum(serialNum)
                 .build();

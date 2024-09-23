@@ -34,29 +34,25 @@ public class Purchase extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String memberPhone;
 
-    // 회원주문리스트에서 가져와야 함
     @Column(length = 50)
     private String addressDetail;
 
     @Column(length = 500)
     private String deliveryMemo;
 
-    @Column(length = 50)
-    private String deliveryAddressNickname;
-
 //    @Column(nullable = false, length = 50)
     private String recipient;
 
     private String phone1;
 
-    Boolean isDeleted;
-
     private String phone2;
+
+    private Boolean isDeleted;
 
     @Builder
     public Purchase(String memberUUID, String serialNumber, Double deliveryPrice, Double totalPrice, String cardInfo,
                     String memberName, String memberPhone, String addressDetail, String deliveryMemo,
-                    String deliveryAddressNickname, String recipient, String phone1, String phone2) {
+                    String recipient, String phone1, String phone2, Boolean isDeleted) {
         this.memberUUID = memberUUID;
         this.serialNumber = serialNumber;
         this.deliveryPrice = deliveryPrice;
@@ -66,10 +62,10 @@ public class Purchase extends BaseEntity {
         this.memberPhone = memberPhone;
         this.addressDetail = addressDetail;
         this.deliveryMemo = deliveryMemo;
-        this.deliveryAddressNickname = deliveryAddressNickname;
         this.recipient = recipient;
         this.phone1 = phone1;
         this.phone2 = phone2;
+        this.isDeleted = isDeleted;
     }
 
 }

@@ -25,7 +25,7 @@ public class WishController {
 
     // 찜 하기
     @PostMapping("/add")
-    public BaseResponse<Void> addWish(@RequestBody WishAddRequestVo requestVo) {
+    public BaseResponse<Void> wishProduct(@RequestBody WishAddRequestVo requestVo) {
 
         WishAddRequestDto requestDto = WishAddRequestDto.toDto(requestVo);
 
@@ -56,17 +56,6 @@ public class WishController {
 
         return new BaseResponse<>(
                 pageResponse
-        );
-    }
-
-    // 찜 해제/삭제
-    @PutMapping("/unwish/{productUUID}")
-    public BaseResponse<Void> updateWish(@PathVariable String productUUID) {
-
-        wishService.unwish(productUUID);
-
-        return new BaseResponse<>(
-                BaseResponseStatus.SUCCESS
         );
     }
 

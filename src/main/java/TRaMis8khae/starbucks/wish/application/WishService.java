@@ -11,5 +11,4 @@ public interface WishService {
 
     Page<WishReadResponseDto> findWishes(Pageable pageable);
 
-    void unwish(String productUUID);
 }

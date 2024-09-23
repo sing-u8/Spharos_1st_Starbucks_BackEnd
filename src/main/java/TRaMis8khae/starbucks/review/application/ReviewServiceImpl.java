@@ -30,10 +30,6 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = requestDto.toEntity();
         log.info("review: {}", review);
 
-        if(checkWriteReview(review)) {
-            throw new BaseException(BaseResponseStatus.DUPLICATED_REVIEW);
-        }
-
         reviewRepository.save(review);
     }
 
@@ -61,11 +57,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(Long id) {
         reviewRepository.deleteById(id);
-    }
-
-    private Boolean checkWriteReview(Review review) {
-        return null;
-//        return reviewRepository.existsReviewByMemberUUIDAndProductUUID(review);
     }
 
 }

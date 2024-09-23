@@ -4,6 +4,8 @@ import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
 import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
 import TRaMis8khae.starbucks.purchase.entity.Purchase;
+import TRaMis8khae.starbucks.purchase.entity.PurchaseProductList;
+import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseProductListRepository;
 import TRaMis8khae.starbucks.purchase.infrastructure.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class PurchaseServiceImpl implements PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
+    private final PurchaseProductListRepository purchaseProductListRepository;
 
     @Transactional
     @Override
     public void addPurchase(PurchaseAddRequestDto requestDto) {
 
-        // todo 주문배송 리포지토리에서 꺼내야 함
-        Purchase purchase = requestDto.toEntity();
+        Purchase purchase = requestDto.toPurchase();
         log.info("purchase: {}", purchase);
 
-        purchaseRepository.save(purchase);
+        PurchaseProductList purchaseProductList = requestDto.toPurchaseProductList();
+        log.info("purchaseProductList: {}", purchaseProductList);
 
-        // todo 상품주문리스트 추가 필요
+        purchaseRepository.save(purchase);
+        purchaseProductListRepository.save(purchaseProductList);
     }
 
     @Override
@@ -47,6 +51,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         return purchaseRepository.findPurchases(pageable);
     }
 
+    // todo : 주문 삭제보다는 주문 취소, 환불 쪽으로 봐야 한다
     @Transactional
     @Override
     public void deletePurchase(String serialNum) {

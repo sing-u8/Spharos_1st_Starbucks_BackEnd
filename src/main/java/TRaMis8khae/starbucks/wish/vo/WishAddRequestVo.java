@@ -11,4 +11,6 @@ public class WishAddRequestVo {
 
     private String productUUID;
 
+    private Boolean wishChecked;
+
 }
