@@ -33,16 +33,14 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void addDeliveryAddress(String memberUUID, DeliveryAddressRequestDto deliveryAddressRequestDto) {
-
-        Member member = memberRepository.findByMemberUUID(memberUUID) // memberUUID로 Member를 찾아옴
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다.")); // 없으면 예외 발생
+    public void addDeliveryAddress(DeliveryAddressRequestDto deliveryAddressRequestDto) {
 
         DeliveryAddress addDeliveryAddress = deliveryAddressRequestDto.toEntity(deliveryAddressRequestDto);
 
         deliveryAddressRepository.save(addDeliveryAddress);
 
-        MemberAddressList memberAddressList = MemberAddressListRequestDto.toEntity(deliveryAddressRequestDto, addDeliveryAddress, memberUUID);
+        MemberAddressList memberAddressList = MemberAddressListRequestDto
+                .toEntity(deliveryAddressRequestDto, addDeliveryAddress);
 
         memberAddressListRepository.save(memberAddressList);
 
@@ -60,7 +58,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         return deliveryAddressList.stream()
                 .map(DeliveryAddressResponseDto::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

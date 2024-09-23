@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.member.presentation;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
 import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.MemberAddressService;
@@ -24,19 +26,17 @@ public class MemberController {
     private final MemberAddressService memberAddressService;
 
     @PostMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<Void> addDeliveryAddress(
+    public BaseResponse<Void> addDeliveryAddress(
             @PathVariable String memberUUID,
             @RequestBody DeliveryAddressRequestVo deliveryAddressRequestVo) {
 
-        DeliveryAddressRequestDto deliveryAddressRequestDto = DeliveryAddressRequestDto.toDto(deliveryAddressRequestVo);
+        DeliveryAddressRequestDto deliveryAddressRequestDto = DeliveryAddressRequestDto
+                .toDto(deliveryAddressRequestVo, memberUUID);
 
-        memberAddressService.addDeliveryAddress(memberUUID, deliveryAddressRequestDto);
+        memberAddressService.addDeliveryAddress(deliveryAddressRequestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
     }
 
     @GetMapping("delivery/{memberUUID}")

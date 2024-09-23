@@ -18,8 +18,9 @@ public class DeliveryAddressRequestDto {
     private String phone1;
     private String phone2;
     private boolean addressDefaultCheck;
+    private String memberUUID;
 
-    public static DeliveryAddressRequestDto toDto(DeliveryAddressRequestVo deliveryAddressRequestVo) {
+    public static DeliveryAddressRequestDto toDto(DeliveryAddressRequestVo deliveryAddressRequestVo, String memberUUID) {
         return DeliveryAddressRequestDto.builder()
                 .addressDefaultCheck(deliveryAddressRequestVo.isAddressDefaultCheck())
                 .addressDetail(deliveryAddressRequestVo.getAddressDetail())
@@ -28,6 +29,7 @@ public class DeliveryAddressRequestDto {
                 .recipient(deliveryAddressRequestVo.getRecipient())
                 .phone1(deliveryAddressRequestVo.getPhone1())
                 .phone2(deliveryAddressRequestVo.getPhone2())
+                .memberUUID(memberUUID)
                 .build();
     }
 

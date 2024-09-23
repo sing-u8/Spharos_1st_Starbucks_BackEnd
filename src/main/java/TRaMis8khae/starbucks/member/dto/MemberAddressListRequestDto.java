@@ -24,10 +24,10 @@ public class MemberAddressListRequestDto {
 //                .build();
 //    }
 
-    public static MemberAddressList toEntity(DeliveryAddressRequestDto deliveryAddressRequestDto, DeliveryAddress deliveryAddress, String memberUUID) {
+    public static MemberAddressList toEntity(DeliveryAddressRequestDto deliveryAddressRequestDto, DeliveryAddress deliveryAddress) {
         return MemberAddressList.builder()
                 .deliveryAddress(deliveryAddress)
-                .memberUUID(memberUUID)
+                .memberUUID(deliveryAddressRequestDto.getMemberUUID())
                 .addressDefaultCheck(deliveryAddressRequestDto.isAddressDefaultCheck())
                 .build();
     }
