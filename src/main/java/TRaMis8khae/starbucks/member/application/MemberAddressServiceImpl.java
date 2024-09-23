@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.application;
 
+import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.dto.MemberAddressListRequestDto;
@@ -12,6 +13,7 @@ import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
 import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
 import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     private final MemberAddressListRepository memberAddressListRepository;
     private final MemberAddressListRepositoryCustom memberAddressListRepositoryCustom;
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void addDeliveryAddress(String memberUUID, DeliveryAddressRequestDto deliveryAddressRequestDto) {
@@ -73,7 +76,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     }
 
     @Override
-    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressRequestDto requestDto) {
+    public void updateDeliveryAddress(Long deliveryAddressId, String accessToken, UpdateDeliveryAddressRequestDto requestDto) {
 
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
 
@@ -81,10 +84,14 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
         }
 
+        Claims claims = jwtTokenProvider.getClaims(accessToken);
+
+        String memberUuidFromToken = claims.get("memberUUID", String.class);
+
         DeliveryAddress updateDeliveryAddress = requestDto.toEntity(requestDto);
 
         deliveryAddressRepository.save(updateDeliveryAddress);
-        memberAddressListRepository.save(updateDeliveryAddress, memberUUID, deliveryAddressId); // uuid 설정 필요
+        memberAddressListRepository.save(updateDeliveryAddress, memberUuidFromToken, deliveryAddressId); // uuid 설정 필요
 
     }
 
