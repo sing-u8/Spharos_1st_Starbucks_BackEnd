@@ -45,14 +45,6 @@ public class MemberController {
 
         List<DeliveryAddressResponseDto> memberAddressList = memberAddressService.getMemberDeliveryAddress(memberUUID);
 
-        if (memberAddressList.isEmpty()) {
-            return new CommonResponseEntity<>(
-                    HttpStatus.OK,
-                    true,
-                    "배송지가 없습니다.",
-                    null);
-        }
-
         return new CommonResponseEntity<>(
                 HttpStatus.OK,
                 true,
@@ -66,8 +58,6 @@ public class MemberController {
     public CommonResponseEntity<Void> deleteDeliveryAddress(@PathVariable Long deliveryAddressId) {
 
         memberAddressService.deleteDeliveryAddress(deliveryAddressId);
-
-
 
         return new CommonResponseEntity<>(
                 HttpStatus.OK,

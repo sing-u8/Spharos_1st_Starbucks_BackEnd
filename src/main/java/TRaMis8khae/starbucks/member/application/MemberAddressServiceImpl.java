@@ -54,6 +54,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         List<DeliveryAddressResponseVo> deliveryAddressList = memberAddressListRepositoryCustom
                 .findMemberAddressWithDeliveryAddress(memberUUID);
 
+        if (deliveryAddressList.isEmpty()) {
+            throw new IllegalArgumentException("해당 멤버의 배송지가 존재하지 않습니다.");
+        }
+
         return deliveryAddressList.stream()
                 .map(DeliveryAddressResponseDto::toDto)
                 .collect(Collectors.toList());
@@ -91,7 +95,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         DeliveryAddress updateDeliveryAddress = requestDto.toEntity(requestDto);
 
         deliveryAddressRepository.save(updateDeliveryAddress);
-        memberAddressListRepository.save(updateDeliveryAddress, memberUuidFromToken, deliveryAddressId); // uuid 설정 필요
+//        memberAddressListRepository.save(updateDeliveryAddress, memberUuidFromToken, deliveryAddressId); // uuid 설정 필요
 
     }
 
