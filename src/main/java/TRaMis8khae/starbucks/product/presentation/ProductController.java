@@ -4,6 +4,8 @@ import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.vo.MediaAddRequestVo;
+import TRaMis8khae.starbucks.product.application.AdditionalProductService;
+import TRaMis8khae.starbucks.product.application.ProductOptionService;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.*;
 import TRaMis8khae.starbucks.product.entity.Product;
@@ -21,6 +23,8 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
     private final MediaService mediaService;
+    private final ProductOptionService productOptionService;
+//    private final AdditionalProductService additionalProductService;
 
     @PostMapping
     public BaseResponse<Void> createProduct(@RequestBody ProductRequestVo productRequestVo) {
@@ -43,7 +47,7 @@ public class ProductController {
     @PostMapping("/option")
     public BaseResponse<Void> createProductOption(@RequestBody ProductOptionRequestVo productOptionRequestVo) {
 
-        productService.addProductOption(ProductOptionRequestDto.toDto(productOptionRequestVo));
+        productOptionService.addProductOption(ProductOptionRequestDto.toDto(productOptionRequestVo));
 
         return new BaseResponse<>();
     }
@@ -58,7 +62,7 @@ public class ProductController {
     @DeleteMapping("/option")
     public BaseResponse<Void> deleteOption(@RequestBody String productUUID) {
 
-        productService.deleteProductOption(productUUID);
+        productOptionService.deleteProductOption(productUUID);
 
         return new BaseResponse<>();
     }
@@ -72,27 +76,27 @@ public class ProductController {
         return new BaseResponse<>(productResponseDto.toVo());
     }
 
-    @GetMapping("/productList")
-    public BaseResponse<List<ProductResponseVo>> getProducts() {
-        return new BaseResponse<>(productService.findProducts().stream().map(
-            ProductResponseDto::toVo).toList());
-    }
-
-    @PostMapping("/additional")
-    public BaseResponse<Void> addAdditionalProduct(@RequestBody ProductAdditionalProductListRequestVo requestVo) {
-
-        productService.addProductAdditionalProduct(ProductAdditionalProductListRequestDto.toDto(requestVo));
-
-        return new BaseResponse<>();
-    }
-
-    @GetMapping("/additionProducts/{productUUID}")
-    public BaseResponse<List<ProductResponseVo>> getAdditionProducts(@PathVariable String productUUID) {
-        return new BaseResponse<>(productService.findProductDtosByProductUUID(
-                productService.findProductAdditionalProduct(productUUID))
-                .stream()
-                .map(ProductResponseDto::toVo).toList()
-        );
-    }
+//    @GetMapping("/productList")
+//    public BaseResponse<List<ProductResponseVo>> getProducts() {
+//        return new BaseResponse<>(productService.findProducts().stream().map(
+//            ProductResponseDto::toVo).toList());
+//    }
+//
+//    @PostMapping("/additional")
+//    public BaseResponse<Void> addAdditionalProduct(@RequestBody ProductAdditionalProductListRequestVo requestVo) {
+//
+//        additionalProductService.addProductAdditionalProduct(ProductAdditionalProductListRequestDto.toDto(requestVo));
+//
+//        return new BaseResponse<>();
+//    }
+//
+//    @GetMapping("/additionProducts/{productUUID}")
+//    public BaseResponse<List<ProductResponseVo>> getAdditionProducts(@PathVariable String productUUID) {
+//        return new BaseResponse<>(productService.findProductDtosByProductUUID(
+//                additionalProductService.findProductAdditionalProduct(productUUID))
+//                .stream()
+//                .map(ProductResponseDto::toVo).toList()
+//        );
+//    }
 
 }

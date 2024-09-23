@@ -5,9 +5,11 @@ import TRaMis8khae.starbucks.product.entity.Color;
 import TRaMis8khae.starbucks.product.entity.Volume;
 import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import lombok.Builder;
+import lombok.Getter;
 
 
 @Builder
+@Getter
 public class ColorRequestDto {
 
 	String name;

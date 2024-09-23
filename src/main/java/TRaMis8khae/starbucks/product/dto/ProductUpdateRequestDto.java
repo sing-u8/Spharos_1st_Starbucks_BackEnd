@@ -11,6 +11,8 @@ import lombok.Getter;
 @Builder
 public class ProductUpdateRequestDto {
 
+	private String productUUID;
+
 	private String productName;
 
 	private Double price;
@@ -22,11 +24,11 @@ public class ProductUpdateRequestDto {
 	private Integer maxOrderCount;
 
 	private Boolean engravingChecked;
-	//uuid가 들어올 수 없음
 
 	public static ProductUpdateRequestDto toDto(ProductUpdateRequestVo productUpdateRequestVo) {
 
 		return ProductUpdateRequestDto.builder()
+			.productUUID(productUpdateRequestVo.getProductUUID())
 			.productName(productUpdateRequestVo.getProductName())
 			.price(productUpdateRequestVo.getPrice())
 			.additionalChecked(productUpdateRequestVo.getAdditionalChecked())
@@ -42,7 +44,7 @@ public class ProductUpdateRequestDto {
 		return Product.builder()
 			.id(product.getId())
 			.productName(productName)
-			.productUUID(product.getProductUUID())
+			.productUUID(productUUID)
 			.productScore(product.getProductScore())
 			.price(price)
 			.description(product.getDescription())

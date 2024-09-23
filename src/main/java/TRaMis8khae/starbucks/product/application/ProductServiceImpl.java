@@ -33,8 +33,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
-    private final VolumeRepository volumeRepository;
-    private final ColorRepository colorRepository;
+
     private final ProductAdditionalProductListRepository productAdditionalProductListRepository;
 
     @Override
@@ -77,85 +76,14 @@ public class ProductServiceImpl implements ProductService{
 
         return ProductResponseDto.toDto(product);
     }
-
-    @Override
-    public List<ProductResponseDto> findProducts() {
-
-        List<Product> products = productRepository.findAll(); //수정
-        //추가상품이 아닌 상품들만 찾기로직 추가
-        return products.stream().map(ProductResponseDto::toDto).toList();
-    }
-
-    @Override
-    @Transactional
-    public void addProductOption(ProductOptionRequestDto requestDto) {
-
-        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
-
-        Volume volume = volumeRepository.findByName(requestDto.getVolumeName())
-            .orElseGet(() -> volumeRepository.save(
-                VolumeRequestDto.toDto(VolumeRequestVo.builder()
-                    .name(requestDto.getVolumeName())
-                    .build()).toEntity()
-            ));
-
-        Color color = colorRepository.findByName(requestDto.getColorName())
-            .orElseGet(() -> colorRepository.save(
-                toDto(ColorRequestVo.builder()
-                    .name(requestDto.getColorName())
-                    .build()).toEntity()
-            ));
-
-        productOptionRepository.save(requestDto.toEntity(volume, color));
-    }
-
-    @Override
-    public void updateProductOption(ProductOptionRequestDto requestDto) {
-
-    }
-
-    @Transactional
-    @Override
-    public void deleteProductOption(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        productOptionRepository.delete(productOption);
-    }
-
-    @Override
-    public ProductOptionResponseDto findProductOption(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        return ProductOptionResponseDto.toDto(productOption);
-    }
-
-    @Override
-    public VolumeResponseDto findVolume(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        return VolumeResponseDto.toDto(productOption.getVolume());
-    }
-
-    @Override
-    public ColorResponseDto findColor(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        return ColorResponseDto.toDto(productOption.getColor());
-    }
+//
+//    @Override
+//    public List<ProductResponseDto> findProducts() {
+//
+//        List<Product> products = productRepository.findAll(); //수정
+//        //추가상품이 아닌 상품들만 찾기로직 추가
+//        return products.stream().map(ProductResponseDto::toDto).toList();
+//    }
 
     @Override
     public List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice) {
@@ -182,42 +110,6 @@ public class ProductServiceImpl implements ProductService{
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
             .toList();
-    }
-
-    @Override
-    public void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto) {
-
-        productAdditionalProductListRepository.save(requestDto.toEntity());
-    }
-
-
-    @Override
-    public void updateProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto) {
-    }
-
-
-    @Override
-    public void deleteProductAdditionalProduct(String uuid) {
-
-    }
-
-
-    @Override
-    public List<String> findProductAdditionalProduct(String uuid) {
-
-        Product product = productRepository.findByProductUUID(uuid).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        List<String> UUIDs = null;
-
-        if (product.getIsAdditionalTogether()) {
-            UUIDs = productAdditionalProductListRepository.findAllByProductUUID(uuid)
-                .stream().map(ProductAdditionalProductList::getAdditionalUUID).toList();
-
-        }
-
-        return UUIDs;
     }
 
 }

@@ -17,33 +17,12 @@ public interface ProductService {
 
     ProductResponseDto findProduct(String productUUID);
 
-    List<ProductResponseDto> findProducts();
-
-    void addProductOption(ProductOptionRequestDto requestDto);
-
-    void updateProductOption(ProductOptionRequestDto requestDto);
-
-    void deleteProductOption(String productUUID);
-
-    ProductOptionResponseDto findProductOption(String productUUID);
-
-
-    VolumeResponseDto findVolume(String productUUID);
-
-    ColorResponseDto findColor(String productUUID);
+//    List<ProductResponseDto> findProducts();
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
     List<ProductResponseDto> findProductDtosByProductUUID(List<String> productUUID);
 
     List<Product> findProductsByProductUUID(List<String> productUUID);
-
-    void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
-
-    void updateProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
-
-    void deleteProductAdditionalProduct(String uuid);
-
-    List<String> findProductAdditionalProduct(String uuid);
 
 }

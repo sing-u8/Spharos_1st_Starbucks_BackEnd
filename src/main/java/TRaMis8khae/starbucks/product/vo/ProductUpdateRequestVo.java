@@ -9,6 +9,8 @@ import lombok.Getter;
 @Builder
 public class ProductUpdateRequestVo {
 
+	private String productUUID;
+
 	private String productName;
 
 	private Double price;
