@@ -5,13 +5,16 @@ import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 
 @Getter
-@Builder
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class ResetPasswordRequestDto {
 
     private String password;
+
+    @Builder
+    public ResetPasswordRequestDto(String password) {
+        this.password = password;
+    }
 
     public static ResetPasswordRequestDto toDto(ResetPasswordRequestVo resetPasswordRequestVo) {
         return ResetPasswordRequestDto.builder()
