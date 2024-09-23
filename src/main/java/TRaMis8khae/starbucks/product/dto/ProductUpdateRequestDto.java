@@ -22,6 +22,7 @@ public class ProductUpdateRequestDto {
 	private Integer maxOrderCount;
 
 	private Boolean engravingChecked;
+	//uuid가 들어올 수 없음
 
 	public static ProductUpdateRequestDto toDto(ProductUpdateRequestVo productUpdateRequestVo) {
 

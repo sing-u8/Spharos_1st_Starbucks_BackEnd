@@ -24,7 +24,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.*;
-
+//서비스 나누기
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -81,7 +81,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<ProductResponseDto> findProducts() {
 
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAll(); //수정
         //추가상품이 아닌 상품들만 찾기로직 추가
         return products.stream().map(ProductResponseDto::toDto).toList();
     }

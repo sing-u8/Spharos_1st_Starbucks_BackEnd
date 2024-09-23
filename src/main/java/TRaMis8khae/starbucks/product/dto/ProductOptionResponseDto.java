@@ -27,7 +27,7 @@ public class ProductOptionResponseDto {
 	private Boolean openChecked;
 
 	public static ProductOptionResponseDto toDto(ProductOption productOption) {
-
+//volume name, color name        //volume, color 객체
 		return ProductOptionResponseDto.builder()
 			.productName(productOption.getProductName())
 			.price(productOption.getPrice())
