@@ -6,7 +6,7 @@ import TRaMis8khae.starbucks.product.dto.ProductAdditionalProductListRequestDto;
 import java.util.List;
 
 
-public interface AdditionalProduct {
+public interface ProductAdditionalProductListService {
 
 	void addProductAdditionalProduct(ProductAdditionalProductListRequestDto requestDto);
 

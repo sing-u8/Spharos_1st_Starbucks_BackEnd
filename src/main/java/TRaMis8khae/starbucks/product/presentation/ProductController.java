@@ -2,19 +2,14 @@ package TRaMis8khae.starbucks.product.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.media.application.MediaService;
-import TRaMis8khae.starbucks.media.entity.MediaKind;
-import TRaMis8khae.starbucks.media.vo.MediaAddRequestVo;
-import TRaMis8khae.starbucks.product.application.AdditionalProductService;
 import TRaMis8khae.starbucks.product.application.ProductOptionService;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.*;
-import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,7 +19,7 @@ public class ProductController {
     private final ProductService productService;
     private final MediaService mediaService;
     private final ProductOptionService productOptionService;
-//    private final AdditionalProductService additionalProductService;
+//    private final ProductAdditionalProductListServiceImpl additionalProductService;
 
     @PostMapping
     public BaseResponse<Void> createProduct(@RequestBody ProductRequestVo productRequestVo) {

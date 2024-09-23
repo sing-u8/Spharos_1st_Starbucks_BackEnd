@@ -7,16 +7,14 @@ import TRaMis8khae.starbucks.product.dto.ProductAdditionalProductListRequestDto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.entity.ProductAdditionalProductList;
 import TRaMis8khae.starbucks.product.infrastructure.ProductAdditionalProductListRepository;
-import TRaMis8khae.starbucks.product.infrastructure.ProductOptionRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
-import TRaMis8khae.starbucks.product.infrastructure.ProductRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 
-public class AdditionalProductService implements AdditionalProduct {
+public class ProductAdditionalProductListServiceImpl implements ProductAdditionalProductListService {
 
 	private final ProductRepository productRepository;
 	private final ProductAdditionalProductListRepository productAdditionalProductListRepository;
