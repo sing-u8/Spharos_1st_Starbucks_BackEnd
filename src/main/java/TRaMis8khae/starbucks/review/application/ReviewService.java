@@ -1,19 +1,18 @@
 package TRaMis8khae.starbucks.review.application;
 
-import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateResponseDto;
-import org.springframework.data.domain.Page;
+import TRaMis8khae.starbucks.review.dto.in.ReviewAddRequestDto;
+import TRaMis8khae.starbucks.review.dto.out.ReviewReadResponseDto;
+import TRaMis8khae.starbucks.review.dto.in.ReviewUpdateRequestDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface ReviewService {
 
     void addReview(ReviewAddRequestDto dto);
 
-    Page<ReviewReadResponseDto> findReviews(Pageable pageable);
+    Slice<ReviewReadResponseDto> findReviews(Pageable pageable, String productUUID);
 
-    ReviewUpdateResponseDto updateReview(Long id, ReviewUpdateRequestDto dto);
+    void updateReview(ReviewUpdateRequestDto dto);
 
-    void deleteReview(Long id);
+    void deleteReview(Long id, String memberUUID);
 }
