@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @NoArgsConstructor
-@Getter
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE member_voucher_list SET is_deleted = true WHERE id = ?")
 public class MemberVoucherList {
 
     @Id
@@ -22,6 +26,8 @@ public class MemberVoucherList {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Voucher voucher;
+
+    private boolean isDeleted = false;
 
     @Builder
     public MemberVoucherList(String memberUUID, LocalDateTime registDate, Voucher voucher) {

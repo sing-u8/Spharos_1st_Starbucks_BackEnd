@@ -1,9 +1,11 @@
 package TRaMis8khae.starbucks.vendor.application;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListRequestDto;
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListResponseDto;
+import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
+import TRaMis8khae.starbucks.vendor.dto.out.ProductCategoryListResponseDto;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepositoryCustom;
@@ -27,7 +29,7 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
     public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
         Product product = productRepository.findByProductUUID(productCategoryListRequestDto.getProductUUID())
-            .orElseThrow( () -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+            .orElseThrow( () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
 
         productCategoryListRepository.save(productCategoryListRequestDto.toEntity(product));
 
@@ -36,15 +38,11 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
 
     @Override
     public List<ProductCategoryListResponseDto> findProductsByCategories(String topCode, String middleCode, String bottomCode) {
-        return null;
-    }
 
-    @Override
-    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
-
-        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
+        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, middleCode, bottomCode);
 
         return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
     }
+
 
 }

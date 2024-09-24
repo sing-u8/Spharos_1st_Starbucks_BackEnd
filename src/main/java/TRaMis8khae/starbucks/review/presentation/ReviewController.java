@@ -2,19 +2,20 @@ package TRaMis8khae.starbucks.review.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.review.application.ReviewService;
-import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateResponseDto;
-import TRaMis8khae.starbucks.review.vo.ReviewAddRequestVo;
-import TRaMis8khae.starbucks.review.vo.ReviewReadResponseVo;
-import TRaMis8khae.starbucks.review.vo.ReviewUpdateRequestVo;
-import TRaMis8khae.starbucks.review.vo.ReviewUpdateResponseVo;
+import TRaMis8khae.starbucks.review.dto.in.ReviewAddRequestDto;
+import TRaMis8khae.starbucks.review.dto.out.ReviewReadResponseDto;
+import TRaMis8khae.starbucks.review.dto.in.ReviewUpdateRequestDto;
+import TRaMis8khae.starbucks.review.vo.in.ReviewAddRequestVo;
+import TRaMis8khae.starbucks.review.vo.out.ReviewReadResponseVo;
+import TRaMis8khae.starbucks.review.vo.in.ReviewUpdateRequestVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,9 +27,19 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/add")
-    public BaseResponse<Void> addReview(@RequestBody ReviewAddRequestVo requestVo) {
+    public BaseResponse<Void> addReview(
+            @RequestBody ReviewAddRequestVo requestVo,
+            Authentication authentication) {
 
-        ReviewAddRequestDto requestDto = ReviewAddRequestDto.toDto(requestVo);
+        if (requestVo.getReviewChecked()) {
+            throw new BaseException(BaseResponseStatus.DUPLICATED_REVIEW);
+        }
+
+        String memberUUID = authentication.getName();
+
+        String reviewUUID = CodeGenerator.generateCode(36);
+
+        ReviewAddRequestDto requestDto = ReviewAddRequestDto.toDto(requestVo, memberUUID, reviewUUID);
 
         reviewService.addReview(requestDto);
 
@@ -38,30 +49,28 @@ public class ReviewController {
     }
 
     // 리뷰 조회
-    @GetMapping("/find")
-    public BaseResponse<Page<ReviewReadResponseVo>> findReviews(
+    @GetMapping("/{productUUID}")
+    public BaseResponse<Slice<ReviewReadResponseVo>> findReviews(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable("productUUID") String productUUID) {
 
         Pageable pageable = PageRequest.of(page, size);
 
         return new BaseResponse<>(
-                reviewService.findReviews(pageable).map(ReviewReadResponseDto::toVo)
+                reviewService.findReviews(pageable, productUUID).map(ReviewReadResponseDto::toVo)
         );
     }
 
     // 리뷰 수정
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/{reviewUUID}")
     public BaseResponse<Void> updateReview(
-            @PathVariable Long id,
+            @PathVariable("reviewUUID") String reviewUUID,
             @RequestBody ReviewUpdateRequestVo requestVo) {
 
-        ReviewUpdateRequestDto requestDto = ReviewUpdateRequestDto.toDto(requestVo);
+        ReviewUpdateRequestDto requestDto = ReviewUpdateRequestDto.toDto(requestVo, reviewUUID);
 
-        ReviewUpdateResponseDto responseDto = reviewService.updateReview(id, requestDto);
-
-        // 수정된 값 확인 차 생성
-        ReviewUpdateResponseVo responseVo = responseDto.toVo();
+        reviewService.updateReview(requestDto);
 
         return new BaseResponse<>(
                 BaseResponseStatus.SUCCESS
@@ -70,9 +79,13 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/delete/{id}")
-    public BaseResponse<Void> deleteReview(@PathVariable Long id) {
+    public BaseResponse<Void> deleteReview(
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        reviewService.deleteReview(id);
+        String memberUUID = authentication.getName();
+
+        reviewService.deleteReview(id, memberUUID);
 
         return new BaseResponse<>(
                 BaseResponseStatus.SUCCESS

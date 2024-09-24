@@ -1,16 +1,20 @@
 package TRaMis8khae.starbucks.voucher.application;
 
-import TRaMis8khae.starbucks.voucher.dto.*;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherAddRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherRegistRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.out.VoucherReadResponseDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
 public interface VoucherService {
 
-    List<VoucherAddResponseDto> addVoucher(List<VoucherAddRequestDto> dtos);
+    void addVoucher(List<VoucherAddRequestDto> dtos);
 
     void registVoucher(VoucherRegistRequestDto dto);
 
     void deleteVoucher(Long id);
 
-    List<VoucherReadResponseDto> findVouchers(String memberUUID);
+    Slice<VoucherReadResponseDto> findVouchers(Pageable pageable, String memberUUID);
 }

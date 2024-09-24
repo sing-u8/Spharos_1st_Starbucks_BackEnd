@@ -16,7 +16,7 @@ public class ProductCategoryList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(length = 50)
     private String middleCode;
@@ -27,7 +27,6 @@ public class ProductCategoryList {
     @Column(length = 50)
     private String bottomCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private String productUUID;
 
 }

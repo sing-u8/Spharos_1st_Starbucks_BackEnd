@@ -3,15 +3,13 @@ package TRaMis8khae.starbucks.wish.presentation;
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.wish.application.WishService;
-import TRaMis8khae.starbucks.wish.dto.WishAddRequestDto;
-import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
-import TRaMis8khae.starbucks.wish.vo.WishAddRequestVo;
-import TRaMis8khae.starbucks.wish.vo.WishAddResponseVo;
+import TRaMis8khae.starbucks.wish.dto.in.WishAddRequestDto;
+import TRaMis8khae.starbucks.wish.dto.out.WishReadResponseDto;
+import TRaMis8khae.starbucks.wish.vo.in.WishAddRequestVo;
+import TRaMis8khae.starbucks.wish.vo.out.WishReadResponseVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +23,13 @@ public class WishController {
 
     // 찜 하기
     @PostMapping("/add")
-    public BaseResponse<Void> addWish(@RequestBody WishAddRequestVo requestVo) {
+    public BaseResponse<Void> wishProduct(
+            @RequestBody WishAddRequestVo requestVo,
+            Authentication authentication) {
 
-        WishAddRequestDto requestDto = WishAddRequestDto.toDto(requestVo);
+        String memberUUID = authentication.getName();
+
+        WishAddRequestDto requestDto = WishAddRequestDto.toDto(requestVo, memberUUID);
 
         wishService.addWish(requestDto);
 
@@ -38,35 +40,24 @@ public class WishController {
 
     // 찜 목록 조회
     @GetMapping("/find")
-    public BaseResponse<Page<WishAddResponseVo>> findWishes(
+    public BaseResponse<Slice<WishReadResponseVo>> findWishes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
 
         Pageable pageable = PageRequest.of(page, size);
+        String memberUUID = authentication.getName();
 
-        Page<WishReadResponseDto> responseDtos = wishService.findWishes(pageable);
+        Slice<WishReadResponseDto> responseDtos = wishService.findWishes(pageable, memberUUID);
 
-        List<WishAddResponseVo> responseVoList = responseDtos.stream().map(WishReadResponseDto::toVo).toList();
-
-        Page<WishAddResponseVo> pageResponse = new PageImpl<>(
-                responseVoList,
+        Slice<WishReadResponseVo> sliceResponse = new SliceImpl<>(
+                responseDtos.stream().map(WishReadResponseDto::toVo).toList(),
                 pageable,
-                responseDtos.getTotalElements()  // 총 요소 수
+                responseDtos.hasNext()
         );
 
         return new BaseResponse<>(
-                pageResponse
-        );
-    }
-
-    // 찜 해제/삭제
-    @PutMapping("/unwish/{productUUID}")
-    public BaseResponse<Void> updateWish(@PathVariable String productUUID) {
-
-        wishService.unwish(productUUID);
-
-        return new BaseResponse<>(
-                BaseResponseStatus.SUCCESS
+                sliceResponse
         );
     }
 

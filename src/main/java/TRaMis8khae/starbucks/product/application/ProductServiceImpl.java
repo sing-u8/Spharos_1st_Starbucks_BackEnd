@@ -1,23 +1,18 @@
 package TRaMis8khae.starbucks.product.application;
 
-import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
-import TRaMis8khae.starbucks.product.dto.*;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
+import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
-import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 
 @Slf4j
 @Service
@@ -25,21 +20,29 @@ import java.util.stream.Stream;
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
-    private final ProductOptionRepository productOptionRepository;
-    private final MediaRepository mediaRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
-    private final VolumeRepository volumeRepository;
 
     @Override
+    @Transactional
     public void addProduct(ProductRequestDto requestDto) {
 
         if (productRepository.existsByproductName(requestDto.getProductName())) {
             throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
         }
 
-        String productUUID = UUID.randomUUID().toString();
+        String productUUID = CodeGenerator.generateCode(36);
 
         productRepository.save(requestDto.toEntity(productUUID));
+    }
+
+    @Override
+    public void updateProduct(ProductRequestDto requestDto) {
+
+        productRepository.findByProductUUID(requestDto.getProductUUID()).orElseThrow(
+            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+        );
+
+        productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
     }
 
     @Override
@@ -61,59 +64,6 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResponseDto> findProducts() {
-
-        List<Product> products = productRepository.findAll();
-
-        return products.stream().map(ProductResponseDto::toDto).toList();
-    }
-
-    @Override
-    @Transactional
-    public void addProductOption(ProductOptionRequestDto requestDto) {
-
-        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
-
-        volumeRepository.save(requestDto.toVolumeEntity());
-
-        productOptionRepository.save(requestDto.toEntity(requestDto.toVolumeEntity()));
-    }
-
-    @Transactional
-    @Override
-    public void deleteProductOption(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        volumeRepository.delete(productOption.getVolume());
-        productOptionRepository.delete(productOption);
-    }
-
-    @Override
-    public ProductOptionResponseDto findProductOption(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        return ProductOptionResponseDto.toDto(productOption);
-    }
-
-    @Override
-    public VolumeResponseDto findVolume(String productUUID) {
-
-        ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
-
-        return VolumeResponseDto.toDto(productOption.getVolume());
-    }
-
-    @Override
     public List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice) {
 
         List<Product> products = productRepositoryCustom.getProductListWithPrice(MinPrice, MaxPrice);
@@ -121,72 +71,23 @@ public class ProductServiceImpl implements ProductService{
         return products.stream().map(ProductResponseDto::toDto).toList();
     }
 
-
     @Override
-    public void addMedia(MediaRequestDto requestDto) {
+    public List<ProductResponseDto> findProductDtosByProductUUID(List<String> productUUID) {
 
-        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
 
-        mediaRepository.save(requestDto.toEntity());
+        return productUUID.stream()
+            .map(productRepository::findByProductUUID)
+            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
+            .map(ProductResponseDto::toDto).toList();
     }
-
-
-    @Override
-    public void deleteMedia(String productUUID) {
-
-        if (!productRepository.existsByProductUUID(productUUID)) {
-            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
-        }
-
-        mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-    }
-
-
-    @Override
-    public MediaResponseDto findDetailMedia(String productUUID) {
-
-        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-
-        if (productMedia.getProductChecked() == Boolean.FALSE) {
-            return null;
-        }
-
-        return MediaResponseDto.builder().build();
-    }
-
-
-    @Override
-    public MediaResponseDto findMedia(String productUUID) {
-
-        ProductMedia productMedia = mediaRepository.findByProductUUID(productUUID).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
-        );
-
-        if (productMedia.getProductChecked() == Boolean.FALSE) {
-            return null;
-        }
-
-        if (productMedia.getThumbChecked() == Boolean.FALSE) { //썸네일
-            return null;
-        }
-
-        return MediaResponseDto.builder().build();
-    }
-
 
     @Override
     public List<Product> findProductsByProductUUID(List<String> productUUID) {
+
         return productUUID.stream()
             .map(productRepository::findByProductUUID)
             .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
             .toList();
-
     }
 
 }

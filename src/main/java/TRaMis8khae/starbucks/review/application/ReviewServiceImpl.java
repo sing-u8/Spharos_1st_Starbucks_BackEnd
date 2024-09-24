@@ -2,16 +2,15 @@ package TRaMis8khae.starbucks.review.application;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
-import TRaMis8khae.starbucks.review.dto.ReviewAddRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateRequestDto;
-import TRaMis8khae.starbucks.review.dto.ReviewUpdateResponseDto;
+import TRaMis8khae.starbucks.review.dto.in.ReviewAddRequestDto;
+import TRaMis8khae.starbucks.review.dto.out.ReviewReadResponseDto;
+import TRaMis8khae.starbucks.review.dto.in.ReviewUpdateRequestDto;
 import TRaMis8khae.starbucks.review.entity.Review;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,41 +29,30 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = requestDto.toEntity();
         log.info("review: {}", review);
 
-        if(checkWriteReview(review)) {
-            throw new BaseException(BaseResponseStatus.DUPLICATED_REVIEW);
-        }
-
         reviewRepository.save(review);
+
+        // todo : 상품 평점 업데이트
+        // todo : isReviewChecked 업데이트
     }
 
     @Override
-    public Page<ReviewReadResponseDto> findReviews(Pageable pageable) {
-        return reviewRepository.findReviews(pageable);
+    public Slice<ReviewReadResponseDto> findReviews(Pageable pageable, String productUUID) {
+        return reviewRepository.findReviews(pageable, productUUID);
     }
 
     @Transactional
     @Override
-    public ReviewUpdateResponseDto updateReview(Long id, ReviewUpdateRequestDto requestDto) {
-
-        Review review = reviewRepository.findById(id).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_REVIEW)
-        );
-
-        Review updateReviewFromDto = requestDto.toEntity(review);
-
-        Review updatedReview = reviewRepository.save(updateReviewFromDto);
-
-        return ReviewUpdateResponseDto.toDto(updatedReview);
+    public void updateReview(ReviewUpdateRequestDto requestDto) {
+        reviewRepository.save(
+                requestDto.toUpdatedEntity(
+                        reviewRepository.findByReviewUUID(requestDto.getReviewUUID())
+                                .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_REVIEW))));
     }
 
     @Transactional
     @Override
-    public void deleteReview(Long id) {
-        reviewRepository.deleteById(id);
-    }
-
-    private Boolean checkWriteReview(Review review) {
-        return reviewRepository.existsReviewByMemberUUIDAndProductUUID(review);
+    public void deleteReview(Long id, String memberUUID) {
+        reviewRepository.deleteByIdAndMemberUUID(id, memberUUID);
     }
 
 }
