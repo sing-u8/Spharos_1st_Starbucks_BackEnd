@@ -1,10 +1,16 @@
 package TRaMis8khae.starbucks.event.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Event {
 
     @Id
