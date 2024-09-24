@@ -71,7 +71,6 @@ public class CrawlingInit {
         Workbook workbook = new XSSFWorkbook(file);
         int topCount = 0;
 
-
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
         Sheet bakery = workbook.getSheetAt(2); //푸드
@@ -111,6 +110,7 @@ public class CrawlingInit {
         MiddleCategory coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGift, 1);
         BottomCategory coffeeBeverageGiftBot1 = parseBottomCategory(coffeeBeverageGiftMid, drink.getSheetName(), 0);
         BottomCategory coffeeBeverageGiftBot2 = parseBottomCategory(coffeeBeverageGiftMid, eGift.getSheetName(), 1);
+
         // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
         List<EventRequestDto> eventRequestDtoList = new ArrayList<>();
 
@@ -132,9 +132,6 @@ public class CrawlingInit {
             log.info("topCategory : {}", requestDto.getName());
             log.info("topCategory : {}", requestDto.getSequence());
             log.info("topCategory : {}", CodeGenerator.generateCode(8));
-
-
-            // todo sheet 이름별로 topCode 생성
 
             for (Row row : sheet) {
 
@@ -159,6 +156,7 @@ public class CrawlingInit {
 //                log.info("price : {}", price);
 //                log.info("descriptionImage : {}", descriptionImage);
 //                log.info("descriptionTag : {}", descriptionTag);
+
                 ProductCategoryList p = parseProductCategory(productUUID, total.getCode(), null, null);
 
                 switch (categoryName) {
@@ -218,8 +216,6 @@ public class CrawlingInit {
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 log.info("product : {}", parsedProduct);
 
-
-
                 // event 객체 생성
                 Integer discountRateValue = Integer.parseInt(discountRate);
 
@@ -253,11 +249,6 @@ public class CrawlingInit {
 //                            .build();
 //                    eventRequestDtoList.add(eventRequestDto);
 //                }
-
-
-
-
-
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -381,6 +372,7 @@ public class CrawlingInit {
                 .code(CodeGenerator.generateCode(8))
                 .build();
     }
+
     public MiddleCategory parseMiddleCategory(TopCategory topCategory, Integer sequence) {
 
         return MiddleCategory.builder()
@@ -420,6 +412,7 @@ public class CrawlingInit {
         }
 
     }
+
     // DB 저장 메서드 (예시로 정의)
     private void saveProduct(Product product) {
         // productRepository.save(product); (repository나 service 호출)
