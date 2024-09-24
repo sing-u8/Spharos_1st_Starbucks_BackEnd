@@ -1,14 +1,14 @@
-package TRaMis8khae.starbucks.member.dto;
+package TRaMis8khae.starbucks.member.dto.in;
 
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
-import TRaMis8khae.starbucks.member.vo.UpdateDeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.in.UpdateDeliveryAddressRequestVo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
 @Getter
-public class UpdateDeliveryAddressRequestDto {
+@ToString
+public class DeliveryAddressUpdateRequestDto {
     // test1
     private String addressDetail;
     private String deliveryMemo;
@@ -16,10 +16,19 @@ public class UpdateDeliveryAddressRequestDto {
     private String recipient;
     private String phone1;
     private String phone2;
+    private String memberUUID;
     private boolean addressDefaultCheck;
 
     @Builder
-    public UpdateDeliveryAddressRequestDto(String addressDetail, String deliveryMemo, String deliveryAddressNickname, String recipient, String phone1, String phone2, boolean addressDefaultCheck) {
+    public DeliveryAddressUpdateRequestDto(String addressDetail,
+                                           String deliveryMemo,
+                                           String deliveryAddressNickname,
+                                           String recipient,
+                                           String phone1,
+                                           String phone2,
+                                           String memberUUID,
+                                           boolean addressDefaultCheck
+                                           ) {
         this.addressDetail = addressDetail;
         this.deliveryMemo = deliveryMemo;
         this.deliveryAddressNickname = deliveryAddressNickname;
@@ -27,10 +36,11 @@ public class UpdateDeliveryAddressRequestDto {
         this.phone1 = phone1;
         this.phone2 = phone2;
         this.addressDefaultCheck = addressDefaultCheck;
+        this.memberUUID = memberUUID;
     }
 
-    public static UpdateDeliveryAddressRequestDto toDto(UpdateDeliveryAddressRequestVo requestVo) {
-        return UpdateDeliveryAddressRequestDto.builder()
+    public static DeliveryAddressUpdateRequestDto toDto(UpdateDeliveryAddressRequestVo requestVo, String memberUUID) {
+        return DeliveryAddressUpdateRequestDto.builder()
                 .addressDetail(requestVo.getAddressDetail())
                 .deliveryMemo(requestVo.getDeliveryMemo())
                 .deliveryAddressNickname(requestVo.getDeliveryAddressNickname())
@@ -38,12 +48,11 @@ public class UpdateDeliveryAddressRequestDto {
                 .phone1(requestVo.getPhone1())
                 .phone2(requestVo.getPhone2())
                 .addressDefaultCheck(requestVo.isAddressDefaultCheck())
+                .memberUUID(memberUUID)
                 .build();
     }
 
-
-
-    public DeliveryAddress toEntity(UpdateDeliveryAddressRequestDto requestDto) {
+    public DeliveryAddress toEntity(DeliveryAddressUpdateRequestDto requestDto) {
         return DeliveryAddress.builder()
                 .addressDetail(requestDto.getAddressDetail())
                 .deliveryMemo(requestDto.getDeliveryMemo())

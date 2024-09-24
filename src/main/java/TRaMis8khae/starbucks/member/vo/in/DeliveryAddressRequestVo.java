@@ -1,22 +1,14 @@
-package TRaMis8khae.starbucks.member.vo;
+package TRaMis8khae.starbucks.member.vo.in;
 
 import lombok.*;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
-public class DeliveryAddressResponseVo {
-
-    private Long memberAddressId;
-
-    private String memberUUID;
-
-    private boolean addressDefaultCheck;
-
-    private Long deliveryAddressId;
+public class DeliveryAddressRequestVo {
 
     private String addressDetail;
 
@@ -29,5 +21,7 @@ public class DeliveryAddressResponseVo {
     private String phone1;
 
     private String phone2;
+
+    private boolean addressDefaultCheck;
 
 }

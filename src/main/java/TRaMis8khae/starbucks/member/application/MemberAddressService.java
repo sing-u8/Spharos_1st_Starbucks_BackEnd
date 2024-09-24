@@ -1,19 +1,17 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
-import TRaMis8khae.starbucks.member.dto.UpdateDeliveryAddressRequestDto;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressAddRequestDto;
+import TRaMis8khae.starbucks.member.dto.out.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressUpdateRequestDto;
 
 import java.util.List;
 
 public interface MemberAddressService {
 
-    void addDeliveryAddress(DeliveryAddressRequestDto deliveryAddressRequestDto);
+    void addDeliveryAddress(DeliveryAddressAddRequestDto deliveryAddressAddRequestDto);
     void deleteDeliveryAddress(Long deliveryAddressId);
     void updateDeliveryAddress(Long deliveryAddressId,
-                               String accessToken,
-                               UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto);
-
+                               DeliveryAddressUpdateRequestDto deliveryAddressUpdateRequestDto);
 
     List<DeliveryAddressResponseDto> getMemberDeliveryAddress(String memberUUID);
 //    DeliveryAddress updateDeliveryAddress(String memberUUID, DeliveryAddressResponseDto deliveryAddressResponseDto);

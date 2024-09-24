@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.member.dto;
+package TRaMis8khae.starbucks.member.dto.out;
 
 public class MemberAddressResponseDto {
 
