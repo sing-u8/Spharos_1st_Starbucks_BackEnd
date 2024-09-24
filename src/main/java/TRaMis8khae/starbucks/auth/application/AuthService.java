@@ -15,9 +15,8 @@ public interface AuthService {
 
     void resetPassword(ResetPasswordRequestDto resetPasswordRequestDto);
     void signUp(SignUpRequestDto SignUpRequestDto);
-    void signOut(String memberUUID, String accessToken);
+    void signOut(String memberUUID);
     void updateMemberInfo(String memberUUID, UpdateMemberInfoRequestDto updateMemberInfoRequestDto);
-
 
     List<TermsResponseDto> getTermsConsentList();
 

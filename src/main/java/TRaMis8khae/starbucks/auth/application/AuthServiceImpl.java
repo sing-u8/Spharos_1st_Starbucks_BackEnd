@@ -89,13 +89,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void signOut(String memberUUID, String accessToken) {
-
-        String memberUUIDFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        if (!memberUUID.equals(memberUUIDFromToken)) {
-            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
-        }
+    public void signOut(String memberUUID) {
 
         authRepository.deleteByMemberUUID(memberUUID);
 
@@ -137,6 +131,7 @@ public class AuthServiceImpl implements AuthService{
         Member updatedMember = requestDto.toEntity(member);
 
         authRepository.save(updatedMember);
+
     }
 
     @Override

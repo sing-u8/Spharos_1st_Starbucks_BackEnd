@@ -12,6 +12,9 @@ import TRaMis8khae.starbucks.auth.vo.in.SignUpRequestVo;
 import TRaMis8khae.starbucks.auth.vo.out.FindMemberResponseVo;
 import TRaMis8khae.starbucks.auth.vo.out.LogInResponseVo;
 import TRaMis8khae.starbucks.auth.vo.in.UpdateMemberInfoRequestVo;
+import TRaMis8khae.starbucks.auth.dto.*;
+import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
+import TRaMis8khae.starbucks.auth.vo.*;
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
@@ -19,6 +22,8 @@ import TRaMis8khae.starbucks.member.vo.out.TermsResponseVo;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,16 +41,13 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthRepository authRepository;
 
     @Parameter(name = "signUpRequestVo", description = "이름, 로그인아이디, 비밀번호, 이메일 필수", required = true)
     @PostMapping("/signup")
     public BaseResponse<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 
-        log.info("controller 단 " + signUpRequestVo.toString());
-
         SignUpRequestDto signUpRequestDto = SignUpRequestDto.toDto(signUpRequestVo);
-
-        log.info("controller 단 " + signUpRequestDto.toString());
 
         authService.signUp(signUpRequestDto);
 
@@ -68,24 +70,18 @@ public class AuthController {
 
     }
 
-    @DeleteMapping("/signout/{memberUUID}")
-    public BaseResponse<Void> signOut(
-            @PathVariable String memberUUID,
-            @RequestHeader("Authorization") String accessToken) {
+    @DeleteMapping("/signout")
+    public BaseResponse<Void> signOut(Authentication authentication) {
 
-        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        authService.signOut(memberUUID, memberUuidFromToken);
+        authService.signOut(authentication.getName());
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
     }
 
-
-
-    @PutMapping("/member_info/{memberUUID}")
+    @PutMapping("/member_info")
     public BaseResponse<Void> updateMemberInfo(Authentication authentication,
-                                               @RequestBody UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
+                                                       @RequestBody UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
 
         UpdateMemberInfoRequestDto updateMemberInfoRequestDto = UpdateMemberInfoRequestDto
                 .toDto(UpdateMemberInfoRequestVo);

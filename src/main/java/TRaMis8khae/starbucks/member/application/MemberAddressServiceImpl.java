@@ -1,16 +1,16 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
-import TRaMis8khae.starbucks.member.dto.MemberAddressListRequestDto;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressAddRequestDto;
+import TRaMis8khae.starbucks.member.dto.out.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.dto.in.MemberAddressListAddRequestDto;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressUpdateRequestDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
-import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
-import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
 import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,19 +24,17 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final MemberAddressListRepository memberAddressListRepository;
     private final MemberAddressListRepositoryCustom memberAddressListRepositoryCustom;
-    private final MemberRepository memberRepository;
 
     @Override
-    public void addDeliveryAddress(String memberUUID, DeliveryAddressRequestDto deliveryAddressRequestDto) {
+    @Transactional
+    public void addDeliveryAddress(DeliveryAddressAddRequestDto deliveryAddressAddRequestDto) {
 
-        Member member = memberRepository.findByMemberUUID(memberUUID) // memberUUID로 Member를 찾아옴
-                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다.")); // 없으면 예외 발생
-
-        DeliveryAddress addDeliveryAddress = deliveryAddressRequestDto.toEntity(deliveryAddressRequestDto);
+        DeliveryAddress addDeliveryAddress = deliveryAddressAddRequestDto.toEntity(deliveryAddressAddRequestDto);
 
         deliveryAddressRepository.save(addDeliveryAddress);
 
-        MemberAddressList memberAddressList = MemberAddressListRequestDto.toEntity(deliveryAddressRequestDto, addDeliveryAddress, memberUUID);
+        MemberAddressList memberAddressList = MemberAddressListAddRequestDto
+                .toEntity(deliveryAddressAddRequestDto, addDeliveryAddress);
 
         memberAddressListRepository.save(memberAddressList);
 
@@ -48,13 +46,28 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         List<DeliveryAddressResponseVo> deliveryAddressList = memberAddressListRepositoryCustom
                 .findMemberAddressWithDeliveryAddress(memberUUID);
 
+        if (deliveryAddressList.isEmpty()) {
+            throw new IllegalArgumentException("해당 멤버의 배송지가 존재하지 않습니다.");
+        }
+
         return deliveryAddressList.stream()
                 .map(DeliveryAddressResponseDto::toDto)
                 .toList();
     }
 
     @Override
+    @Transactional
     public void deleteDeliveryAddress(Long deliveryAddressId) {
+
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
+
+        deliveryAddressRepository.delete(deliveryAddress);
+
+    }
+
+    @Override
+    @Transactional
+    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressUpdateRequestDto requestDto) {
 
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findDeliveryAddressById(deliveryAddressId);
 
@@ -62,31 +75,15 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
         }
 
-        deliveryAddressRepository.delete(deliveryAddress);
+        DeliveryAddress updateDeliveryAddress = requestDto.toEntity(requestDto);
+
+        deliveryAddressRepository.save(updateDeliveryAddress);
 
         MemberAddressList memberAddressList = memberAddressListRepository.findByDeliveryAddress(deliveryAddress);
 
-        memberAddressListRepository.delete(memberAddressList);
+        memberAddressList.updateAddressDefaultCheck(requestDto.isAddressDefaultCheck());
 
-
-//        MemberAddressList memberAddressList = findMemberAddressList.get();
-//
-//        memberAddressListRepository.delete(memberAddressList);
-//
-//        Optional<DeliveryAddress> findDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
-//
-//        if(findDeliveryAddress.isEmpty()){
-//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
-//        }
-//
-//        DeliveryAddress deliveryAddress = findDeliveryAddress.get();
-//
-//        deliveryAddressRepository.delete(deliveryAddress);
-
-    }
-
-    @Override
-    public void updateDeliveryAddress(Long deliveryAddressId, DeliveryAddressRequestDto deliveryAddressRequestDto) {
+        memberAddressListRepository.save(memberAddressList);
 
     }
 
