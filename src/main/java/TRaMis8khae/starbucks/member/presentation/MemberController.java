@@ -1,95 +1,82 @@
 package TRaMis8khae.starbucks.member.presentation;
 
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.member.application.MemberAddressService;
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
-import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
-import TRaMis8khae.starbucks.member.dto.UpdateDeliveryAddressRequestDto;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
-import TRaMis8khae.starbucks.member.vo.UpdateDeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressAddRequestDto;
+import TRaMis8khae.starbucks.member.dto.out.DeliveryAddressResponseDto;
+import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressUpdateRequestDto;
+import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
+import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
+import TRaMis8khae.starbucks.member.vo.in.DeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.in.UpdateDeliveryAddressRequestVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
 public class MemberController {
 
     private final MemberAddressService memberAddressService;
+    private final MemberAddressListRepository memberAddressListRepository;
 
-    @PostMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<Void> addDeliveryAddress(
-            @PathVariable String memberUUID,
+    @PostMapping("delivery")
+    public BaseResponse<Void> addDeliveryAddress(
+            Authentication authentication,
             @RequestBody DeliveryAddressRequestVo deliveryAddressRequestVo) {
 
-        DeliveryAddressRequestDto deliveryAddressRequestDto = DeliveryAddressRequestDto.toDto(deliveryAddressRequestVo);
+        DeliveryAddressAddRequestDto deliveryAddressAddRequestDto = DeliveryAddressAddRequestDto
+                .toDto(deliveryAddressRequestVo, authentication.getName());
 
-        memberAddressService.addDeliveryAddress(memberUUID, deliveryAddressRequestDto);
+        memberAddressService.addDeliveryAddress(deliveryAddressAddRequestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+
     }
 
-    @GetMapping("delivery/{memberUUID}")
-    public CommonResponseEntity<List<DeliveryAddressResponseVo>> getMemberDeliveryAddress(
-            @PathVariable String memberUUID) {
+    @GetMapping("delivery")
+    public BaseResponse<List<DeliveryAddressResponseVo>> getMemberDeliveryAddress(Authentication authentication) {
 
-        List<DeliveryAddressResponseDto> memberAddressList = memberAddressService.getMemberDeliveryAddress(memberUUID);
+        List<DeliveryAddressResponseDto> memberAddressList = memberAddressService
+                .getMemberDeliveryAddress(authentication.getName());
 
-        if (memberAddressList.isEmpty()) {
-            return new CommonResponseEntity<>(
-                    HttpStatus.OK,
-                    true,
-                    "배송지가 없습니다.",
-                    null);
-        }
+        return new BaseResponse<>(
+                memberAddressList.stream().map(DeliveryAddressResponseDto::toVo).toList()
+        );
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                memberAddressList.stream().
-                        map(DeliveryAddressResponseDto::toVo).
-                        toList());
     }
 
     @DeleteMapping("delivery/{deliveryAddressId}")
-    public CommonResponseEntity<Void> deleteDeliveryAddress(@PathVariable Long deliveryAddressId) {
+    public BaseResponse<Void> deleteDeliveryAddress(@PathVariable Long deliveryAddressId,
+                                                    Authentication authentication) {
+
+        memberAddressListRepository.findByMemberUUIDAndDeliveryAddressId(authentication.getName(), deliveryAddressId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버의 배송지가 존재하지 않습니다."));
 
         memberAddressService.deleteDeliveryAddress(deliveryAddressId);
 
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
     }
 
-//    @PutMapping("delivery/{deliveryAddressId}")
-//    public CommonResponseEntity<Void> updateDeliveryAddress(
-//            @PathVariable Long deliveryAddressId,
-//            @RequestBody UpdateDeliveryAddressRequestVo requestVo) {
-//
-//        UpdateDeliveryAddressRequestDto requestDto = UpdateDeliveryAddressRequestDto.toDto(requestVo);
-//
-//        memberAddressService.updateDeliveryAddress(deliveryAddressId, deliveryAddressRequestDto);
-//
-//        return new CommonResponseEntity<>(
-//                HttpStatus.OK,
-//                true,
-//                CommonResponseMessage.SUCCESS.getMessage(),
-//                null);
-//    }
+    @PutMapping("delivery/{deliveryAddressId}")
+    public BaseResponse<Void> updateDeliveryAddress(
+            @PathVariable Long deliveryAddressId,
+            Authentication authentication,
+            @RequestBody UpdateDeliveryAddressRequestVo requestVo) {
+
+        DeliveryAddressUpdateRequestDto requestDto = DeliveryAddressUpdateRequestDto.toDto(requestVo, authentication.getName());
+
+        memberAddressService.updateDeliveryAddress(deliveryAddressId, requestDto);
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+    }
 
 }
