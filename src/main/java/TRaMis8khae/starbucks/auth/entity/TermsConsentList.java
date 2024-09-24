@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.member.entity;
+package TRaMis8khae.starbucks.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,16 +16,15 @@ public class TermsConsentList {
 
     private Boolean termsConsentChecked;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private String memberUUID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Terms terms;
 
     @Builder
-    public TermsConsentList(Boolean termsConsentChecked, Member member, Terms terms) {
+    public TermsConsentList(Boolean termsConsentChecked, String memberUUID, Terms terms) {
         this.termsConsentChecked = termsConsentChecked;
-        this.member = member;
+        this.memberUUID = memberUUID;
         this.terms = terms;
     }
 

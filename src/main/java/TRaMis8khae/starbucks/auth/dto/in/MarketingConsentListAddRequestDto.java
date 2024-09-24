@@ -1,25 +1,30 @@
-package TRaMis8khae.starbucks.member.dto;
+package TRaMis8khae.starbucks.auth.dto.in;
 
-import TRaMis8khae.starbucks.member.entity.Marketing;
-import TRaMis8khae.starbucks.member.entity.MarketingConsentList;
+import TRaMis8khae.starbucks.auth.entity.Marketing;
+import TRaMis8khae.starbucks.auth.entity.MarketingConsentList;
 import TRaMis8khae.starbucks.member.entity.Member;
-import TRaMis8khae.starbucks.member.vo.AddMarketingConsentListRequestVo;
+import TRaMis8khae.starbucks.member.vo.in.AddMarketingConsentListRequestVo;
 import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class AddMarketingConsentListRequestDto {
+public class MarketingConsentListAddRequestDto {
 
     private boolean EmailConsentChecked;
     private boolean SMSConsentChecked;
     private String memberUUID;
     private Long marketingId;
 
-    public static AddMarketingConsentListRequestDto toDto(AddMarketingConsentListRequestVo requestVo) {
-        return AddMarketingConsentListRequestDto.builder()
+    @Builder
+    public MarketingConsentListAddRequestDto(boolean EmailConsentChecked, boolean SMSConsentChecked, String memberUUID) {
+        this.EmailConsentChecked = EmailConsentChecked;
+        this.SMSConsentChecked = SMSConsentChecked;
+        this.memberUUID = memberUUID;
+    }
+
+    public static MarketingConsentListAddRequestDto toDto(AddMarketingConsentListRequestVo requestVo) {
+        return MarketingConsentListAddRequestDto.builder()
                 .EmailConsentChecked(requestVo.isEmailConsentChecked())
                 .SMSConsentChecked(requestVo.isSMSConsentChecked())
                 .memberUUID(requestVo.getMemberUUID())

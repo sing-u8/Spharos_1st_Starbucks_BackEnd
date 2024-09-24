@@ -2,19 +2,12 @@ package TRaMis8khae.starbucks.member.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
 import TRaMis8khae.starbucks.member.application.MemberAddressService;
 import TRaMis8khae.starbucks.member.application.MemberService;
 import TRaMis8khae.starbucks.member.dto.*;
-import TRaMis8khae.starbucks.member.entity.MemberAddressList;
-import TRaMis8khae.starbucks.member.vo.AddMarketingConsentListRequestVo;
-import TRaMis8khae.starbucks.member.vo.AddTermsConsentListRequestVo;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import TRaMis8khae.starbucks.member.vo.in.DeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,5 +57,7 @@ public class MemberController {
         );
 
     }
+
+
 
 }

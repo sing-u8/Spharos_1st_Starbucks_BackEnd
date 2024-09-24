@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.member.entity;
+package TRaMis8khae.starbucks.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

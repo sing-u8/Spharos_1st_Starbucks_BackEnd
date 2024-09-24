@@ -3,7 +3,6 @@ package TRaMis8khae.starbucks.member.application;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.dto.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.dto.MemberAddressListRequestDto;
-import TRaMis8khae.starbucks.member.dto.UpdateDeliveryAddressRequestDto;
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.Member;
 import TRaMis8khae.starbucks.member.entity.MemberAddressList;
@@ -11,13 +10,11 @@ import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
 import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,7 +50,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         return deliveryAddressList.stream()
                 .map(DeliveryAddressResponseDto::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

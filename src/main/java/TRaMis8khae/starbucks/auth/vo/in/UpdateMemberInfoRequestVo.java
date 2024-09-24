@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.auth.vo;
+package TRaMis8khae.starbucks.auth.vo.in;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
-package TRaMis8khae.starbucks.auth.dto;
+package TRaMis8khae.starbucks.auth.dto.in;
 
-import TRaMis8khae.starbucks.auth.vo.ResetPasswordRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.ResetPasswordRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 

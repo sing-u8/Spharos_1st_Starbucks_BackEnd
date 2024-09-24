@@ -1,7 +1,6 @@
 package TRaMis8khae.starbucks.member.dto;
 
-import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
 import lombok.*;
 
 @Getter
