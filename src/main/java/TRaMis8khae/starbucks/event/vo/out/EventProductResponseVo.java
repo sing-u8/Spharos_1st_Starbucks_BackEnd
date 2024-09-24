@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.event.vo;
+package TRaMis8khae.starbucks.event.vo.out;
 
 import lombok.Builder;
 import lombok.Getter;

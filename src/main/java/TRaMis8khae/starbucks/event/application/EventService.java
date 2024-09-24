@@ -1,9 +1,9 @@
 package TRaMis8khae.starbucks.event.application;
 
-import TRaMis8khae.starbucks.event.dto.EventInfoResponseDto;
-import TRaMis8khae.starbucks.event.dto.EventRequestDto;
+import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
+import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
-import org.springframework.web.multipart.MultipartFile;
+import TRaMis8khae.starbucks.product.entity.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +19,11 @@ public interface EventService {
 
     EventInfoResponseDto getEvent(Long eventId);
 
+
+    // crawling event, eventProduct
+    List<Event> addCrawlingEvent(int numberOfEvents);
+
+    void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent);
+
+    void processEventProductMapping(List<Product> crawledProducts);
 }

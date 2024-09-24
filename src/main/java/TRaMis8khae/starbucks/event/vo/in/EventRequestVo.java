@@ -1,6 +1,5 @@
-package TRaMis8khae.starbucks.event.vo;
+package TRaMis8khae.starbucks.event.vo.in;
 
-import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

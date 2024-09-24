@@ -245,14 +245,14 @@ public class CrawlingInit {
                 // discountRate가 0보다 큰 경우에만 저장 처리
                 if (discountRateValue > 0) {
 
-                    Event event = Event.builder()
-                        .discountRate(discountRateValue)
-                        .build();
-
-                    ProductEventList productEventList = ProductEventList.builder()
-                        .product(parsedProduct)
-                        .event(event)
-                        .build();
+//                    Event event = Event.builder()
+//                        .discountRate(discountRateValue)
+//                        .build();
+//
+//                    ProductEventList productEventList = ProductEventList.builder()
+//                        .product(parsedProduct)
+//                        .event(event)
+//                        .build();
 
 //                    log.info("!event : {}", event.getDiscountRate());
 //                    log.info("!productEventList : {}", productEventList.getEvent());
