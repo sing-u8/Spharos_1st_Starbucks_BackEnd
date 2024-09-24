@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.event.dto;
 
 import TRaMis8khae.starbucks.event.vo.EventProductResponseVo;
-import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import lombok.Builder;
 import lombok.Getter;
