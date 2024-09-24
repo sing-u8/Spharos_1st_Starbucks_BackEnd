@@ -16,8 +16,8 @@ public class ReviewMediaList {
     @Id @GeneratedValue
     private Long id;
 
-    private Long reviewId;
-
     private Long mediaId;
+
+    private String reviewUUID;
 
 }

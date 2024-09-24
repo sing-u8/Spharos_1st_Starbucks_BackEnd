@@ -54,11 +54,21 @@ public class CrawlingInit {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
 
+        int sheetCount = workbook.getNumberOfSheets();
+
+        for (int i = 0; i < sheetCount; i++) {
+            Sheet sheet = workbook.getSheetAt(i);
+
+            log.info("Sheet name : {}", sheet.getSheetName());
+        }
+
         // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
         for (Sheet sheet : workbook) {
             log.info("Sheet name : {}", sheet.getSheetName());
 
             // todo sheet 이름별로 topCode 생성
+            String categoryName = sheet.getSheetName();
+
 
             for (Row row : sheet) {
 

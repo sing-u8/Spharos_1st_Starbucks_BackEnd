@@ -1,14 +1,13 @@
 package TRaMis8khae.starbucks.wish.infrastructure.dynamic;
 
-import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
-import TRaMis8khae.starbucks.wish.entity.Wish;
+import TRaMis8khae.starbucks.wish.dto.out.WishReadResponseDto;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,19 +21,24 @@ public class WishRepositoryCustomImpl implements WishRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<WishReadResponseDto> findWishes(Pageable pageable) {
+    public Slice<WishReadResponseDto> findWishes(Pageable pageable, String memberUUID) {
 
         List<WishReadResponseDto> content = queryFactory
                 .select(Projections.constructor(WishReadResponseDto.class,
                         wish.productUUID))
                 .from(wish)
+                .where(eqMemberUUID(memberUUID))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Wish> countQuery = queryFactory.selectFrom(wish);
+        boolean hasNext = content.size() == pageable.getPageSize(); // 다음 페이지가 있는지 확인
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    public BooleanExpression eqMemberUUID(String memberUUID) {
+        return wish.memberUUID.eq(memberUUID);
     }
 
 }

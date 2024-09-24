@@ -6,11 +6,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @ToString
 @NoArgsConstructor
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE purchase SET is_deleted = true WHERE id = ?")
 public class Purchase extends BaseEntity {
 
     @Id
@@ -47,12 +51,12 @@ public class Purchase extends BaseEntity {
 
     private String phone2;
 
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Builder
     public Purchase(String memberUUID, String serialNumber, Double deliveryPrice, Double totalPrice, String cardInfo,
                     String memberName, String memberPhone, String addressDetail, String deliveryMemo,
-                    String recipient, String phone1, String phone2, Boolean isDeleted) {
+                    String recipient, String phone1, String phone2) {
         this.memberUUID = memberUUID;
         this.serialNumber = serialNumber;
         this.deliveryPrice = deliveryPrice;
@@ -65,7 +69,6 @@ public class Purchase extends BaseEntity {
         this.recipient = recipient;
         this.phone1 = phone1;
         this.phone2 = phone2;
-        this.isDeleted = isDeleted;
     }
 
 }

@@ -1,12 +1,12 @@
 package TRaMis8khae.starbucks.wish.application;
 
-import TRaMis8khae.starbucks.wish.dto.WishAddRequestDto;
-import TRaMis8khae.starbucks.wish.dto.WishReadResponseDto;
+import TRaMis8khae.starbucks.wish.dto.in.WishAddRequestDto;
+import TRaMis8khae.starbucks.wish.dto.out.WishReadResponseDto;
 import TRaMis8khae.starbucks.wish.entity.Wish;
 import TRaMis8khae.starbucks.wish.infrastructure.WishRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +24,8 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public Page<WishReadResponseDto> findWishes(Pageable pageable) {
-        return wishRepository.findWishes(pageable);
+    public Slice<WishReadResponseDto> findWishes(Pageable pageable, String memberUUID) {
+        return wishRepository.findWishes(pageable, memberUUID);
     }
 
 }
