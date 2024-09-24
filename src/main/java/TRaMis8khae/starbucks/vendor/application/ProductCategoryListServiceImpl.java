@@ -1,5 +1,7 @@
 package TRaMis8khae.starbucks.vendor.application;
 
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
@@ -10,6 +12,7 @@ import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,12 +27,14 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
     private final ProductCategoryListRepositoryCustom productCategoryListRepositoryCustom;
 
     @Override
+    @Transactional
     public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
-        Product product = productRepository.findByProductUUID(productCategoryListRequestDto.getProductUUID())
-            .orElseThrow( () -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+        if (productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
+        }
 
-        productCategoryListRepository.save(productCategoryListRequestDto.toEntity(product));
+        productCategoryListRepository.save(productCategoryListRequestDto.toEntity());
 
     }
 
@@ -39,12 +44,12 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
         return null;
     }
 
-    @Override
-    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
-
-        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
-
-        return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
-    }
+//    @Override
+//    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
+//
+//        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
+//
+//        return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
+//    }
 
 }

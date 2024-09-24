@@ -1,9 +1,9 @@
 package TRaMis8khae.starbucks.review.infrastructure.dynamic;
 
-import TRaMis8khae.starbucks.review.dto.ReviewReadResponseDto;
-import org.springframework.data.domain.Page;
+import TRaMis8khae.starbucks.review.dto.out.ReviewReadResponseDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface ReviewRepositoryCustom {
-    Page<ReviewReadResponseDto> findReviews(Pageable pageable);
+    Slice<ReviewReadResponseDto> findReviews(Pageable pageable, String productUUID);
 }

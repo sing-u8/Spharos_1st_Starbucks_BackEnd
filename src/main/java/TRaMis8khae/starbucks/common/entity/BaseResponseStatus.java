@@ -53,7 +53,8 @@ public enum BaseResponseStatus {
 
     // Pet
     NO_EXIST_CATEGORY(HttpStatus.NOT_FOUND, false, 2401, "존재하지 않는 카테고리입니다."),
-
+    DUPLICATED_CATEGORY(HttpStatus.CONFLICT, false, 3006, "이미 등록된 카테고리입니다"),
+    DUPLICATED_CATEGORY_ORDER(HttpStatus.CONFLICT, false, 3008, "이미 등록된 순서입니다"),
     // Interest
     NO_EXIST_INTEREST(HttpStatus.NOT_FOUND, false, 2501, "존재하지 않는 관심사입니다."),
 

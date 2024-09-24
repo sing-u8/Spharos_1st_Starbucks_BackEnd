@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE voucher SET is_deleted = true WHERE id = ?")
 public class Voucher {
 
     @Id
@@ -26,6 +30,8 @@ public class Voucher {
     private LocalDateTime expireDate;
 
     private String voucherCode;
+
+    private boolean isDeleted = false;
 
     @Builder
     public Voucher(String name, Double price, String productUUID, LocalDateTime expireDate, String voucherCode) {
