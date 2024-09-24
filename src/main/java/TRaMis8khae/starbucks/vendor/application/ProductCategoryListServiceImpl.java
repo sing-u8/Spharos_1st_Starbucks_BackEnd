@@ -12,6 +12,7 @@ import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,23 +27,29 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
     private final ProductCategoryListRepositoryCustom productCategoryListRepositoryCustom;
 
     @Override
+    @Transactional
     public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
-        Product product = productRepository.findByProductUUID(productCategoryListRequestDto.getProductUUID())
-            .orElseThrow( () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
+        if (productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
+        }
 
-        productCategoryListRepository.save(productCategoryListRequestDto.toEntity(product));
+        productCategoryListRepository.save(productCategoryListRequestDto.toEntity());
 
     }
 
 
     @Override
     public List<ProductCategoryListResponseDto> findProductsByCategories(String topCode, String middleCode, String bottomCode) {
-
-        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, middleCode, bottomCode);
-
-        return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
+        return null;
     }
 
+//    @Override
+//    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
+//
+//        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
+//
+//        return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
+//    }
 
 }
