@@ -8,14 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateMemberInfoRequestDto {
 
     private String nickname;
 
     private String phoneNumber;
+
+    @Builder
+    public UpdateMemberInfoRequestDto(String nickname, String phoneNumber) {
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
+    }
 
     public static UpdateMemberInfoRequestDto toDto(UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
         return UpdateMemberInfoRequestDto.builder()

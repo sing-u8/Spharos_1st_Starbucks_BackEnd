@@ -64,7 +64,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private Boolean checkWriteReview(Review review) {
-        return reviewRepository.existsReviewByMemberUUIDAndProductUUID(review);
+        return null;
+//        return reviewRepository.existsReviewByMemberUUIDAndProductUUID(review);
     }
 
 }

@@ -64,7 +64,6 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor( env.getProperty("jwt.secret-key").getBytes() );
     }
 
-
     public Claims getClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(getSignKey())

@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.vendor.application;
 
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListRequestDto;
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListResponseDto;
+import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
+import TRaMis8khae.starbucks.vendor.dto.out.ProductCategoryListResponseDto;
 
 import java.util.List;
 

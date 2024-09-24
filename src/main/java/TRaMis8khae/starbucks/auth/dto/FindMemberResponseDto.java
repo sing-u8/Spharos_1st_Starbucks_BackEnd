@@ -8,12 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class FindMemberResponseDto {
 
     private String loginId;
+
+    @Builder
+    public FindMemberResponseDto(String loginId) {
+        this.loginId = loginId;
+    }
 
     public static FindMemberResponseDto toDto(Member member) {
         return FindMemberResponseDto.builder()

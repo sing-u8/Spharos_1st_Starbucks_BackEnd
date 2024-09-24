@@ -10,6 +10,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class StarbucksApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StarbucksApplication.class, args);
-
 	}
 }
