@@ -1,6 +1,5 @@
 package TRaMis8khae.starbucks.member.application;
 
-import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.dto.in.DeliveryAddressAddRequestDto;
 import TRaMis8khae.starbucks.member.dto.out.DeliveryAddressResponseDto;
 import TRaMis8khae.starbucks.member.dto.in.MemberAddressListAddRequestDto;
@@ -10,7 +9,6 @@ import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import TRaMis8khae.starbucks.member.infrastructure.DeliveryAddressRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepository;
 import TRaMis8khae.starbucks.member.infrastructure.MemberAddressListRepositoryCustom;
-import TRaMis8khae.starbucks.member.infrastructure.MemberRepository;
 import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +53,6 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         return deliveryAddressList.stream()
                 .map(DeliveryAddressResponseDto::toDto)
                 .toList();
-
     }
 
     @Override
@@ -89,5 +86,39 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         memberAddressListRepository.save(memberAddressList);
 
     }
+
+//    @Override
+//    public void updateDeliveryAddress(Long deliveryAddressId, UpdateDeliveryAddressRequestDto requestDto) {
+//
+//        Optional<DeliveryAddress> updateDeliveryAddress = deliveryAddressRepository.findById(deliveryAddressId);
+//
+//        if(updateDeliveryAddress.isEmpty()){
+//            throw new IllegalArgumentException("해당 배송지가 존재하지 않습니다.");
+//        }
+//
+//        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
+//
+//        UpdateDeliveryAddressRequestDto updateDeliveryAddressRequestDto = UpdateDeliveryAddressRequestDto.toEntity(requestDto, deliveryAddress);
+
+
+//
+//        DeliveryAddress deliveryAddress = updateDeliveryAddress.get();
+//
+//        deliveryAddress.updateDeliveryAddress(
+//                deliveryAddressRequestDto.getAddressDetail(),
+//                deliveryAddressRequestDto.getDeliveryMemo(),
+//                deliveryAddressRequestDto.getDeliveryAddressNickname(),
+//                deliveryAddressRequestDto.getRecipient(),
+//                deliveryAddressRequestDto.getPhone1(),
+//                deliveryAddressRequestDto.getPhone2()
+//        );
+//
+//        MemberAddressList memberAddressList = memberAddressListRepository.findByMemberUUIDAndId(memberUUID, id);
+////        memberAddressList.updateMemberAddressList(deliveryAddressRequestDto.isAddressDefaultCheck());
+//
+//        deliveryAddressRepository.save(deliveryAddress);
+//        memberAddressListRepository.save(memberAddressList);
+
+//    }
 
 }

@@ -1,6 +1,6 @@
-package TRaMis8khae.starbucks.auth.dto;
+package TRaMis8khae.starbucks.auth.dto.in;
 
-import TRaMis8khae.starbucks.auth.vo.SignUpRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.SignUpRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,8 +22,8 @@ public class SignUpRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
-    private Boolean marketingConsentEmail;
-    private Boolean marketingConsentSms;
+    private Boolean EmailMarketingConsent;
+    private Boolean SMSMarketingConsent;
 
     @Builder
     public SignUpRequestDto(
@@ -48,8 +48,8 @@ public class SignUpRequestDto {
         this.nickname = nickname;
         this.address = address;
         this.paymentPassword = paymentPassword;
-        this.marketingConsentEmail = marketingConsentEmail;
-        this.marketingConsentSms = marketingConsentSms;
+        this.EmailMarketingConsent = marketingConsentEmail;
+        this.SMSMarketingConsent = marketingConsentSms;
     }
 
     public static SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
@@ -61,8 +61,8 @@ public class SignUpRequestDto {
                 .phoneNumber(signUpRequestVo.getPhoneNumber())
                 .email(signUpRequestVo.getEmail())
                 .nickname(signUpRequestVo.getNickname())
-                .marketingConsentEmail(signUpRequestVo.getEmailMarketingConsent())
-                .marketingConsentSms(signUpRequestVo.getSMSMarketingConsent())
+//                .EmailMarketingConsent(signUpRequestVo.getEmailMarketingConsent())
+//                .SMSMarketingConsent(signUpRequestVo.getSmsMarketingConsent())
                 .build();
     }
 

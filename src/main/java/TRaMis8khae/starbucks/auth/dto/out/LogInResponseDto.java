@@ -1,8 +1,7 @@
-package TRaMis8khae.starbucks.auth.dto;
+package TRaMis8khae.starbucks.auth.dto.out;
 
-import TRaMis8khae.starbucks.auth.vo.LogInResponseVo;
+import TRaMis8khae.starbucks.auth.vo.out.LogInResponseVo;
 import TRaMis8khae.starbucks.member.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

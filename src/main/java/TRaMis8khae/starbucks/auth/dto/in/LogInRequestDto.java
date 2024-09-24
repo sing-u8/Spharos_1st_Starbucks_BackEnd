@@ -1,6 +1,6 @@
-package TRaMis8khae.starbucks.auth.dto;
+package TRaMis8khae.starbucks.auth.dto.in;
 
-import TRaMis8khae.starbucks.auth.vo.LogInRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.LogInRequestVo;
 import lombok.*;
 
 @Getter

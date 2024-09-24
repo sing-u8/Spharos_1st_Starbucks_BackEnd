@@ -1,13 +1,14 @@
-package TRaMis8khae.starbucks.auth.dto;
+package TRaMis8khae.starbucks.auth.dto.in;
 
-import TRaMis8khae.starbucks.auth.vo.UpdateMemberInfoRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.UpdateMemberInfoRequestVo;
 import TRaMis8khae.starbucks.member.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@ToString
 @NoArgsConstructor
 public class UpdateMemberInfoRequestDto {
 

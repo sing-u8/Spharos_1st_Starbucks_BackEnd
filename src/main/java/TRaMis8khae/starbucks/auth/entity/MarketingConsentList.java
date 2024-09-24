@@ -1,5 +1,6 @@
-package TRaMis8khae.starbucks.member.entity;
+package TRaMis8khae.starbucks.auth.entity;
 
+import TRaMis8khae.starbucks.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,14 +19,19 @@ public class MarketingConsentList {
 
     private Boolean SMSConsentChecked;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "marketing_id")
     private Marketing marketing;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
-    public MarketingConsentList(Boolean emailConsentChecked, Boolean smsConsentChecked, Marketing marketing, Member member) {
+    public MarketingConsentList(Boolean emailConsentChecked,
+                                Boolean smsConsentChecked,
+                                Marketing marketing,
+                                Member member) {
         this.EmailConsentChecked = emailConsentChecked;
         this.SMSConsentChecked = smsConsentChecked;
         this.marketing = marketing;

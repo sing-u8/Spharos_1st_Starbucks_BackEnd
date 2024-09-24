@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.auth.vo;
+package TRaMis8khae.starbucks.auth.vo.in;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -23,8 +23,8 @@ public class SignUpRequestVo {
 
     private String nickname;
 
-    private Boolean EmailMarketingConsent;
+    private Boolean emailMarketingConsent;
 
-    private Boolean SMSMarketingConsent;
+    private Boolean smsMarketingConsent;
 
 }
