@@ -26,7 +26,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String productUUID;
 
-    private Double productScore = 0.0;
+    private Double productScore;
 
     @Column(nullable = false)
     private Double price;
@@ -42,9 +42,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer maxOrderCount;
 
-    private Integer minOrderCount = 1;
+    private Integer minOrderCount;
 
     @ElementCollection
     private List<Long> mediaIds;
-    
+
 }
