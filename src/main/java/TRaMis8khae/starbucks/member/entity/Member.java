@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.member.entity;
 
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -84,7 +85,7 @@ public class Member implements UserDetails {
     // memberUUID 값이 없을 경우 자동으로 생성
     @PrePersist
     public void prePersist() {
-        this.memberUUID = UUID.randomUUID().toString();
+        this.memberUUID = CodeGenerator.generateCode(36);
     }
 
     @Override
