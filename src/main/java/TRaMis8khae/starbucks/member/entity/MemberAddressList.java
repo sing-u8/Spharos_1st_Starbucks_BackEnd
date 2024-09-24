@@ -30,8 +30,8 @@ public class MemberAddressList {
         this.deliveryAddress = deliveryAddress;
     }
 
-//    public void updateMemberAddressList(Boolean addressDefaultCheck) {
-//        this.addressDefaultCheck = addressDefaultCheck;
-//    }
+    public void updateAddressDefaultCheck(Boolean addressDefaultCheck) {
+        this.addressDefaultCheck = addressDefaultCheck;
+    }
 
 }

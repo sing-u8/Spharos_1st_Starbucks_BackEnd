@@ -2,8 +2,8 @@ package TRaMis8khae.starbucks.vendor.application;
 
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListRequestDto;
-import TRaMis8khae.starbucks.vendor.dto.ProductCategoryListResponseDto;
+import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
+import TRaMis8khae.starbucks.vendor.dto.out.ProductCategoryListResponseDto;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepositoryCustom;

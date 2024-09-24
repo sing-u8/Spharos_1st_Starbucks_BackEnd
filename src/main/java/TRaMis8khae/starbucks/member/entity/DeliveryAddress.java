@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -32,17 +35,16 @@ public class DeliveryAddress {
     @Column(length = 20)
     private String phone2;
 
-    @Builder
-    public DeliveryAddress(String addressDetail, String deliveryMemo, String deliveryAddressNickname, String recipient, String phone1, String phone2) {
-        this.addressDetail = addressDetail;
-        this.deliveryMemo = deliveryMemo;
-        this.deliveryAddressNickname = deliveryAddressNickname;
-        this.recipient = recipient;
-        this.phone1 = phone1;
-        this.phone2 = phone2;
-    }
+    @OneToMany(mappedBy = "deliveryAddress", cascade = CascadeType.REMOVE)
+    private List<MemberAddressList> memberAddressList = new ArrayList<>();
 
-    public void updateDeliveryAddress(String addressDetail, String deliveryMemo, String deliveryAddressNickname, String recipient, String phone1, String phone2) {
+    @Builder
+    public DeliveryAddress(String addressDetail,
+                           String deliveryMemo,
+                           String deliveryAddressNickname,
+                           String recipient,
+                           String phone1,
+                           String phone2) {
         this.addressDetail = addressDetail;
         this.deliveryMemo = deliveryMemo;
         this.deliveryAddressNickname = deliveryAddressNickname;
