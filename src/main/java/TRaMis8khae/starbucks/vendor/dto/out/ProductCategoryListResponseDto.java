@@ -17,7 +17,7 @@ public class ProductCategoryListResponseDto {
 
     public static ProductCategoryListResponseDto toDto(ProductCategoryList productCategoryList) {
         return ProductCategoryListResponseDto.builder()
-                .productUUID(productCategoryList.getProduct().getProductUUID())
+                .productUUID(productCategoryList.getProductUUID())
                 .build();
     }
 
