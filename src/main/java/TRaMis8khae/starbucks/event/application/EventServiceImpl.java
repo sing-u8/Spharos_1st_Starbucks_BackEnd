@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 
 @Slf4j
 @Service
@@ -38,12 +40,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<String> getEventUUID(Long eventId) {
+    public List<String> getProductUUID(Long eventId) {
 
        return productEventListRepository.findAllByEventId(eventId)
                .stream()
                .map(productEventList -> productEventList.getProductUUID())
-               .collect(Collectors.toList());
+               .toList();
 
     }
 
@@ -67,7 +69,7 @@ public class EventServiceImpl implements EventService {
 
         List<String> mediaPath = eventMediaList.stream()
                 .map(EventMedia::getMediaUrl)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return EventInfoResponseDto.fromEntity(event, mediaPath);
     }

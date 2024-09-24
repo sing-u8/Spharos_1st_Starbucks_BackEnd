@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface EventService {
 
     List<EventInfoResponseDto> getEventList(Long eventId);
-    List<String> getEventUUID(Long eventId);
+    List<String> getProductUUID(Long eventId);
 
     void addEvent(EventRequestDto requestDto);
 
