@@ -29,7 +29,5 @@ public class Event {
 
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EventMedia> eventMediaList;
 
 }

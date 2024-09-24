@@ -13,7 +13,7 @@ public interface EventService {
     List<EventInfoResponseDto> getEventList(Long eventId);
     List<String> getEventUUID(Long eventId);
 
-    void addEvent(EventRequestDto requestDto, MultipartFile image);
+    void addEvent(EventRequestDto requestDto);
 
     Optional<Event> getEventWithMedia(Long eventId);
 

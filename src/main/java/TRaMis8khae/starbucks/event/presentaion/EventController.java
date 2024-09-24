@@ -38,20 +38,11 @@ public class EventController {
 
         EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
 
-        eventService.addEvent(requestDto, image);
+        eventService.addEvent(requestDto);
 
         return null;
 
     }
-
-//    @GetMapping("/event/{eventId}")
-//    public BaseResponse<List<EventResponseVo>> getEventList(@PathVariable Long eventId) {
-//
-//        return new BaseResponse<>(
-//                eventService.getEventList(eventId).stream().map(EventInfoResponseDto::toVo).toList()
-//        );
-//
-//    }
 
     @GetMapping("/event/{eventId}")
     public BaseResponse<List<EventResponseVo>> getEventList(@PathVariable Long eventId) {

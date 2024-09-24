@@ -47,24 +47,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addEvent(EventRequestDto requestDto, MultipartFile image) {
-
-        Event event = requestDto.toEntity(requestDto);
-
-        eventRepository.save(event);
-
-        String imagePath = "D:/saved_images";
-        String fileName = image.getOriginalFilename();
-        File file = new File(imagePath, fileName);
-
-//        try {
-//            image.transferTo(file);
-//            EventMedia eventMedia = EventMedia.builder()
-//                    .mediaUrl(file.getAbsolutePath())
-//                    .build();
-//        } catch (Exception e) {
-//            log.error("이미지 저장 실패", e);
-//        }
+    public void addEvent(EventRequestDto requestDto) {
 
     }
 
