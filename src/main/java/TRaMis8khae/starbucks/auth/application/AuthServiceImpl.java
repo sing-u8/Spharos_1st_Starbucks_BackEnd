@@ -42,13 +42,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void signOut(String memberUUID, String accessToken) {
-
-        String memberUUIDFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        if (!memberUUID.equals(memberUUIDFromToken)) {
-            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
-        }
+    public void signOut(String memberUUID) {
 
         authRepository.deleteByMemberUUID(memberUUID);
 
@@ -81,21 +75,16 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void updateMemberInfo(String memberUUID, String accessToken, UpdateMemberInfoRequestDto requestDto) {
+    public void updateMemberInfo(String memberUUID, UpdateMemberInfoRequestDto requestDto) {
 
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.NO_EXIST_USER)
         );
 
-        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
-            throw new BaseException(BaseResponseStatus.WRONG_JWT_TOKEN);
-        }
-
         Member updatedMember = requestDto.toEntity(member);
 
         authRepository.save(updatedMember);
+
     }
 
     @Override
