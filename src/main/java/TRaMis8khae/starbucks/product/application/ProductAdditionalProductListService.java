@@ -1,7 +1,7 @@
 package TRaMis8khae.starbucks.product.application;
 
 
-import TRaMis8khae.starbucks.product.dto.ProductAdditionalProductListRequestDto;
+import TRaMis8khae.starbucks.product.dto.in.ProductAdditionalProductListRequestDto;
 
 import java.util.List;
 

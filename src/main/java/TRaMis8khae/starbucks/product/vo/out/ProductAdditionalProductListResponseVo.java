@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.product.vo;
+package TRaMis8khae.starbucks.product.vo.out;
 
 
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProductAdditionalProductListRequestVo {
+public class ProductAdditionalProductListResponseVo {
 
 	private String productUUID;
 

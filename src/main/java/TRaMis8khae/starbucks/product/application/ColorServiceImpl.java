@@ -3,19 +3,16 @@ package TRaMis8khae.starbucks.product.application;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
-import TRaMis8khae.starbucks.product.dto.ColorRequestDto;
-import TRaMis8khae.starbucks.product.dto.ColorResponseDto;
-import TRaMis8khae.starbucks.product.entity.Color;
+import TRaMis8khae.starbucks.product.dto.in.ColorRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ColorResponseDto;
 import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.infrastructure.ColorRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductOptionRepository;
-import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.toDto;
-
+//member uuid 요청 - Authentication authentication
 
 @Slf4j
 @Service
@@ -25,14 +22,11 @@ public class ColorServiceImpl implements ColorService {
 	private final ProductOptionRepository productOptionRepository;
 	private final ColorRepository colorRepository;
 
-	public Color addColor(ColorRequestDto requestDto) {
+	@Override
+	public void addColor(ColorRequestDto requestDto) {
 
-		return colorRepository.findByName(requestDto.getName())
-			.orElseGet(() -> colorRepository.save(
-				toDto(ColorRequestVo.builder()
-					.name(requestDto.getName())
-					.build()).toEntity()
-			));
+		colorRepository.findByName(requestDto.getName())
+			.orElseGet(() -> colorRepository.save(requestDto.toEntity()));
 	}
 
 	@Override

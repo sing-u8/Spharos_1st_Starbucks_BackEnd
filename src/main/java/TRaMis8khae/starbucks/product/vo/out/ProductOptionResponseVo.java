@@ -1,11 +1,13 @@
-package TRaMis8khae.starbucks.product.vo;
+package TRaMis8khae.starbucks.product.vo.out;
 
 
+import lombok.Builder;
 import lombok.Getter;
 
 
 @Getter
-public class ProductOptionRequestVo {
+@Builder
+public class ProductOptionResponseVo {
 
 	private String productName;
 
@@ -21,10 +23,6 @@ public class ProductOptionRequestVo {
 
 	private Boolean openChecked;
 
-	private String productUUID;
 
-	private String volumeName;
-
-	private String colorName;
 
 }

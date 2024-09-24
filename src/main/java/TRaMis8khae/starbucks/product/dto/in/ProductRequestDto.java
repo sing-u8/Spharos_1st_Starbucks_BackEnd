@@ -1,7 +1,7 @@
-package TRaMis8khae.starbucks.product.dto;
+package TRaMis8khae.starbucks.product.dto.in;
 
 import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
+import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
 import lombok.*;
 
 import java.util.List;

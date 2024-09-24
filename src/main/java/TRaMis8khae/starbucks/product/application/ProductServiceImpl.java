@@ -1,40 +1,26 @@
 package TRaMis8khae.starbucks.product.application;
 
-import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
-import TRaMis8khae.starbucks.media.dto.MediaAddRequestDto;
-import TRaMis8khae.starbucks.media.entity.MediaKind;
-import TRaMis8khae.starbucks.product.dto.*;
+import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
-import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
-import TRaMis8khae.starbucks.product.vo.ProductAdditionalProductListRequestVo;
-import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Stream;
 
-import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.*;
-//서비스 나누기
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
-    private final ProductOptionRepository productOptionRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
-
-    private final ProductAdditionalProductListRepository productAdditionalProductListRepository;
 
     @Override
     @Transactional
@@ -50,13 +36,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void updateProduct(String uuid, ProductUpdateRequestDto requestDto) {
+    public void updateProduct(ProductRequestDto requestDto) {
 
-        Product product = productRepository.findByProductUUID(uuid).orElseThrow(
+        productRepository.findByProductUUID(requestDto.getProductUUID()).orElseThrow(
             () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
         );
 
-        productRepository.save(requestDto.toEntity(product));
+        productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
     }
 
     @Override
@@ -76,14 +62,6 @@ public class ProductServiceImpl implements ProductService{
 
         return ProductResponseDto.toDto(product);
     }
-//
-//    @Override
-//    public List<ProductResponseDto> findProducts() {
-//
-//        List<Product> products = productRepository.findAll(); //수정
-//        //추가상품이 아닌 상품들만 찾기로직 추가
-//        return products.stream().map(ProductResponseDto::toDto).toList();
-//    }
 
     @Override
     public List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice) {

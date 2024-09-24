@@ -1,7 +1,6 @@
 package TRaMis8khae.starbucks.vendor.dto;
 
 import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.vo.ProductRequestVo;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.vo.ProductCategoryListRequestVo;
 import lombok.AllArgsConstructor;

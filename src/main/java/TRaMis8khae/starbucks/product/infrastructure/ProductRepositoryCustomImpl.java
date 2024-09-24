@@ -1,7 +1,6 @@
 package TRaMis8khae.starbucks.product.infrastructure;
 
 
-import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -25,21 +24,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 		return jpaQueryFactory
 			.selectFrom(product)
 			.where(product.price.between(minPrice, maxPrice))
-			.fetch();
-	}
-
-
-	public List<ProductOption> getProductListWithVolume() {
-
-		return null;
-	}
-
-	@Override
-	public List<Product> getProductListWithPage(Long offset, Integer pageSize) {
-
-		return jpaQueryFactory.selectFrom(product)
-			.offset(offset)
-			.limit(pageSize)
 			.fetch();
 	}
 }

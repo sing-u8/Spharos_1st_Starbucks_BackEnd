@@ -1,4 +1,4 @@
-package TRaMis8khae.starbucks.product.vo;
+package TRaMis8khae.starbucks.product.vo.in;
 
 
 import lombok.Builder;

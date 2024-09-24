@@ -1,8 +1,8 @@
 package TRaMis8khae.starbucks.product.application;
 
 
-import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
-import TRaMis8khae.starbucks.product.dto.ProductOptionResponseDto;
+import TRaMis8khae.starbucks.product.dto.in.ProductOptionRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductOptionResponseDto;
 
 
 public interface ProductOptionService {

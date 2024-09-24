@@ -3,9 +3,9 @@ package TRaMis8khae.starbucks.product.application;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
-import TRaMis8khae.starbucks.product.dto.ProductOptionRequestDto;
-import TRaMis8khae.starbucks.product.dto.ProductOptionResponseDto;
-import TRaMis8khae.starbucks.product.dto.VolumeRequestDto;
+import TRaMis8khae.starbucks.product.dto.in.ProductOptionRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductOptionResponseDto;
+import TRaMis8khae.starbucks.product.dto.in.VolumeRequestDto;
 import TRaMis8khae.starbucks.product.entity.Color;
 import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.entity.Volume;
@@ -13,14 +13,14 @@ import TRaMis8khae.starbucks.product.infrastructure.ColorRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductOptionRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.product.infrastructure.VolumeRepository;
-import TRaMis8khae.starbucks.product.vo.ColorRequestVo;
-import TRaMis8khae.starbucks.product.vo.VolumeRequestVo;
+import TRaMis8khae.starbucks.product.vo.in.ColorRequestVo;
+import TRaMis8khae.starbucks.product.vo.in.VolumeRequestVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static TRaMis8khae.starbucks.product.dto.ColorRequestDto.toDto;
+import static TRaMis8khae.starbucks.product.dto.in.ColorRequestDto.toDto;
 
 
 @Slf4j

@@ -1,10 +1,10 @@
-package TRaMis8khae.starbucks.product.dto;
+package TRaMis8khae.starbucks.product.dto.in;
 
 
 import TRaMis8khae.starbucks.product.entity.Color;
 import TRaMis8khae.starbucks.product.entity.ProductOption;
 import TRaMis8khae.starbucks.product.entity.Volume;
-import TRaMis8khae.starbucks.product.vo.ProductOptionRequestVo;
+import TRaMis8khae.starbucks.product.vo.in.ProductOptionRequestVo;
 import lombok.Builder;
 import lombok.Getter;
 

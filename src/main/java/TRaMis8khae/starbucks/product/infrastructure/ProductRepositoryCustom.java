@@ -12,5 +12,4 @@ public interface ProductRepositoryCustom {
 
 	List<Product> getProductListWithPrice(Double minPrice, Double maxPrice);
 
-	public List<Product> getProductListWithPage(Long offset, Integer pageSize);
 }
