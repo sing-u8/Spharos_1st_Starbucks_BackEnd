@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Entity
 @Builder
@@ -42,7 +44,7 @@ public class Product extends BaseEntity {
 
     private Integer minOrderCount = 1;
 
-    @Column(nullable = false)
-    private Long mediaId;
+    @ElementCollection
+    private List<Long> mediaIds;
     
 }
