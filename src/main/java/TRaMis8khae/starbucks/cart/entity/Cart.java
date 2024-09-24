@@ -3,7 +3,7 @@ package TRaMis8khae.starbucks.cart.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class ProductCart {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +25,10 @@ public class ProductCart {
 
     private Long productOptionId;
 
-    private Integer quantity;
+    private Integer quantity; //상품 옵션 리스트 수량
 
     private String engravingText;
+
+    //sql sum 으로 장바구니 최대 수량
 
 }

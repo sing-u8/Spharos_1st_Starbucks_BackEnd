@@ -3,7 +3,7 @@ package TRaMis8khae.starbucks.cart.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class AdditionalProductCart {
+public class AdditionalCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,6 @@ public class AdditionalProductCart {
     private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProductCart productCart;
+    private Cart Cart;
 
 }
