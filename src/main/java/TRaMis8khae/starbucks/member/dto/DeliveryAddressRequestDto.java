@@ -1,8 +1,7 @@
 package TRaMis8khae.starbucks.member.dto;
 
 import TRaMis8khae.starbucks.member.entity.DeliveryAddress;
-import TRaMis8khae.starbucks.member.entity.MemberAddressList;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressRequestVo;
+import TRaMis8khae.starbucks.member.vo.in.DeliveryAddressRequestVo;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

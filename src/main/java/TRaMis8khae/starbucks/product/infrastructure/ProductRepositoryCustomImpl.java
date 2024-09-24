@@ -1,7 +1,6 @@
 package TRaMis8khae.starbucks.product.infrastructure;
 
 
-import TRaMis8khae.starbucks.product.dto.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 	private final JPAQueryFactory jpaQueryFactory;
 
 	QProduct product = QProduct.product;
-	QProductOption productOption = QProductOption.productOption;
 
 	@Override
 	public List<Product> getProductListWithPrice(Double minPrice, Double maxPrice) {
@@ -27,11 +25,4 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 			.where(product.price.between(minPrice, maxPrice))
 			.fetch();
 	}
-
-
-	public List<ProductOption> getProductListWithVolume() {
-
-		return null;
-	}
-
 }

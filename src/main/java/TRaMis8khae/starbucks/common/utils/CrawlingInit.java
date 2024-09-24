@@ -15,6 +15,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -53,14 +57,6 @@ public class CrawlingInit {
     public void parseExcelData(String excelFilePath) throws IOException {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
-
-        int sheetCount = workbook.getNumberOfSheets();
-
-        for (int i = 0; i < sheetCount; i++) {
-            Sheet sheet = workbook.getSheetAt(i);
-
-            log.info("Sheet name : {}", sheet.getSheetName());
-        }
 
         // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
         for (Sheet sheet : workbook) {
@@ -226,6 +222,15 @@ public class CrawlingInit {
             reviews.add(matcher.group());
         }
         return reviews;
+
+    private Double parsePrice(String price) {
+        try {
+            return Double.parseDouble(price.replace("원", "").replace(",", ""));
+        } catch (NumberFormatException e) {
+            log.error("Invalid price format: {}", price);
+            return 0.0; // 기본값 설정
+        }
+
     }
 
     // DB 저장 메서드 (예시로 정의)

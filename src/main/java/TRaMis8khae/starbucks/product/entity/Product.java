@@ -4,6 +4,8 @@ import TRaMis8khae.starbucks.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Entity
 @Builder
@@ -38,10 +40,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Integer maxOrderCount;
 
-    @Column(nullable = false)
     private Integer minOrderCount = 1;
 
-    @Column(nullable = false)
-    private Long mediaId;
+    @ElementCollection
+    private List<Long> mediaIds;
     
 }

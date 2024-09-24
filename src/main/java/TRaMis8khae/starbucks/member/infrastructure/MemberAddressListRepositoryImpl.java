@@ -2,7 +2,7 @@ package TRaMis8khae.starbucks.member.infrastructure;
 
 import TRaMis8khae.starbucks.member.entity.QDeliveryAddress;
 import TRaMis8khae.starbucks.member.entity.QMemberAddressList;
-import TRaMis8khae.starbucks.member.vo.DeliveryAddressResponseVo;
+import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
