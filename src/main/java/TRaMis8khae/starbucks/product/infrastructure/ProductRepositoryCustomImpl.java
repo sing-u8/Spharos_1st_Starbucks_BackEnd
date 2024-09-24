@@ -16,7 +16,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 	private final JPAQueryFactory jpaQueryFactory;
 
 	QProduct product = QProduct.product;
-	QProductOption productOption = QProductOption.productOption;
 
 	@Override
 	public List<Product> getProductListWithPrice(Double minPrice, Double maxPrice) {
