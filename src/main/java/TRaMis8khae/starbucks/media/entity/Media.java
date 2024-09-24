@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@NoArgsConstructor
 @Entity
+@ToString
+@NoArgsConstructor
 public class Media extends BaseEntity {
 
     @Id

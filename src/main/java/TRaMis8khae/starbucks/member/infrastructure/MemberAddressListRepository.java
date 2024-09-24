@@ -5,10 +5,11 @@ import TRaMis8khae.starbucks.member.entity.MemberAddressList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberAddressListRepository extends JpaRepository<MemberAddressList, Long> {
 
     MemberAddressList findByDeliveryAddress(DeliveryAddress deliveryAddress);
-    MemberAddressList findByMemberUUIDAndId(String memberUUID, Long id);
+    Optional<MemberAddressList> findByMemberUUIDAndDeliveryAddressId(String memberUUID, Long id);
 
 }

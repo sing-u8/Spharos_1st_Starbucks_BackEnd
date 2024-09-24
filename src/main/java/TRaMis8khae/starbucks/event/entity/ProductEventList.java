@@ -4,13 +4,16 @@ import TRaMis8khae.starbucks.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+
 import lombok.NoArgsConstructor;
 
 
 @Entity
+@Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+
 public class ProductEventList {
 
     @Id
@@ -22,5 +25,10 @@ public class ProductEventList {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
+
+
+    public String getProductUUID() {
+        return product.getProductUUID();
+    }
 
 }

@@ -16,6 +16,9 @@ import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
+
+import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
+import TRaMis8khae.starbucks.review.entity.Review;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -25,6 +28,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +45,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Profile("crawling")  // "crawling" 프로파일이 활성화되었을 때만 이 설정이 적용됨
 @Component
@@ -51,6 +57,8 @@ public class CrawlingInit {
 
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
         String excelFilePath = "/Users/TalkFile_starbucks_products.xlsx";
+
+
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -67,6 +75,7 @@ public class CrawlingInit {
         Workbook workbook = new XSSFWorkbook(file);
 
         // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
+
 //        List<EventRequestDto> eventRequestDtoList = new ArrayList<>();
         int topCount = 0;
 
@@ -120,16 +129,26 @@ public class CrawlingInit {
             // topCategory code 생성
 
             // todo sheet 이름별로 topCode 생성
+
+        for (Sheet sheet : workbook) {
+            log.info("Sheet name : {}", sheet.getSheetName());
+
+            // todo sheet 이름별로 topCode 생성
+            String categoryName = sheet.getSheetName();
+
+
+
             for (Row row : sheet) {
 
                 if(row.getRowNum() == 0) {
                     continue;
                 }
+
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
                 String mainMedia = getCellValue(row.getCell(6));
-                //                log.info("thumbNailMedia : {}", thumbNailMedia);
-                //                log.info("mainMedia : {}", mainMedia);
+//                log.info("thumbNailMedia : {}", thumbNailMedia);
+//                log.info("mainMedia : {}", mainMedia);
 
                 // product
                 String productName = getCellValue(row.getCell(1));
@@ -193,6 +212,20 @@ public class CrawlingInit {
                 String readReview = getCellValue(row.getCell(9));
                 //                log.info("review : {}", review);
 
+//                log.info("productName : {}", productName);
+//                log.info("productUUID : {}", productUUID);
+//                log.info("price : {}", price);
+//                log.info("descriptionImage : {}", descriptionImage);
+//                log.info("descriptionTag : {}", descriptionTag);
+
+                // event
+                String discountRate = getCellValue(row.getCell(4));
+//                log.info("discountRate : {}", discountRate);
+
+                // review
+                String readReview = getCellValue(row.getCell(9));
+//                log.info("review : {}", review);
+
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
                 for (Media media : mediaList) {
@@ -202,6 +235,7 @@ public class CrawlingInit {
                 // product 객체 생성
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 log.info("product : {}", parsedProduct);
+
 
 
 
@@ -255,12 +289,13 @@ public class CrawlingInit {
                     Map<String, Object> readValue = objectMapper.readValue(reviewString, new TypeReference<Map<String, Object>>() {});
 
                     // review 정보를 ReviewCrawlingAddDto로 변환
-//                    ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
-//                        (String) readValue.get("rating"),
-//                        (String) readValue.get("reviewer"),
-//                        (String) readValue.get("reviewContent")
-//                    );
 
+                    ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
+                            (String) readValue.get("rating"),
+                            (String) readValue.get("reviewer"),
+                            (String) readValue.get("reviewContent")
+                    );
+                  
                     // reviewImages를 List<String>으로 변환
                     List<String> reviewImages = (List<String>) readValue.get("reviewImages");
 
@@ -278,12 +313,14 @@ public class CrawlingInit {
                         }
                     }
 
-//                    log.info("review : {}", reviewDto);
+
+
+                    log.info("review : {}", reviewDto);
                     for (Media media : reviewMediaList) {
                         log.info("reviewMedia : {}", media);
                     }
-                }
 
+                }
 
                 // todo : 데이터 저장
 
@@ -329,6 +366,31 @@ public class CrawlingInit {
                 .mediaSeq(i + 2) // seq는 2부터 시작
                 .build();
 
+
+                .mediaUrl(thumbnailMedia)
+                .thumbChecked(true)
+                .mediaType(MediaType.IMAGE)
+                .mediaKind(MediaKind.PRODUCT)
+                .mediaSeq(1) // 썸네일의 seq는 1로 설정
+                .build();
+
+        mediaList.add(thumbMedia);
+
+        // mainMedia를 쉼표 기준으로 분리하여 각각 Media 객체로 변환
+        List<String> mediaUrls = Arrays.stream(mainMedia.split(","))
+                .map(String::trim) // 각 URL에서 공백 제거
+                .collect(Collectors.toList());
+
+        // 나머지 이미지들은 thumbChecked = false로 설정하여 Media 객체로 추가
+        for (int i = 0; i < mediaUrls.size(); i++) {
+            Media detailMedia = Media.builder()
+                    .mediaUrl(mediaUrls.get(i))
+                    .thumbChecked(false)
+                    .mediaType(MediaType.IMAGE)
+                    .mediaKind(MediaKind.PRODUCT)
+                    .mediaSeq(i + 2) // seq는 2부터 시작
+                    .build();
+
             mediaList.add(detailMedia);
         }
 
@@ -338,6 +400,7 @@ public class CrawlingInit {
     // Product 파싱 메서드 (위에서 작성한 것과 동일)
 
     public Product parseProduct(String productName, Double price, String descriptionImage,
+
         String descriptionTag) {
         return Product.builder()
             .productName(productName)
@@ -386,6 +449,17 @@ public class CrawlingInit {
             .build();
     }
 
+
+   public Product parseProduct(String productName, Double price, String descriptionImage,
+        String descriptionTag) {
+        return Product.builder()
+            .productName(productName)
+            .price(price)
+            .description(descriptionImage)
+            //                .description(descriptionTag)
+            .build();
+    }
+
     public List<String> splitReviews(String reviewData) {
         // 중괄호를 기준으로 각 리뷰를 나눔
         List<String> reviews = new ArrayList<>();
@@ -395,6 +469,15 @@ public class CrawlingInit {
             reviews.add(matcher.group());
         }
         return reviews;
+
+    private Double parsePrice(String price) {
+        try {
+            return Double.parseDouble(price.replace("원", "").replace(",", ""));
+        } catch (NumberFormatException e) {
+            log.error("Invalid price format: {}", price);
+            return 0.0; // 기본값 설정
+        }
+
     }
 
     // DB 저장 메서드 (예시로 정의)

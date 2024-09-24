@@ -1,9 +1,9 @@
 package TRaMis8khae.starbucks.purchase.infrastructure.dynamic;
 
-import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
-import org.springframework.data.domain.Page;
+import TRaMis8khae.starbucks.purchase.dto.out.PurchaseReadResponseDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PurchaseRepositoryCustom {
-    Page<PurchaseReadResponseDto> findPurchases(Pageable pageable);
+    Slice<PurchaseReadResponseDto> findPurchases(Pageable pageable, String memberUUID);
 }
