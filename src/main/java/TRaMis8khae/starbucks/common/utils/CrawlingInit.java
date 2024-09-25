@@ -61,14 +61,12 @@ public class CrawlingInit {
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
-
-        log.info("start!!!!!");
-
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
         String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
+            log.info("파일 읽기 시작");
             parseExcelData(excelFilePath);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
@@ -154,8 +152,6 @@ public class CrawlingInit {
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
                 String mainMedia = getCellValue(row.getCell(6));
-//                log.info("thumbNailMedia : {}", thumbNailMedia);
-//                log.info("mainMedia : {}", mainMedia);
 
                 // product
                 String productName = getCellValue(row.getCell(1));
@@ -163,32 +159,21 @@ public class CrawlingInit {
                 String price = getCellValue(row.getCell(2));
                 String descriptionImage = getCellValue(row.getCell(7));
                 String descriptionTag = getCellValue(row.getCell(8));
-//                log.info("productName : {}", productName);
-//                log.info("productUUID : {}", productUUID);
-//                log.info("price : {}", price);
-//                log.info("descriptionImage : {}", descriptionImage);
-//                log.info("descriptionTag : {}", descriptionTag);
 
                 // event
                 String discountRate = getCellValue(row.getCell(4));
-//                log.info("discountRate : {}", discountRate);
 
                 // review
                 String readReview = getCellValue(row.getCell(9));
-//                log.info("review : {}", review);
 
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-                for (Media media : mediaList) {
-                    log.info("media : {}", media);
-                }
                 saveMedia(mediaList);
 
-                // 전체
+                // productCategoryList 객체 생성
                 List<ProductCategoryList> productCategoryAll = new ArrayList<>();
                 productCategoryAll.add(parseProductCategory(productUUID, total.getCode(), null, null));
 
-                log.info("categoryName : {} ", categoryName);
                 switch (categoryName) {
                     case "텀블러-보온병":
                         productCategoryAll.add(parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot1.getCode()));
@@ -228,7 +213,6 @@ public class CrawlingInit {
 
                 // product 객체 생성
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
-                log.info("product : {}", parsedProduct);
                 saveProduct(parsedProduct);
 
                 // event 객체 생성
@@ -252,20 +236,6 @@ public class CrawlingInit {
                 }
 
                 // todo event 저장
-
-                // 임시 : eventMedia(이미지) 추가
-//                List<Media> eventMediaList = new ArrayList<>();
-//                eventMediaList = parseMedia(eventImage);
-//                for (Media media : eventMediaList) {
-//                    log.info("eventMedia : {}", media);
-//                }
-//                if (eventMediaList.size() > 0) {
-//                    EventRequestDto eventRequestDto = EventRequestDto.builder()
-//                            .eventId(event.getId())
-//                            .mediaList(eventMediaList)
-//                            .build();
-//                    eventRequestDtoList.add(eventRequestDto);
-//                }
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -299,11 +269,6 @@ public class CrawlingInit {
                             String reviewMedia = String.join(", ", reviewImages.subList(1, reviewImages.size()));  // 나머지를 mainMedia로
                             reviewMediaList = parseMedia(thumbnailMedia, reviewMedia);  // 썸네일과 나머지 이미지를 함께 전달
                         }
-                    }
-
-                    log.info("review : {}", reviewDto);
-                    for (Media media : reviewMediaList) {
-                        log.info("reviewMedia : {}", media);
                     }
 
                     saveReview(reviewDto.toEntity());
