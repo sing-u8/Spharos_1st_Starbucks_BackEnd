@@ -4,20 +4,30 @@ import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.entity.BottomCategory;
 import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.entity.TopCategory;
+import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
+import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
+import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
+import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
+import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.entity.Product;
+import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
+import TRaMis8khae.starbucks.review.entity.Review;
+import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
+import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -35,17 +45,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 
 @Slf4j
 @Profile("crawling")  // "crawling" 프로파일이 활성화되었을 때만 이 설정이 적용됨
 @Component
+@RequiredArgsConstructor
 public class CrawlingInit {
 
+    private final ReviewRepository reviewRepository;
+    private final EventRepository eventRepository;
+    private final ProductRepository productRepository;
+    private final ProductCategoryListRepository productCategoryListRepository;
+    private final MediaRepository mediaRepository;
     private final TopCategoryRepository topCategoryRepository;
     private final ProductEventListRepository productEventListRepository;
-    private final EventRepository eventRepository;
+    private final MiddleCategoryRepository middleCategoryRepository;
+    private final BottomCategoryRepository bottomCategoryRepository;
+
 
     public CrawlingInit(TopCategoryRepository topCategoryRepository, ProductEventListRepository productEventListRepository, EventRepository eventRepository) {
         this.topCategoryRepository = topCategoryRepository;
@@ -64,20 +80,14 @@ public class CrawlingInit {
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             parseExcelData(excelFilePath);
-
-//            List<Product> eventProducts = new ArrayList<>();
-//            List<Event> events = addCrawlingEvent(8);
-
-
-
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
     }
 
-
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
     public void parseExcelData(String excelFilePath) throws IOException {
+
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
         int topCount = 0;
@@ -98,62 +108,61 @@ public class CrawlingInit {
         Sheet eGift = workbook.getSheetAt(10); //커피/음료/e-gift
 
         TopCategory total = parseTopCategory("전체", topCount++);
+        saveTopCategory(total);
 
         TopCategory kitchenTable = parseTopCategory("키친/테이블", topCount++);
-        MiddleCategory kitchenTableMid = parseMiddleCategory(kitchenTable, 2);
+        MiddleCategory kitchenTableMid = parseMiddleCategory(kitchenTable, 0);
         BottomCategory kitchenTableBot1 = parseBottomCategory(kitchenTableMid, tumblr.getSheetName(), 0);
         BottomCategory kitchenTableBot2 = parseBottomCategory(kitchenTableMid, mug.getSheetName(), 1);
+        saveTopCategory(kitchenTable);
+        saveMiddleCategory(kitchenTableMid);
+        saveBottomCategory(kitchenTableBot1);
+        saveBottomCategory(kitchenTableBot2);
 
         TopCategory food = parseTopCategory("푸드", topCount++);
-        MiddleCategory foodMid = parseMiddleCategory(food, 1);
+        MiddleCategory foodMid = parseMiddleCategory(food, 0);
         BottomCategory foodBot1 = parseBottomCategory(foodMid, bakery.getSheetName(), 0);
         BottomCategory foodBot2 = parseBottomCategory(foodMid, cake.getSheetName(), 1);
         BottomCategory foodBot3 = parseBottomCategory(foodMid, sandwich.getSheetName(), 2);
+        saveTopCategory(food);
+        saveMiddleCategory(foodMid);
+        saveBottomCategory(foodBot1);
+        saveBottomCategory(foodBot2);
+        saveBottomCategory(foodBot3);
 
         TopCategory coffeeTea = parseTopCategory("커피/티용품", topCount++);
-        MiddleCategory coffeeTeaMid = parseMiddleCategory(coffeeTea, 1);
+        MiddleCategory coffeeTeaMid = parseMiddleCategory(coffeeTea, 0);
         BottomCategory coffeeTeaBot = parseBottomCategory(coffeeTeaMid, coffee.getSheetName(), 0);
+        saveTopCategory(coffeeTea);
+        saveMiddleCategory(coffeeTeaMid);
+        saveBottomCategory(coffeeTeaBot);
 
         TopCategory lifeStyle = parseTopCategory("라이프스타일", topCount++);
-        MiddleCategory lifeStyleMid = parseMiddleCategory(lifeStyle, 1);
+        MiddleCategory lifeStyleMid = parseMiddleCategory(lifeStyle, 0);
         BottomCategory lifeStyleBot1 = parseBottomCategory(lifeStyleMid, fabric.getSheetName(), 0);
         BottomCategory lifeStyleBot2 = parseBottomCategory(lifeStyleMid, homeDeco.getSheetName(), 1);
         BottomCategory lifeStyleBot3 = parseBottomCategory(lifeStyleMid, fancy.getSheetName(), 2);
+        saveTopCategory(lifeStyle);
+        saveMiddleCategory(lifeStyleMid);
+        saveBottomCategory(lifeStyleBot1);
+        saveBottomCategory(lifeStyleBot2);
+        saveBottomCategory(lifeStyleBot3);
 
         TopCategory coffeeBeverageGift = parseTopCategory("커피/음료/e-gift", topCount);
-        MiddleCategory coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGift, 1);
+        MiddleCategory coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGift, 0);
         BottomCategory coffeeBeverageGiftBot1 = parseBottomCategory(coffeeBeverageGiftMid, drink.getSheetName(), 0);
         BottomCategory coffeeBeverageGiftBot2 = parseBottomCategory(coffeeBeverageGiftMid, eGift.getSheetName(), 1);
+        saveTopCategory(coffeeBeverageGift);
+        saveMiddleCategory(coffeeBeverageGiftMid);
+        saveBottomCategory(coffeeBeverageGiftBot1);
+        saveBottomCategory(coffeeBeverageGiftBot2);
 
-        // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
-//        List<EventRequestDto> eventRequestDtoList = new ArrayList<>();
-
-        int count = 0;
         for (Sheet sheet : workbook) {
             log.info("Sheet name : {}", sheet.getSheetName());
-            String categoryName = sheet.getSheetName();  // todo sheet 이름별로 topCode 생성
-
-
-            // topCategory code 생성
-            TopCategoryRequestDto requestDto = TopCategoryRequestDto.builder()
-                    .name(categoryName)
-                    .sequence(count++)
-                    .build();
-
-            topCategoryRepository.save(requestDto.toEntity(
-                    CodeGenerator.generateCode(8)));
-
-            log.info("topCategory : {}", requestDto.getName());
-            log.info("topCategory : {}", requestDto.getSequence());
-            log.info("topCategory : {}", CodeGenerator.generateCode(8));
-
-
+            String categoryName = sheet.getSheetName();
 
             for (Row row : sheet) {
-
-                if(row.getRowNum() == 0) {
-                    continue;
-                }
+                if(row.getRowNum() == 0) { continue;}
 
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
@@ -173,47 +182,6 @@ public class CrawlingInit {
 //                log.info("descriptionImage : {}", descriptionImage);
 //                log.info("descriptionTag : {}", descriptionTag);
 
-                ProductCategoryList p = parseProductCategory(productUUID, total.getCode(), null, null);
-
-                switch (categoryName) {
-                    case "텀블러-보온병":
-                        parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot1.getCode());
-                        break;
-                    case "컵-머그":
-                        parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot2.getCode());
-                        break;
-                    case "베이커리":
-                        parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot1.getCode());
-                        break;
-                    case "디저트-케이크":
-                        parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot2.getCode());
-                        break;
-                    case "샐러드-샌드위치":
-                        parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot3.getCode());
-                        break;
-                    case "커피용품":
-                        parseProductCategory(productUUID, coffeeTea.getCode(), coffeeTeaMid.getCode(), coffeeTeaBot.getCode());
-                        break;
-                    case "페브릭":
-                        parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot1.getCode());
-                        break;
-                    case "홈데코":
-                        parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot2.getCode());
-                        break;
-                    case "문구-팬시":
-                        parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot3.getCode());
-                        break;
-                    case "음료-요거트":
-                        parseProductCategory(productUUID, coffeeBeverageGift.getCode(), coffeeBeverageGiftMid.getCode(), coffeeBeverageGiftBot1.getCode());
-                        break;
-                    case "e-gift":
-                        parseProductCategory(productUUID, coffeeBeverageGift.getCode(), coffeeBeverageGiftMid.getCode(), coffeeBeverageGiftBot2.getCode());
-                        break;
-                    default:
-                        // 기본 처리 또는 예외 처리
-                        break;
-                }
-                log.info("categoryName : {} ", categoryName);
                 // event
                 String discountRate = getCellValue(row.getCell(4));
 //                log.info("discountRate : {}", discountRate);
@@ -227,11 +195,69 @@ public class CrawlingInit {
                 for (Media media : mediaList) {
                     log.info("media : {}", media);
                 }
+                saveMedia(mediaList);
+
+                // 전체
+                List<ProductCategoryList> productCategoryAll = new ArrayList<>();
+                productCategoryAll.add(parseProductCategory(productUUID, total.getCode(), null, null));
+
+                log.info("categoryName : {} ", categoryName);
+                switch (categoryName) {
+                    case "텀블러-보온병":
+                        productCategoryAll.add(parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot1.getCode()));
+                        break;
+                    case "컵-머그":
+                        productCategoryAll.add(parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot2.getCode()));
+                        break;
+                    case "베이커리":
+                        productCategoryAll.add(parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot1.getCode()));
+                        break;
+                    case "디저트-케이크":
+                        productCategoryAll.add(parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot2.getCode()));
+                        break;
+                    case "샐러드-샌드위치":
+                        productCategoryAll.add(parseProductCategory(productUUID, food.getCode(), foodMid.getCode(), foodBot3.getCode()));
+                        break;
+                    case "커피용품":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeTea.getCode(), coffeeTeaMid.getCode(), coffeeTeaBot.getCode()));
+                        break;
+                    case "페브릭":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot1.getCode()));
+                        break;
+                    case "홈데코":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot2.getCode()));
+                        break;
+                    case "문구-팬시":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyle.getCode(), lifeStyleMid.getCode(), lifeStyleBot3.getCode()));
+                        break;
+                    case "음료-요거트":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGift.getCode(), coffeeBeverageGiftMid.getCode(), coffeeBeverageGiftBot1.getCode()));
+                        break;
+                    case "e-gift":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGift.getCode(), coffeeBeverageGiftMid.getCode(), coffeeBeverageGiftBot2.getCode()));
+                        break;
+                }
+                saveProductCategoryList(productCategoryAll);
 
                 // product 객체 생성
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 log.info("product : {}", parsedProduct);
+                saveProduct(parsedProduct);
 
+                // event 객체 생성
+                int discountRateValue = Integer.parseInt(discountRate);
+
+                // discountRate가 0보다 큰 경우에만 저장 처리
+                if (discountRateValue > 0) {
+
+                    Event event = Event.builder()
+                            .discountRate(discountRateValue)
+                            .build();
+
+                    ProductEventList productEventList = ProductEventList.builder()
+                            .product(parsedProduct)
+                            .event(event)
+                            .build();
                 // 이벤트 상품 저장
                 eventProducts.add(parsedProduct);
 
@@ -261,8 +287,8 @@ public class CrawlingInit {
                     if (reviewImages != null && !reviewImages.isEmpty()) {
                         if (reviewImages.size() == 1) {
                             // 이미지가 1개일 때
-                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
-                        } else if (reviewImages.size() > 1) {
+                            reviewMediaList = paerMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
+                        } else {
                             // 이미지가 2개 이상일 때
                             String thumbnailMedia = reviewImages.get(0);  // 첫 번째 이미지를 썸네일로
                             String reviewMedia = String.join(", ", reviewImages.subList(1, reviewImages.size()));  // 나머지를 mainMedia로
@@ -275,12 +301,10 @@ public class CrawlingInit {
                         log.info("reviewMedia : {}", media);
                     }
 
+                    saveReview(reviewDto.toEntity());
+                    saveMedia(reviewMediaList);
                 }
-
-                // todo : 데이터 저장
-
             }
-
         }
 
         // event 객체 생성
@@ -325,7 +349,18 @@ public class CrawlingInit {
         return cell == null ? "" : cell.getStringCellValue();
     }
 
-    // Media 파싱 메서드 (위에서 작성한 것과 동일)
+    public List<String> splitReviews(String reviewData) {
+        // 중괄호를 기준으로 각 리뷰를 나눔
+        List<String> reviews = new ArrayList<>();
+        Matcher matcher = Pattern.compile("\\{[^}]*}").matcher(reviewData);
+
+        while (matcher.find()) {
+            reviews.add(matcher.group());
+        }
+        return reviews;
+    }
+
+    // -------------------------------- parsing methods --------------------------------
     public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
         List<Media> mediaList = new ArrayList<>();
 
@@ -343,7 +378,7 @@ public class CrawlingInit {
         // mainMedia를 쉼표 기준으로 분리하여 각각 Media 객체로 변환
         List<String> mediaUrls = Arrays.stream(mainMedia.split(","))
                 .map(String::trim) // 각 URL에서 공백 제거
-                .collect(Collectors.toList());
+                .toList();
 
         // 나머지 이미지들은 thumbChecked = false로 설정하여 Media 객체로 추가
         for (int i = 0; i < mediaUrls.size(); i++) {
@@ -361,8 +396,6 @@ public class CrawlingInit {
         return mediaList;
     }
 
-    // Product 파싱 메서드 (위에서 작성한 것과 동일)
-
     public Product parseProduct(String productName, Double price, String descriptionImage,
                                 String descriptionTag) {
         return Product.builder()
@@ -373,19 +406,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public List<String> splitReviews(String reviewData) {
-        // 중괄호를 기준으로 각 리뷰를 나눔
-        List<String> reviews = new ArrayList<>();
-        Matcher matcher = Pattern.compile("\\{[^}]*\\}").matcher(reviewData);
-
-        while (matcher.find()) {
-            reviews.add(matcher.group());
-        }
-        return reviews;
-    }
-
     public TopCategory parseTopCategory(String categoryName, Integer sequence) {
-
         return TopCategory.builder()
                 .name(categoryName)
                 .sequence(sequence)
@@ -394,7 +415,6 @@ public class CrawlingInit {
     }
 
     public MiddleCategory parseMiddleCategory(TopCategory topCategory, Integer sequence) {
-
         return MiddleCategory.builder()
                 .topCategory(topCategory)
                 .name("카테고리")
@@ -404,7 +424,6 @@ public class CrawlingInit {
     }
 
     public BottomCategory parseBottomCategory(MiddleCategory middleCategory, String name, Integer sequence) {
-
         return BottomCategory.builder()
                 .middleCategory(middleCategory)
                 .name(name)
@@ -414,7 +433,6 @@ public class CrawlingInit {
     }
 
     public ProductCategoryList parseProductCategory(String uuid, String topCode, String middleCode, String bottomCode) {
-
         return ProductCategoryList.builder()
                 .productUUID(uuid)
                 .topCode(topCode)
@@ -423,24 +441,41 @@ public class CrawlingInit {
                 .build();
     }
 
-    private Double parsePrice(String price) {
-        try {
-            return Double.parseDouble(price.replace("원", "").replace(",", ""));
-        } catch (NumberFormatException e) {
-            log.error("Invalid price format: {}", price);
-            return 0.0; // 기본값 설정
-        }
+    // -------------------------------- save methods --------------------------------
+    private void saveTopCategory(TopCategory topCategory) {
+        topCategoryRepository.save(topCategory);
+    }
+
+
+    private void saveBottomCategory(BottomCategory bottomCategory) {
+        bottomCategoryRepository.save(bottomCategory);
 
     }
 
-    // DB 저장 메서드 (예시로 정의)
+    private void saveMiddleCategory(MiddleCategory middleCategory) {
+        middleCategoryRepository.save(middleCategory);
+
+    }
+
+    private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
+        productCategoryListRepository.saveAll(productCategoryAll);
+    }
     private void saveProduct(Product product) {
-        // productRepository.save(product); (repository나 service 호출)
+        productRepository.save(product);
     }
 
     private void saveMedia(List<Media> mediaList) {
-        // mediaRepository.saveAll(mediaList); (repository나 service 호출)
+        mediaRepository.saveAll(mediaList);
     }
+
+    private void saveEvent(Event event) {
+        eventRepository.save(event);
+    }
+
+    private void saveReview(Review review) {
+        reviewRepository.save(review);
+    }
+
 
 
 //    // 이벤트 및 상품 매핑 관련 메서드들
