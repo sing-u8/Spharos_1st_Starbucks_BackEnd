@@ -1,16 +1,13 @@
 package TRaMis8khae.starbucks.common.utils;
 
-import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.entity.BottomCategory;
 import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
-import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
-import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.media.entity.Media;
@@ -62,23 +59,14 @@ public class CrawlingInit {
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
 
-
-    public CrawlingInit(TopCategoryRepository topCategoryRepository, ProductEventListRepository productEventListRepository, EventRepository eventRepository) {
-        this.topCategoryRepository = topCategoryRepository;
-        this.productEventListRepository = productEventListRepository;
-        this.eventRepository = eventRepository;
-    }
-
     @PostConstruct
     public void parseAndSaveData() throws IOException {
-
-        log.info("start!!!!!");
-
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
         String excelFilePath = "D:\\starbucks_products4.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
+            log.info("파일 읽기 시작");
             parseExcelData(excelFilePath);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
@@ -167,8 +155,6 @@ public class CrawlingInit {
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
                 String mainMedia = getCellValue(row.getCell(6));
-//                log.info("thumbNailMedia : {}", thumbNailMedia);
-//                log.info("mainMedia : {}", mainMedia);
 
                 // product
                 String productName = getCellValue(row.getCell(1));
@@ -176,32 +162,21 @@ public class CrawlingInit {
                 String price = getCellValue(row.getCell(2));
                 String descriptionImage = getCellValue(row.getCell(7));
                 String descriptionTag = getCellValue(row.getCell(8));
-//                log.info("productName : {}", productName);
-//                log.info("productUUID : {}", productUUID);
-//                log.info("price : {}", price);
-//                log.info("descriptionImage : {}", descriptionImage);
-//                log.info("descriptionTag : {}", descriptionTag);
 
                 // event
                 String discountRate = getCellValue(row.getCell(4));
-//                log.info("discountRate : {}", discountRate);
 
                 // review
                 String readReview = getCellValue(row.getCell(9));
-//                log.info("review : {}", review);
 
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-                for (Media media : mediaList) {
-                    log.info("media : {}", media);
-                }
                 saveMedia(mediaList);
 
-                // 전체
+                // productCategoryList 객체 생성
                 List<ProductCategoryList> productCategoryAll = new ArrayList<>();
                 productCategoryAll.add(parseProductCategory(productUUID, total.getCode(), null, null));
 
-                log.info("categoryName : {} ", categoryName);
                 switch (categoryName) {
                     case "텀블러-보온병":
                         productCategoryAll.add(parseProductCategory(productUUID, kitchenTable.getCode(), kitchenTableMid.getCode(), kitchenTableBot1.getCode()));
@@ -241,7 +216,6 @@ public class CrawlingInit {
 
                 // product 객체 생성
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
-                log.info("product : {}", parsedProduct);
                 saveProduct(parsedProduct);
 
                 // event 객체 생성
@@ -260,6 +234,8 @@ public class CrawlingInit {
                             .build();
                 // 이벤트 상품 저장
                 eventProducts.add(parsedProduct);
+
+                // todo event 저장
 
 
                 // review 객체 생성
@@ -287,18 +263,13 @@ public class CrawlingInit {
                     if (reviewImages != null && !reviewImages.isEmpty()) {
                         if (reviewImages.size() == 1) {
                             // 이미지가 1개일 때
-                            reviewMediaList = paerMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
+                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
                         } else {
                             // 이미지가 2개 이상일 때
                             String thumbnailMedia = reviewImages.get(0);  // 첫 번째 이미지를 썸네일로
                             String reviewMedia = String.join(", ", reviewImages.subList(1, reviewImages.size()));  // 나머지를 mainMedia로
                             reviewMediaList = parseMedia(thumbnailMedia, reviewMedia);  // 썸네일과 나머지 이미지를 함께 전달
                         }
-                    }
-
-                    log.info("review : {}", reviewDto);
-                    for (Media media : reviewMediaList) {
-                        log.info("reviewMedia : {}", media);
                     }
 
                     saveReview(reviewDto.toEntity());
