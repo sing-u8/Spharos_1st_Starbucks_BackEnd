@@ -1,18 +1,20 @@
 package TRaMis8khae.starbucks.voucher.application;
 
-import TRaMis8khae.starbucks.voucher.dto.*;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherAddRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherRegistRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.out.VoucherReadResponseDto;
 import TRaMis8khae.starbucks.voucher.entity.MemberVoucherList;
 import TRaMis8khae.starbucks.voucher.entity.Voucher;
 import TRaMis8khae.starbucks.voucher.infrastructure.MemberVoucherListRepository;
 import TRaMis8khae.starbucks.voucher.infrastructure.VoucherRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static TRaMis8khae.starbucks.common.utils.CodeGenerator.generateCode;
 
@@ -26,24 +28,14 @@ public class VoucherServiceImpl implements VoucherService {
 
     // 상품권 추가 (관리자),
     @Override
-    public List<VoucherAddResponseDto> addVoucher(List<VoucherAddRequestDto> requestDtos) {
-
-        List<VoucherAddResponseDto> responseDtoList = new ArrayList<>();
+    public void addVoucher(List<VoucherAddRequestDto> requestDtos) {
 
         for (VoucherAddRequestDto requestDto : requestDtos) {
 
             String voucherCode = generateCode(12);
 
-            Voucher voucher = requestDto.toEntity(voucherCode);
-
-            Voucher savedVoucher = voucherRepository.save(voucher);
-
-            VoucherAddResponseDto responseDto = VoucherAddResponseDto.toDto(savedVoucher);
-
-            responseDtoList.add(responseDto);
+            voucherRepository.save(requestDto.toEntity(voucherCode));
         }
-
-        return responseDtoList;
     }
 
     @Override
@@ -65,23 +57,7 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherReadResponseDto> findVouchers(String memberUUID) {
-
-        log.info("memberUUID : {}", memberUUID);
-        List<MemberVoucherList> memberVoucherList = memberVoucherListRepository
-                .findAllByMemberUUID(memberUUID);
-
-        log.info("memberVoucherList : {}", memberVoucherList);
-
-//        for (MemberVoucherList list  : memberVoucherList ) {
-//            VoucherReadResponseDto.toDto(list);
-//        }
-
-//        memberVoucherList.stream().map(list -> {
-//            return VoucherReadResponseDto.toDto(list, list.getVoucher());
-//        });
-
-        return memberVoucherList.stream().map(VoucherReadResponseDto::toDto).toList();
+    public Slice<VoucherReadResponseDto> findVouchers(Pageable pageable, String memberUUID) {
+        return memberVoucherListRepository.findVouchers(pageable, memberUUID);
     }
-
 }

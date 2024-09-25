@@ -16,6 +16,7 @@ public class AuthUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String memberUUID) throws UsernameNotFoundException {
-        return new AuthUserDetail(memberRepository.findByMemberUUID(memberUUID).orElseThrow(() -> new UsernameNotFoundException(memberUUID)));
+        return new AuthUserDetail(memberRepository.findByMemberUUID(memberUUID)
+                .orElseThrow(() -> new UsernameNotFoundException(memberUUID)));
     }
 }

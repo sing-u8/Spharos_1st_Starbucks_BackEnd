@@ -1,14 +1,13 @@
 package TRaMis8khae.starbucks.purchase.infrastructure.dynamic;
 
-import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
-import TRaMis8khae.starbucks.purchase.entity.Purchase;
+import TRaMis8khae.starbucks.purchase.dto.out.PurchaseReadResponseDto;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class PurchaseRepositoryCustomImpl implements PurchaseRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PurchaseReadResponseDto> findPurchases(Pageable pageable) {
+    public Slice<PurchaseReadResponseDto> findPurchases(Pageable pageable, String memberUUID) {
         List<PurchaseReadResponseDto> content = queryFactory
                 .select(Projections.constructor(PurchaseReadResponseDto.class,
                         purchase.serialNumber,
@@ -33,18 +32,22 @@ public class PurchaseRepositoryCustomImpl implements PurchaseRepositoryCustom {
                         purchase.memberPhone,
                         purchase.addressDetail,
                         purchase.deliveryMemo,
-                        purchase.deliveryAddressNickname,
                         purchase.recipient,
                         purchase.phone1,
                         purchase.phone2))
                 .from(purchase)
+                .where(eqMemberUUID(memberUUID))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Purchase> countQuery = queryFactory.selectFrom(purchase);
+        boolean hasNext = content.size() == pageable.getPageSize(); // 다음 페이지가 있는지 확인
 
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    public BooleanExpression eqMemberUUID(String memberUUID) {
+        return purchase.memberUUID.eq(memberUUID);
     }
 
 }

@@ -1,10 +1,20 @@
 package TRaMis8khae.starbucks.auth.application;
 
-import TRaMis8khae.starbucks.auth.dto.*;
+import TRaMis8khae.starbucks.auth.dto.in.*;
+import TRaMis8khae.starbucks.auth.dto.out.FindMemberResponseDto;
+import TRaMis8khae.starbucks.auth.dto.out.LogInResponseDto;
+import TRaMis8khae.starbucks.auth.dto.out.TermsResponseDto;
+import TRaMis8khae.starbucks.auth.entity.*;
 import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
+import TRaMis8khae.starbucks.member.application.MemberServiceImpl;
 import TRaMis8khae.starbucks.member.entity.Member;
-import io.jsonwebtoken.Claims;
+import TRaMis8khae.starbucks.member.infrastructure.MarketingConsentListRepository;
+import TRaMis8khae.starbucks.member.infrastructure.MarketingRepository;
+import TRaMis8khae.starbucks.member.infrastructure.TermConsentListRepository;
+import TRaMis8khae.starbucks.member.infrastructure.TermRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +23,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,37 +35,61 @@ public class AuthServiceImpl implements AuthService{
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final MemberServiceImpl memberServiceImpl;
+
+    private final TermConsentListRepository termConsentListRepository;
+    private final MarketingRepository marketingRepository;
+    private final MarketingConsentListRepository marketingConsentListRepository;
+    private final TermRepository termRepository;
 
     @Override
+    @Transactional
     public void  signUp(SignUpRequestDto signUpRequestDto) {
 
-        Member member = authRepository.findByLoginId(signUpRequestDto.getLoginId()).orElse(null);
-
-        if (member != null) {
-            throw new IllegalArgumentException("이미 가입된 회원입니다.");
+        // 이미 존재하는 회원인지 확인
+        if (authRepository.findByLoginId(signUpRequestDto.getLoginId()).isPresent()) {
+            throw new BaseException(BaseResponseStatus.DUPLICATED_USER);
         }
 
         Member newMember = signUpRequestDto.toEntity(passwordEncoder);
 
         authRepository.save(newMember);
 
+//        log.info(signUpRequestDto.toString());
+//        log.info(newMember.toString());
+
+//        memberServiceImpl.addMarketingConsent(newMember,
+//                signUpRequestDto.getEmailMarketingConsent(),
+//                signUpRequestDto.getSMSMarketingConsent()
+//        );
+
+        termConsentListRepository.save(TermsConsentList.builder()
+                .memberUUID(newMember.getMemberUUID())
+                .termsConsentChecked(true)
+                .build());
+
+        marketingConsentListRepository.save(MarketingConsentList.builder()
+                        .emailConsentChecked(signUpRequestDto.getEmailMarketingConsent())
+                        .smsConsentChecked(signUpRequestDto.getSMSMarketingConsent())
+                        .build()
+        );
+
+        // 마케팅 수신 동의
+//        addMarketingConsent(newMember,
+//                signUpRequestDto.getEmailMarketingConsent(),
+//                signUpRequestDto.getSMSMarketingConsent()
+//        );
+
+        // 약관 동의
+//        memberServiceImpl.addTerms(newMember,
+//                signUpRequestDto.getTermsConsent()
+//        );
+
     }
 
     @Override
     @Transactional
-    public void signOut(String memberUUID, String accessToken) {
-
-        Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
-        );
-
-        Claims claims = jwtTokenProvider.getClaims(accessToken);
-
-        String memberUuidFromToken = claims.get("memberUUID", String.class);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
-            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
-        }
+    public void signOut(String memberUUID) {
 
         authRepository.deleteByMemberUUID(memberUUID);
 
@@ -64,50 +100,38 @@ public class AuthServiceImpl implements AuthService{
     public LogInResponseDto logIn(LogInRequestDto logInRequestDto) {
 
         Member member = authRepository.findByLoginId(logInRequestDto.getLoginId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 아이디를 가진 회원이 없습니다.")
+                () -> new BaseException(BaseResponseStatus.FAILED_TO_LOGIN)
         );
 
-        if (!passwordEncoder.matches(logInRequestDto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            member.getMemberUUID(),
-                            logInRequestDto.getPassword()
-                    )
-            );
-            LogInResponseDto logInResponseDto = LogInResponseDto.toDto(
-                    member,
-                    generateAccessToken(member.getMemberUUID()),
-                    generateRefreshToken(authentication));
-
+//            Authentication authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            member.getMemberUUID(),
+//                            logInRequestDto.getPassword()
+//                    )
+//            );
+            String accessToken = generateAccessToken(member.getMemberUUID());
+            String refreshToken = generateRefreshToken(authenticate(member, logInRequestDto.getPassword()));
+            LogInResponseDto logInResponseDto = LogInResponseDto.toDto(member, accessToken, refreshToken);
             return logInResponseDto;
-
         } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new BaseException(BaseResponseStatus.FAILED_TO_LOGIN);
         }
 
     }
 
     @Override
     @Transactional
-    public void updateMemberInfo(String memberUUID, String accessToken, UpdateMemberInfoRequestDto requestDto) {
+    public void updateMemberInfo(String memberUUID, UpdateMemberInfoRequestDto requestDto) {
 
         Member member = authRepository.findByMemberUUID(memberUUID).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_USER)
         );
-
-        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        if (!memberUUID.equals(memberUuidFromToken)) {
-            throw new IllegalArgumentException("토큰과 회원 정보가 일치하지 않습니다.");
-        }
 
         Member updatedMember = requestDto.toEntity(member);
 
         authRepository.save(updatedMember);
+
     }
 
     @Override
@@ -116,7 +140,7 @@ public class AuthServiceImpl implements AuthService{
         Member member = authRepository.findByNameAndPhoneNumber(
                 findMemberRequestDto.getName(),
                 findMemberRequestDto.getPhoneNumber()).orElseThrow(
-                () -> new IllegalArgumentException("해당 이름과 전화번호를 가진 회원이 없습니다.")
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_USER)
         );
 
         FindMemberResponseDto findMemberResponseDto = FindMemberResponseDto.toDto(member);
@@ -136,6 +160,71 @@ public class AuthServiceImpl implements AuthService{
 
     public String generateRefreshToken(Authentication authentication) {
         return jwtTokenProvider.generateRefreshToken(authentication);
+    }
+
+//    @Override
+//    public void addTermsConsent(String memberUUID, boolean termsConsentChecked) {
+
+//        List<Terms> terms = termRepository.findAll();
+//
+//        for (Terms term : terms) {
+//            TermsConsentListAddRequestDto requestDto = TermsConsentListAddRequestDto.builder()
+//                    .termsConsentChecked(termsConsentChecked)
+//                    .memberUUID(member.getMemberUUID())
+//                    .build();
+//
+//            TermsConsentList termsConsentList = requestDto.toEntity(member, term);
+//
+//            termConsentListRepository.save(termsConsentList);
+//
+//        }
+
+//        TermsConsentList termsConsentList = TermsConsentList.builder()
+//                .memberUUID(memberUUID)
+//                .termsConsentChecked(termsConsentChecked)
+//                .build();
+//
+//    }
+
+//    @Override
+//    public void addMarketingConsent(Member member,
+//                                    boolean emailConsentChecked,
+//                                    boolean smsConsentChecked) {
+//
+//        List<Marketing> marketingList = marketingRepository.findAll();
+//
+//        for (Marketing marketing : marketingList) {
+//            MarketingConsentListAddRequestDto requestDto = MarketingConsentListAddRequestDto.builder()
+//                    .EmailConsentChecked(emailConsentChecked)
+//                    .SMSConsentChecked(smsConsentChecked)
+//                    .memberUUID(member.getMemberUUID())
+//                    .marketingId(marketing.getId())
+//                    .build();
+//
+//            MarketingConsentList marketingConsentList = requestDto.toEntity(member, marketing);
+//
+//            marketingConsentListRepository.save(marketingConsentList);
+//
+//        }
+//    }
+
+    @Override
+    public List<TermsResponseDto> getTermsConsentList() {
+        List<Terms> terms = termRepository.findAll();
+        return terms.stream()
+                .map(TermsResponseDto::toDto)
+                .toList();
+    }
+
+
+    private Authentication authenticate(Member member, String inputPassword) {
+        AuthUserDetail authUserDetail = new AuthUserDetail(member);
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authUserDetail.getUsername(),
+                        inputPassword
+                )
+        );
     }
 
 }

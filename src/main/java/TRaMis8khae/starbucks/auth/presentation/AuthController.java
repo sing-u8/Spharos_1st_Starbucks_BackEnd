@@ -1,21 +1,33 @@
 package TRaMis8khae.starbucks.auth.presentation;
 
 import TRaMis8khae.starbucks.auth.application.AuthService;
-import TRaMis8khae.starbucks.auth.dto.*;
-import TRaMis8khae.starbucks.auth.vo.*;
-import TRaMis8khae.starbucks.common.entity.CommonResponseEntity;
-import TRaMis8khae.starbucks.common.entity.CommonResponseMessage;
+import TRaMis8khae.starbucks.auth.dto.in.*;
+import TRaMis8khae.starbucks.auth.dto.out.FindMemberResponseDto;
+import TRaMis8khae.starbucks.auth.dto.out.LogInResponseDto;
+import TRaMis8khae.starbucks.auth.dto.out.TermsResponseDto;
+import TRaMis8khae.starbucks.auth.vo.in.FindMemberRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.LogInRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.ResetPasswordRequestVo;
+import TRaMis8khae.starbucks.auth.vo.in.SignUpRequestVo;
+import TRaMis8khae.starbucks.auth.vo.out.FindMemberResponseVo;
+import TRaMis8khae.starbucks.auth.vo.out.LogInResponseVo;
+import TRaMis8khae.starbucks.auth.vo.in.UpdateMemberInfoRequestVo;
+import TRaMis8khae.starbucks.auth.infrastructure.AuthRepository;
+import TRaMis8khae.starbucks.common.entity.BaseResponse;
+import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
-import io.jsonwebtoken.Claims;
+import TRaMis8khae.starbucks.member.vo.out.TermsResponseVo;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,42 +37,22 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthRepository authRepository;
 
     @Parameter(name = "signUpRequestVo", description = "이름, 로그인아이디, 비밀번호, 이메일 필수", required = true)
     @PostMapping("/signup")
-    public CommonResponseEntity<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
+    public BaseResponse<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 
         SignUpRequestDto signUpRequestDto = SignUpRequestDto.toDto(signUpRequestVo);
 
         authService.signUp(signUpRequestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
-
-    }
-
-    @DeleteMapping("/signout/{memberUUID}")
-    public CommonResponseEntity<Void> signOut(
-            @PathVariable String memberUUID,
-            @RequestHeader("Authorization") String accessToken) {
-
-        String memberUuidFromToken = jwtTokenProvider.getMemberUUID(accessToken);
-
-        authService.signOut(memberUUID, memberUuidFromToken);
-
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
     }
 
     @PostMapping("/login")
-    public CommonResponseEntity<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
+    public BaseResponse<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
         LogInRequestDto logInRequestDto = LogInRequestDto.toDto(logInRequestVo);
 
@@ -68,33 +60,36 @@ public class AuthController {
 
         LogInResponseVo logInResponseVo = logInResponseDto.toVo();
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                logInResponseVo);
+        return new BaseResponse<>(
+                logInResponseVo
+        );
 
     }
 
-    @PutMapping("/member_info/{memberUUID}")
-    public CommonResponseEntity<Void> updateMemberInfo(@RequestHeader("Authorization") String accessToken,
-                                                       @PathVariable String memberUUID,
+    @DeleteMapping("/signout")
+    public BaseResponse<Void> signOut(Authentication authentication) {
+
+        authService.signOut(authentication.getName());
+
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+
+    }
+
+    @PutMapping("/member_info")
+    public BaseResponse<Void> updateMemberInfo(Authentication authentication,
                                                        @RequestBody UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
 
         UpdateMemberInfoRequestDto updateMemberInfoRequestDto = UpdateMemberInfoRequestDto
                 .toDto(UpdateMemberInfoRequestVo);
 
-        authService.updateMemberInfo(memberUUID, accessToken, updateMemberInfoRequestDto);
+        authService.updateMemberInfo(authentication.getName(), updateMemberInfoRequestDto);
 
-        return new CommonResponseEntity<>(HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
     }
 
     @PostMapping("/find_member")
-    public CommonResponseEntity<FindMemberResponseVo> findMember(@RequestBody FindMemberRequestVo findMemberRequestVo) {
+    public BaseResponse<FindMemberResponseVo> findMember(@RequestBody FindMemberRequestVo findMemberRequestVo) {
 
         FindMemberRequestDto findMemberRequestDto = FindMemberRequestDto.toDto(findMemberRequestVo);
 
@@ -102,28 +97,32 @@ public class AuthController {
 
         FindMemberResponseVo findMemberResponseVo = findMemberResponseDto.toVo();
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                findMemberResponseVo);
+        return new BaseResponse<>(findMemberResponseVo);
 
     }
 
     @Parameter(name = "resetPassword", description = "본인 인증 처리로 인해 보류", required = true)
     @PutMapping("/reset_password") // 본인 인증에 관한 처리로 인해 보류
-    public CommonResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequestVo resetPasswordRequestVo) {
+    public BaseResponse<Void> resetPassword(@RequestBody ResetPasswordRequestVo resetPasswordRequestVo) {
 
         ResetPasswordRequestDto resetPasswordRequestDto = ResetPasswordRequestDto.toDto(resetPasswordRequestVo);
 
         authService.resetPassword(resetPasswordRequestDto);
 
-        return new CommonResponseEntity<>(
-                HttpStatus.OK,
-                true,
-                CommonResponseMessage.SUCCESS.getMessage(),
-                null);
+        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
+    }
+
+    @GetMapping("terms")
+    public BaseResponse<List<TermsResponseVo>> getTermsConsentList() {
+        List<TermsResponseDto> termsConsentList = authService.getTermsConsentList();
+
+        List<TermsResponseVo> responseVos = termsConsentList
+                .stream().map(TermsResponseDto::toVo).toList();
+
+        return new BaseResponse<>(
+                responseVos
+        );
     }
 
 }

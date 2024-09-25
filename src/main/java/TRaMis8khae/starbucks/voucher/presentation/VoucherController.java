@@ -3,10 +3,18 @@ package TRaMis8khae.starbucks.voucher.presentation;
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.voucher.application.VoucherService;
-import TRaMis8khae.starbucks.voucher.dto.*;
-import TRaMis8khae.starbucks.voucher.vo.*;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherAddRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.in.VoucherRegistRequestDto;
+import TRaMis8khae.starbucks.voucher.dto.out.VoucherReadResponseDto;
+import TRaMis8khae.starbucks.voucher.vo.in.VoucherAddRequestVo;
+import TRaMis8khae.starbucks.voucher.vo.in.VoucherRegistRequestVo;
+import TRaMis8khae.starbucks.voucher.vo.out.VoucherReadResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,25 +30,31 @@ public class VoucherController {
 
     // 상품권 추가 (관리자)
     @PostMapping("/add")
-    public BaseResponse<List<VoucherAddResponseVo>> addVoucher(
-            @RequestBody List<VoucherAddRequestVo> requestVos) {
+    public BaseResponse<Void> addVoucher(@RequestBody List<VoucherAddRequestVo> requestVos) {
 
         List<VoucherAddRequestDto> requestDtos = new ArrayList<>();
+
         for (VoucherAddRequestVo requestVo : requestVos) {
             VoucherAddRequestDto requestDto = VoucherAddRequestDto.toDto(requestVo);
             requestDtos.add(requestDto);
         }
 
+        voucherService.addVoucher(requestDtos);
+
         return new BaseResponse<>(
-                voucherService.addVoucher(requestDtos).stream().map(VoucherAddResponseDto::toVo).toList()
+                BaseResponseStatus.SUCCESS
         );
     }
 
     // 상품권 등록 (사용자)
     @PostMapping("/regist")
-    public BaseResponse<Void> registVoucher(@RequestBody VoucherRegistRequestVo vo) {
+    public BaseResponse<Void> registVoucher(
+            @RequestBody VoucherRegistRequestVo vo,
+            Authentication authentication) {
 
-        VoucherRegistRequestDto requestDto = VoucherRegistRequestDto.toDto(vo);
+        String memberUUID = authentication.getName();
+
+        VoucherRegistRequestDto requestDto = VoucherRegistRequestDto.toDto(vo, memberUUID);
 
         voucherService.registVoucher(requestDto);
 
@@ -52,11 +66,17 @@ public class VoucherController {
     // todo 상품권 사용 API
 
     // 상품권 조회 (사용자)
-    @GetMapping("/find/{memberUUID}")
-    public BaseResponse<List<VoucherReadResponseVo>> findVouchers(@PathVariable String memberUUID) {
+    @GetMapping("/find")
+    public BaseResponse<Slice<VoucherReadResponseVo>> findVouchers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        String memberUUID = authentication.getName();
 
         return new BaseResponse<>(
-                voucherService.findVouchers(memberUUID).stream().map(VoucherReadResponseDto::toVo).toList()
+                voucherService.findVouchers(pageable, memberUUID).map(VoucherReadResponseDto::toVo)
         );
     }
 

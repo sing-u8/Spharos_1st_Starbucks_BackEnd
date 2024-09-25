@@ -2,22 +2,23 @@ package TRaMis8khae.starbucks.purchase.presentation;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.purchase.application.PurchaseService;
-import TRaMis8khae.starbucks.purchase.dto.PurchaseAddRequestDto;
-import TRaMis8khae.starbucks.purchase.dto.PurchaseReadRequestDto;
-import TRaMis8khae.starbucks.purchase.dto.PurchaseReadResponseDto;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseAddRequestVo;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseReadRequestVo;
-import TRaMis8khae.starbucks.purchase.vo.PurchaseReadResponseVo;
+import TRaMis8khae.starbucks.purchase.dto.in.PurchaseAddRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.in.PurchaseReadRequestDto;
+import TRaMis8khae.starbucks.purchase.dto.out.PurchaseReadResponseDto;
+import TRaMis8khae.starbucks.purchase.vo.in.PurchaseAddRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.in.PurchaseReadRequestVo;
+import TRaMis8khae.starbucks.purchase.vo.out.PurchaseReadResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -31,7 +32,7 @@ public class PurchaseController {
     public BaseResponse<Void> addPurchase(@RequestBody PurchaseAddRequestVo vo) {
 
         log.info("PurchaseAddRequestVo: {}", vo);
-        String serialNum = UUID.randomUUID().toString();
+        String serialNum = CodeGenerator.generateCode(36);
         LocalDateTime purchaseDate = LocalDateTime.now();
 
         PurchaseAddRequestDto requestDto = PurchaseAddRequestDto.toDto(vo, serialNum, purchaseDate);
@@ -46,7 +47,11 @@ public class PurchaseController {
 
     // 주문 단 건 조회 - 캐싱?
     @GetMapping("/find/{serialNum}")
-    public BaseResponse<PurchaseReadResponseVo> findPurchase(@PathVariable String serialNum) {
+    public BaseResponse<PurchaseReadResponseVo> findPurchase(
+            @PathVariable String serialNum,
+            Authentication authentication) {
+
+        String memberUUID = authentication.getName();
 
         PurchaseReadRequestVo requestVo = PurchaseReadRequestVo.builder()
                 .serialNum(serialNum)
@@ -55,28 +60,35 @@ public class PurchaseController {
         PurchaseReadRequestDto requestDto = PurchaseReadRequestDto.toDto(requestVo);
 
         return new BaseResponse<>(
-                purchaseService.findPurchase(requestDto).toVo()
+                purchaseService.findPurchase(requestDto, memberUUID).toVo()
         );
     }
 
     // 주문 전체 조회 - 페이징
     @GetMapping("/find")
-    public BaseResponse<Page<PurchaseReadResponseVo>> findPurchases(
+    public BaseResponse<Slice<PurchaseReadResponseVo>> findPurchases(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
 
         Pageable pageable = PageRequest.of(page, size);
+        String memberUUID = authentication.getName();
 
         return new BaseResponse<>(
-                purchaseService.findPurchases(pageable).map(PurchaseReadResponseDto::toVo)
+                purchaseService.findPurchases(pageable, memberUUID).map(PurchaseReadResponseDto::toVo)
         );
     }
 
     // 주문 삭제
+    // todo : 주문 삭제보다는 주문 취소, 환불 쪽으로 봐야 한다
     @DeleteMapping("/delete/{serialNum}")
-    public BaseResponse<Void> deletePurchase(@PathVariable String serialNum) {
+    public BaseResponse<Void> deletePurchase(
+            @PathVariable String serialNum,
+            Authentication authentication) {
 
-        purchaseService.deletePurchase(serialNum);
+        String memberUUID = authentication.getName();
+
+        purchaseService.deletePurchase(serialNum, memberUUID);
 
         return new BaseResponse<>(
                 BaseResponseStatus.SUCCESS

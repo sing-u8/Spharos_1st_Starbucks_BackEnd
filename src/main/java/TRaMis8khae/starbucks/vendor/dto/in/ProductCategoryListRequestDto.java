@@ -28,12 +28,12 @@ public class ProductCategoryListRequestDto {
             .build();
     }
 
-    public ProductCategoryList toEntity(Product product) {
+    public ProductCategoryList toEntity() {
         return ProductCategoryList.builder()
             .topCode(topCode)
             .middleCode(middleCode)
             .bottomCode(bottomCode)
-            .product(product)
+            .productUUID(productUUID)
             .build();
     }
 

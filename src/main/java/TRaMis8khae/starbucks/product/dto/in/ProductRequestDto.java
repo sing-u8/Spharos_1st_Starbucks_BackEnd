@@ -13,6 +13,7 @@ public class ProductRequestDto {
 
     private String productName;
     private Double price;
+    private Double productScore;
     private String description;
     private Boolean additionalChecked;
     private Boolean isAdditionalTogether;
@@ -35,6 +36,7 @@ public class ProductRequestDto {
 
     public Product toEntity(String productUUID) {
         return Product.builder()
+
             .productUUID(productUUID)
             .productName(productName)
             .productScore(0.0)
