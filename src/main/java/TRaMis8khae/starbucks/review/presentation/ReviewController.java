@@ -72,6 +72,7 @@ public class ReviewController {
             @PathVariable("reviewUUID") String reviewUUID,
             @RequestBody ReviewUpdateRequestVo requestVo) {
 
+        // todo : 리뷰 수정 memberUUID 체크
         ReviewUpdateRequestDto requestDto = ReviewUpdateRequestDto.toDto(requestVo, reviewUUID);
 
         reviewService.updateReview(requestDto);
@@ -83,14 +84,14 @@ public class ReviewController {
 
     // 리뷰 삭제
     @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제합니다", tags = {"Review Service"})
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{reviewUUID}")
     public BaseResponse<Void> deleteReview(
-            @PathVariable Long id,
+            @PathVariable String reviewUUID,
             Authentication authentication) {
 
         String memberUUID = authentication.getName();
 
-        reviewService.deleteReview(id, memberUUID);
+        reviewService.deleteReview(reviewUUID, memberUUID);
 
         return new BaseResponse<>(
                 BaseResponseStatus.SUCCESS

@@ -62,7 +62,7 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "/Users/TalkFile_starbucks_products.xlsx";
+        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -237,8 +237,6 @@ public class CrawlingInit {
                     log.info("!productEventListProduct : {}", productEventList.getProduct());
                 }
 
-                // todo event 저장
-
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
 
@@ -253,7 +251,8 @@ public class CrawlingInit {
                     ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
                             (String) readValue.get("rating"),
                             (String) readValue.get("reviewer"),
-                            (String) readValue.get("reviewContent")
+                            (String) readValue.get("reviewContent"),
+                            productUUID
                     );
 
                     // reviewImages를 List<String>으로 변환

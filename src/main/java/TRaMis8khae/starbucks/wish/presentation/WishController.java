@@ -24,7 +24,7 @@ public class WishController {
 
     // 찜 하기
     @Operation(summary = "찜 하기", description = "상품을 찜합니다", tags = {"Wish Service"})
-    @PostMapping("/add")
+    @PostMapping
     public BaseResponse<Void> wishProduct(
             @RequestBody WishAddRequestVo requestVo,
             Authentication authentication) {
