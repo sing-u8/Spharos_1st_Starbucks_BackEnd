@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-
-@Getter
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +30,5 @@ public class Event {
 
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EventMedia> eventMediaList;
 
 }

@@ -9,4 +9,7 @@ import java.util.List;
 
 @Repository
 public interface EventProductRepository extends JpaRepository<Product, Long>, EventProductRepositoryCustom {
+
+    List<Product> findByProductUUID(String productUUID);
+
 }

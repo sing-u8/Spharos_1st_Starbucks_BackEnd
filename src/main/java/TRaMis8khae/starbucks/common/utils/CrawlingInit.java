@@ -5,7 +5,6 @@ import TRaMis8khae.starbucks.admin.entity.BottomCategory;
 import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
-import TRaMis8khae.starbucks.event.dto.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.media.entity.Media;
@@ -112,7 +111,7 @@ public class CrawlingInit {
         BottomCategory coffeeBeverageGiftBot2 = parseBottomCategory(coffeeBeverageGiftMid, eGift.getSheetName(), 1);
 
         // 엑셀 파일의 모든 시트를 순회하며 데이터 파싱
-        List<EventRequestDto> eventRequestDtoList = new ArrayList<>();
+//        List<EventRequestDto> eventRequestDtoList = new ArrayList<>();
 
         int count = 0;
         for (Sheet sheet : workbook) {
