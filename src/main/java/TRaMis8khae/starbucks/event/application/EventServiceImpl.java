@@ -53,29 +53,29 @@ public class EventServiceImpl implements EventService {
     public void addEvent(EventRequestDto requestDto) {
 
     }
-
-    @Override
-    public Optional<Event> getEventWithMedia(Long eventId) {
-        return eventRepository.findById(eventId);
-    }
+//
+//    @Override
+//    public Optional<Event> getEventWithMedia(Long eventId) {
+//        return eventRepository.findById(eventId);
+//    }
 
     @Override
     public EventInfoResponseDto getEvent(Long eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        Optional<Event> event = eventRepository.findById(eventId);
 
-        Event event = eventOptional.get();
+//        Event event = eventOptional.get();
 
-        List<EventMedia> eventMediaList = eventMediaRepository.findByEventId(eventId);
+//        List<EventMedia> eventMediaList = eventMediaRepository.findByEventId(eventId);
 
-        List<String> mediaPath = eventMediaList.stream()
-                .map(EventMedia::getMediaUrl)
-                .collect(toList());
+//        List<String> mediaPath = eventMediaList.stream()
+//                .map(EventMedia::getMediaUrl)
+//                .collect(toList());
 
-        return EventInfoResponseDto.fromEntity(event, mediaPath);
+        return event.map(EventInfoResponseDto::toDto).orElse(null);
     }
 
 
-    // crawling event, eventProduct
+    // crawling event, eventProduct 추가
     @Override
     public List<Event> addCrawlingEvent(int numberOfEvents) {
 

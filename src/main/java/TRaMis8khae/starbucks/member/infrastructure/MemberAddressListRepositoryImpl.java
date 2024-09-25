@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class MemberAddressListRepositoryImpl {
+public class MemberAddressListRepositoryImpl implements MemberAddressListRepositoryCustom{
 
-//    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public List<DeliveryAddressResponseVo> findMemberAddressWithDeliveryAddress(String memberUUID){

@@ -15,7 +15,7 @@ public interface EventService {
 
     void addEvent(EventRequestDto requestDto);
 
-    Optional<Event> getEventWithMedia(Long eventId);
+//    Optional<Event> getEventWithMedia(Long eventId);
 
     EventInfoResponseDto getEvent(Long eventId);
 

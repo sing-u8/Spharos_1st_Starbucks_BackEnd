@@ -52,7 +52,7 @@ public class EventController {
     @GetMapping("/event/product/{eventId}")
     public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
 
-        List<String> productUUID = eventService.getEventUUID(eventId);
+        List<String> productUUID = eventService.getProductUUID(eventId);
 
         List<Product> products = productService.findProductsByProductUUID(productUUID);// product코드 사용
 

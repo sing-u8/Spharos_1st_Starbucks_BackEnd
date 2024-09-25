@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface EventMediaRepository extends JpaRepository<EventMedia, Long> {
 
-    List<EventMedia> findByEventId(Long eventId);
+//    List<EventMedia> findByEventId(Long eventId);
 }
