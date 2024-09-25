@@ -11,6 +11,7 @@ import TRaMis8khae.starbucks.review.dto.in.ReviewUpdateRequestDto;
 import TRaMis8khae.starbucks.review.vo.in.ReviewAddRequestVo;
 import TRaMis8khae.starbucks.review.vo.out.ReviewReadResponseVo;
 import TRaMis8khae.starbucks.review.vo.in.ReviewUpdateRequestVo;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 리뷰 생성
+    @Operation(summary = "리뷰 생성", description = "리뷰를 생성합니다", tags = {"Review Service"})
     @PostMapping("/add")
     public BaseResponse<Void> addReview(
             @RequestBody ReviewAddRequestVo requestVo,
@@ -49,6 +51,7 @@ public class ReviewController {
     }
 
     // 리뷰 조회
+    @Operation(summary = "리뷰 조회", description = "리뷰를 조회합니다", tags = {"Review Service"})
     @GetMapping("/{productUUID}")
     public BaseResponse<Slice<ReviewReadResponseVo>> findReviews(
             @RequestParam(defaultValue = "0") int page,
@@ -63,6 +66,7 @@ public class ReviewController {
     }
 
     // 리뷰 수정
+    @Operation(summary = "리뷰 수정", description = "리뷰를 수정합니다", tags = {"Review Service"})
     @PutMapping("/update/{reviewUUID}")
     public BaseResponse<Void> updateReview(
             @PathVariable("reviewUUID") String reviewUUID,
@@ -78,6 +82,7 @@ public class ReviewController {
     }
 
     // 리뷰 삭제
+    @Operation(summary = "리뷰 삭제", description = "리뷰를 삭제합니다", tags = {"Review Service"})
     @DeleteMapping("/delete/{id}")
     public BaseResponse<Void> deleteReview(
             @PathVariable Long id,
