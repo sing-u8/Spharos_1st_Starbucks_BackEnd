@@ -62,7 +62,7 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
+        String excelFilePath = "/Users/TalkFile_starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -155,7 +155,6 @@ public class CrawlingInit {
 
                 // product
                 String productName = getCellValue(row.getCell(1));
-                String productUUID = getCellValue(row.getCell(3));
                 String price = getCellValue(row.getCell(2));
                 String descriptionImage = getCellValue(row.getCell(7));
                 String descriptionTag = getCellValue(row.getCell(8));
@@ -169,6 +168,12 @@ public class CrawlingInit {
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
                 saveMedia(mediaList);
+
+
+                // product 객체 생성
+                Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
+                String productUUID = parsedProduct.getProductUUID();
+                saveProduct(parsedProduct);
 
                 // productCategoryList 객체 생성
                 List<ProductCategoryList> productCategoryAll = new ArrayList<>();
@@ -211,9 +216,6 @@ public class CrawlingInit {
                 }
                 saveProductCategoryList(productCategoryAll);
 
-                // product 객체 생성
-                Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
-                saveProduct(parsedProduct);
 
                 // event 객체 생성
                 int discountRateValue = Integer.parseInt(discountRate);
@@ -297,6 +299,32 @@ public class CrawlingInit {
     }
 
     // -------------------------------- parsing methods --------------------------------
+
+
+    public List<Media> parseProductDescriptionMedia(String description) {
+
+        List<String> mediaUrls = Arrays.stream(description.split(","))
+            .map(String::trim) // 각 URL에서 공백 제거
+            .toList();
+
+        List<Media> mediaList = new ArrayList<>();
+
+        int count = 0;
+        for (String mediaUrl : mediaUrls) {
+            Media media = Media.builder()
+                .mediaUrl(mediaUrl)
+                .thumbChecked(Boolean.FALSE)
+                .mediaType(MediaType.IMAGE)
+                .mediaKind(MediaKind.PRODUCT)
+                .mediaSeq(count++)
+                .build();
+            mediaList.add(media);
+
+        }
+        return mediaList;
+
+    }
+
     public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
         List<Media> mediaList = new ArrayList<>();
 
@@ -335,10 +363,11 @@ public class CrawlingInit {
     public Product parseProduct(String productName, Double price, String descriptionImage,
                                 String descriptionTag) {
         return Product.builder()
+            .productUUID(CodeGenerator.generateCode(36))
                 .productName(productName)
                 .price(price)
-                .description(descriptionImage)
-//                .description(descriptionTag)
+                .description(descriptionTag)
+            .maxOrderCount(5)
                 .build();
     }
 
