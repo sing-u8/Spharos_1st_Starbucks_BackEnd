@@ -150,9 +150,7 @@ public class CrawlingInit {
             String categoryName = sheet.getSheetName();
 
             for (Row row : sheet) {
-                if (row.getRowNum() == 0) {
-                    continue;
-                }
+                if(row.getRowNum() == 0) { continue;}
 
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
@@ -160,7 +158,6 @@ public class CrawlingInit {
 
                 // product
                 String productName = getCellValue(row.getCell(1));
-                String productUUID = getCellValue(row.getCell(3));
                 String price = getCellValue(row.getCell(2));
                 String descriptionImage = getCellValue(row.getCell(7));
                 String descriptionTag = getCellValue(row.getCell(8));
@@ -174,6 +171,12 @@ public class CrawlingInit {
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
                 saveMedia(mediaList);
+
+
+                // product 객체 생성
+                Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
+                String productUUID = parsedProduct.getProductUUID();
+                saveProduct(parsedProduct);
 
                 // productCategoryList 객체 생성
                 List<ProductCategoryList> productCategoryAll = new ArrayList<>();
@@ -216,9 +219,6 @@ public class CrawlingInit {
                 }
                 saveProductCategoryList(productCategoryAll);
 
-                // product 객체 생성
-                Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
-                saveProduct(parsedProduct);
 
 
                 // 이벤트 상품 저장
@@ -279,17 +279,14 @@ public class CrawlingInit {
             eventRepository.save(event);
             events.add(event);
 
-            log.info("event : {}", event.getEventName());
         }
 
         int productIndex = 0;
 
         for (Event event : events) {
-            log.info("event : {}", event.getEventName());
 
             for (int i = 0; i < 5; i++) {
                 Product product = eventProducts.get(productIndex++);
-//                Long productId = product.getId();
 
                 ProductEventList productEventList = ProductEventList.builder()
                         .product(product)
@@ -320,7 +317,33 @@ public class CrawlingInit {
     }
 
     // -------------------------------- parsing methods --------------------------------
-    public List<Media> parseMedia (String thumbnailMedia, String mainMedia){
+
+
+    public List<Media> parseProductDescriptionMedia(String description) {
+
+        List<String> mediaUrls = Arrays.stream(description.split(","))
+            .map(String::trim) // 각 URL에서 공백 제거
+            .toList();
+
+        List<Media> mediaList = new ArrayList<>();
+
+        int count = 0;
+        for (String mediaUrl : mediaUrls) {
+            Media media = Media.builder()
+                .mediaUrl(mediaUrl)
+                .thumbChecked(Boolean.FALSE)
+                .mediaType(MediaType.IMAGE)
+                .mediaKind(MediaKind.PRODUCT)
+                .mediaSeq(count++)
+                .build();
+            mediaList.add(media);
+
+        }
+        return mediaList;
+
+    }
+
+    public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
         List<Media> mediaList = new ArrayList<>();
 
         // thumbnailMedia를 Media 객체로 변환
@@ -355,17 +378,18 @@ public class CrawlingInit {
         return mediaList;
     }
 
-    public Product parseProduct (String productName, Double price, String descriptionImage,
-            String descriptionTag){
+    public Product parseProduct(String productName, Double price, String descriptionImage,
+                                String descriptionTag) {
         return Product.builder()
+            .productUUID(CodeGenerator.generateCode(36))
                 .productName(productName)
                 .price(price)
-                .description(descriptionImage)
-//                .description(descriptionTag)
+                .description(descriptionTag)
+            .maxOrderCount(5)
                 .build();
     }
 
-    public TopCategory parseTopCategory (String categoryName, Integer sequence){
+    public TopCategory parseTopCategory(String categoryName, Integer sequence) {
         return TopCategory.builder()
                 .name(categoryName)
                 .sequence(sequence)
@@ -373,7 +397,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public MiddleCategory parseMiddleCategory (TopCategory topCategory, Integer sequence){
+    public MiddleCategory parseMiddleCategory(TopCategory topCategory, Integer sequence) {
         return MiddleCategory.builder()
                 .topCategory(topCategory)
                 .name("카테고리")
@@ -382,7 +406,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public BottomCategory parseBottomCategory (MiddleCategory middleCategory, String name, Integer sequence){
+    public BottomCategory parseBottomCategory(MiddleCategory middleCategory, String name, Integer sequence) {
         return BottomCategory.builder()
                 .middleCategory(middleCategory)
                 .name(name)
@@ -391,8 +415,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public ProductCategoryList parseProductCategory (String uuid, String topCode, String middleCode, String
-    bottomCode){
+    public ProductCategoryList parseProductCategory(String uuid, String topCode, String middleCode, String bottomCode) {
         return ProductCategoryList.builder()
                 .productUUID(uuid)
                 .topCode(topCode)
@@ -402,80 +425,38 @@ public class CrawlingInit {
     }
 
     // -------------------------------- save methods --------------------------------
-    private void saveTopCategory (TopCategory topCategory){
+    private void saveTopCategory(TopCategory topCategory) {
         topCategoryRepository.save(topCategory);
     }
 
 
-    private void saveBottomCategory (BottomCategory bottomCategory){
+    private void saveBottomCategory(BottomCategory bottomCategory) {
         bottomCategoryRepository.save(bottomCategory);
 
     }
 
-    private void saveMiddleCategory (MiddleCategory middleCategory){
+    private void saveMiddleCategory(MiddleCategory middleCategory) {
         middleCategoryRepository.save(middleCategory);
 
     }
 
-    private void saveProductCategoryList (List < ProductCategoryList > productCategoryAll) {
+    private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
         productCategoryListRepository.saveAll(productCategoryAll);
     }
-    private void saveProduct (Product product){
+    private void saveProduct(Product product) {
         productRepository.save(product);
     }
 
-    private void saveMedia (List < Media > mediaList) {
+    private void saveMedia(List<Media> mediaList) {
         mediaRepository.saveAll(mediaList);
     }
 
-    private void saveEvent (Event event){
+    private void saveEvent(Event event) {
         eventRepository.save(event);
     }
 
-    private void saveReview (Review review){
+    private void saveReview(Review review) {
         reviewRepository.save(review);
     }
 
-
-
-
-
-//    // 이벤트 및 상품 매핑 관련 메서드들
-//    public List<Event> addCrawlingEvent(int numberOfEvents) {
-//        List<Event> events = new ArrayList<>();
-//        for (int i = 0; i < numberOfEvents; i++) {
-//            Event event = Event.builder()
-//                    .eventName("event" + i)
-//                    .discountRate(10)
-//                    .build();
-//            events.add(event);
-//        }
-//        return events;
-//    }
-//
-//    public void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent) {
-//        int eventIndex = 0;
-//        for (int i = 0; i < products.size(); i += productsPerEvent) {
-//            int endIndex = Math.min(i + productsPerEvent, products.size());
-//            List<Product> productSubList = products.subList(i, endIndex);
-//
-//            Event event = events.get(eventIndex);
-//            saveEventProductList(event, productSubList);
-//
-//            eventIndex++;
-//            if (eventIndex >= events.size()) {
-//                break;
-//            }
-//        }
-//    }
-//
-//    private void saveEventProductList(Event event, List<Product> products) {
-//        for (Product product : products) {
-//            ProductEventList productEventList = ProductEventList.builder()
-//                    .product(product)
-//                    .event(event)
-//                    .build();
-//            productEventListRepository.save(productEventList);
-//        }
-//    }
 }

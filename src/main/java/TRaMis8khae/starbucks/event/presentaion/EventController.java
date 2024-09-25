@@ -57,7 +57,7 @@ public class EventController {
 
         List<Product> products = productService.findProductsByProductUUID(productUUID);// product코드 사용
 
-        log.info("products: {}", products);
+        log.info("products: {}", products.get(0).getDescription());
 
         List<EventProductResponseVo> productResponseVos = products.stream()
                 .map(EventProductResponseDto::toDto)
@@ -67,8 +67,4 @@ public class EventController {
         return new BaseResponse<>(productResponseVos);
 
     }
-
-
-
-
 }
