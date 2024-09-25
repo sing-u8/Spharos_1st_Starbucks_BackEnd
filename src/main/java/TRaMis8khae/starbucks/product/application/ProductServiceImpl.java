@@ -26,11 +26,15 @@ public class ProductServiceImpl implements ProductService{
     @Transactional
     public void addProduct(ProductRequestDto requestDto) {
 
-        if (productRepository.existsByproductName(requestDto.getProductName())) {
+        String productUUID = CodeGenerator.generateCode(36);
+
+        if (productRepository.existsByproductName(requestDto.getProductName())
+        && productRepository.existsByProductUUID(productUUID)) {
+            log.info(requestDto.getProductName());
             throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
         }
 
-        String productUUID = CodeGenerator.generateCode(36);
+
 
         productRepository.save(requestDto.toEntity(productUUID));
     }

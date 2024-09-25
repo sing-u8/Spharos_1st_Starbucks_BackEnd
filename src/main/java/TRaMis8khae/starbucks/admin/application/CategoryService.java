@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface CategoryService {
 
-    void addTopCategory(TopCategoryRequestDto requestDto);
-    void addMiddleCategory(MiddleCategoryRequestDto requestDto);
-    void addBottomCategory(BottomCategoryRequestDto requestDto);
+    String addTopCategory(TopCategoryRequestDto requestDto);
+    String addMiddleCategory(MiddleCategoryRequestDto requestDto);
+    String addBottomCategory(BottomCategoryRequestDto requestDto);
 
 
     TopCategoryResponseDto findTopCategoryByName(String name);
