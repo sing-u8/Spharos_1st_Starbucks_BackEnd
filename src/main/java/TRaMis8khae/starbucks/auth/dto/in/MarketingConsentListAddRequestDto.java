@@ -7,21 +7,15 @@ import TRaMis8khae.starbucks.member.vo.in.AddMarketingConsentListRequestVo;
 import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@ToString
+@AllArgsConstructor
 public class MarketingConsentListAddRequestDto {
 
     private boolean EmailConsentChecked;
     private boolean SMSConsentChecked;
     private String memberUUID;
     private Long marketingId;
-
-    @Builder
-    public MarketingConsentListAddRequestDto(boolean EmailConsentChecked, boolean SMSConsentChecked, String memberUUID) {
-        this.EmailConsentChecked = EmailConsentChecked;
-        this.SMSConsentChecked = SMSConsentChecked;
-        this.memberUUID = memberUUID;
-    }
 
     public static MarketingConsentListAddRequestDto toDto(AddMarketingConsentListRequestVo requestVo) {
         return MarketingConsentListAddRequestDto.builder()

@@ -82,6 +82,7 @@ public class CrawlingInit {
 
         // 이벤트 상품 리스트
         List<Product> eventProducts = new ArrayList<>();
+        List<Event> events = createEvents();
 
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
@@ -270,16 +271,16 @@ public class CrawlingInit {
 
         // event 객체 생성
 
-        List<Event> events = new ArrayList<>();
-
-        for (int i = 1; i <= 8; i++) {
-            Event event = Event.builder()
-                    .eventName("event" + i)
-                    .build();
-            eventRepository.save(event);
-            events.add(event);
-
-        }
+//        List<Event> events = new ArrayList<>();
+//
+//        for (int i = 1; i <= 8; i++) {
+//            Event event = Event.builder()
+//                    .eventName("event" + i)
+//                    .build();
+//            eventRepository.save(event);
+//            events.add(event);
+//
+//        }
 
         int productIndex = 0;
 
@@ -459,4 +460,15 @@ public class CrawlingInit {
         reviewRepository.save(review);
     }
 
+    private List<Event> createEvents() {
+        List<Event> events = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            Event event = Event.builder()
+                    .eventName("event" + i)
+                    .build();
+            eventRepository.save(event);
+            events.add(event);
+        }
+        return events;
+    }
 }

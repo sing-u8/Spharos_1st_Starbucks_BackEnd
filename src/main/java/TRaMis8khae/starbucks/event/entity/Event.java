@@ -1,20 +1,15 @@
 package TRaMis8khae.starbucks.event.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class Event {
 
     @Id
@@ -29,6 +24,14 @@ public class Event {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    @Builder
+    public Event(String eventName, Integer discountRate, LocalDate startDate, LocalDate endDate) {
+        this.eventName = eventName;
+        this.discountRate = discountRate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
 
 }

@@ -2,13 +2,17 @@ package TRaMis8khae.starbucks.event.dto.in;
 
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Builder
+@ToString
+@AllArgsConstructor
 public class EventRequestDto {
 
     private String eventName;

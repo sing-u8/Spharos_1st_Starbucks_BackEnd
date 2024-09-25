@@ -2,11 +2,15 @@ package TRaMis8khae.starbucks.auth.dto.out;
 
 import TRaMis8khae.starbucks.auth.entity.Terms;
 import TRaMis8khae.starbucks.member.vo.out.TermsResponseVo;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
+@AllArgsConstructor
 public class TermsResponseDto {
 
     private String termsName;
