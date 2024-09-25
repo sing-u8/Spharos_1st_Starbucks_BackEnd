@@ -21,9 +21,10 @@ public class VolumeServiceImpl implements VolumeService{
 
 	@Override
 	public void addVolume(VolumeRequestDto requestDto) {
-
-		volumeRepository.findByName(requestDto.getName())
-			.orElseGet(() -> volumeRepository.save(requestDto.toEntity()));
+		if (!requestDto.getName().isEmpty()) {
+			volumeRepository.findByName(requestDto.getName())
+					.orElseGet(() -> volumeRepository.save(requestDto.toEntity()));
+		}
 	}
 
 	@Override

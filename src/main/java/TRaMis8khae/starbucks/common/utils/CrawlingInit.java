@@ -34,13 +34,17 @@ import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
+import TRaMis8khae.starbucks.vendor.application.ProductOptionService;
+import TRaMis8khae.starbucks.vendor.application.VolumeService;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
+import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.entity.ProductOption;
 import TRaMis8khae.starbucks.vendor.entity.Volume;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 import TRaMis8khae.starbucks.vendor.vo.in.ProductCategoryListRequestVo;
+import TRaMis8khae.starbucks.vendor.vo.in.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.VolumeRequestVo;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,11 +87,13 @@ public class CrawlingInit {
     private final ProductMediaListRepository productMediaListRepository;
     private final ProductService productService;
     private final ProductMediaService productMediaService;
+    private final VolumeService volumeService;
+    private final ProductOptionService productOptionService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "/Users/TalkFile_starbucks_products.xlsx";
+        String excelFilePath = "C:\\Users\\ssginc20\\starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -207,9 +213,7 @@ public class CrawlingInit {
 
                 // product 객체 생성
                 ProductRequestDto parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
-                String productUUID = parsedProduct.getProductUUID();
-                productService.addProduct(parsedProduct);
-
+                String productUUID = productService.addProduct(parsedProduct);
 
                 //product media 객체 생성
                 List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
@@ -221,19 +225,25 @@ public class CrawlingInit {
                     productMediaService.addProductMedia(productMediaList);
                 }
 
-
                 // productCategoryList 객체 생성
                 List<ProductCategoryListRequestDto> productCategoryAll = new ArrayList<>();
                 productCategoryAll.add(parseProductCategory(productUUID, totalTopCode, null, null));
-
+                String volumeName = "";
                 switch (categoryName) {
                     case "텀블러-보온병":
                         productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode1));
-                        parseVolume(productName);
+                        VolumeRequestDto volumeRequestDto = parseVolume(productName);
+                        volumeService.addVolume(volumeRequestDto);
+                        volumeName = volumeRequestDto.getName();
+
+
                         break;
                     case "컵-머그":
                         productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode2));
-                        parseVolume(productName);
+                        VolumeRequestDto volumeRequestDto1 = parseVolume(productName);
+                        volumeService.addVolume(volumeRequestDto1);
+                        volumeName = volumeRequestDto1.getName();
+
                         break;
                     case "베이커리":
                         productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode1));
@@ -267,6 +277,8 @@ public class CrawlingInit {
                     productCategoryListService.addProductByCategory(productCategoryListRequestDto);
                 }
 
+                ProductOptionRequestDto productOptionRequestDto = parseProductOption(productUUID, productName, Double.parseDouble(price), volumeName);
+                productOptionService.addProductOption(productOptionRequestDto);
 
                 // event 객체 생성
                 int discountRateValue = Integer.parseInt(discountRate);
@@ -350,27 +362,26 @@ public class CrawlingInit {
 
     // -------------------------------- parsing methods --------------------------------
     public VolumeRequestDto parseVolume(String productName) {
-        int index = productName.indexOf("ml");
-        if (index == -1) {
-            return null;
-        }
+        String name = "";
         int vol = 0;
-        if (productName.charAt(index - 3) == ' ') {
-            vol = Integer.parseInt(productName.substring(index - 2, index));
-        } else {
-            vol = Integer.parseInt(productName.substring(index - 3, index));
-        }
+        int index = productName.indexOf("ml");
+        if (index!= -1) {
+            if (productName.charAt(index - 3) == ' ') {
+                vol = Integer.parseInt(productName.substring(index - 2, index));
+            } else {
+                vol = Integer.parseInt(productName.substring(index - 3, index));
+            }
 
-        log.info("vol : {} + productName : {}", vol, productName);
-        String name = "Trenta";
-        if (vol <= 345 ) {
-            name = "Short";
-        } else if (vol <= 444 ) {
-            name = "Tall";
-        } else if (vol <=590) {
-            name = "Grande";
-        } else if (vol <= 710) {
-            name = "Venti";
+
+            if (vol <= 345) {
+                name = "Short";
+            } else if (vol <= 444) {
+                name = "Tall";
+            } else if (vol <= 590) {
+                name = "Grande";
+            } else if (vol <= 710) {
+                name = "Venti";
+            }
         }
 
         return VolumeRequestDto.toDto(VolumeRequestVo.builder()
@@ -497,6 +508,21 @@ public class CrawlingInit {
                 .middleCode(middleCode)
                 .bottomCode(bottomCode)
                 .build());
+    }
+
+    public ProductOptionRequestDto parseProductOption(String uuid, String productName, Double price, String volumeName) {
+
+        return ProductOptionRequestDto.toDto(ProductOptionRequestVo.builder()
+                        .productUUID(uuid)
+                        .productName(productName)
+                        .price(price)
+                        .stockQuantity(1000)
+                        .limitCnt(3)
+                        .soldOutChecked(Boolean.FALSE)
+                        .openChecked(Boolean.TRUE)
+                        .closedChecked(Boolean.FALSE)
+                        .volumeName(volumeName)
+                        .build());
     }
 
     // -------------------------------- save methods --------------------------------

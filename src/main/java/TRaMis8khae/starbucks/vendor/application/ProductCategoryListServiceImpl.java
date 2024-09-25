@@ -30,7 +30,7 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
     @Transactional
     public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
-        if (productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
+        if (!productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
             throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 

@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void addProduct(ProductRequestDto requestDto) {
+    public String addProduct(ProductRequestDto requestDto) {
 
         String productUUID = CodeGenerator.generateCode(36);
 
@@ -37,6 +37,8 @@ public class ProductServiceImpl implements ProductService{
 
 
         productRepository.save(requestDto.toEntity(productUUID));
+
+        return productUUID;
     }
 
     @Override
