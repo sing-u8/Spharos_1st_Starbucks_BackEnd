@@ -150,7 +150,9 @@ public class CrawlingInit {
             String categoryName = sheet.getSheetName();
 
             for (Row row : sheet) {
-                if(row.getRowNum() == 0) { continue;}
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
 
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
@@ -218,20 +220,7 @@ public class CrawlingInit {
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 saveProduct(parsedProduct);
 
-                // event 객체 생성
-                int discountRateValue = Integer.parseInt(discountRate);
 
-                // discountRate가 0보다 큰 경우에만 저장 처리
-                if (discountRateValue > 0) {
-
-                    Event event = Event.builder()
-                            .discountRate(discountRateValue)
-                            .build();
-
-                    ProductEventList productEventList = ProductEventList.builder()
-                            .product(parsedProduct)
-                            .event(event)
-                            .build();
                 // 이벤트 상품 저장
                 eventProducts.add(parsedProduct);
 
@@ -246,7 +235,8 @@ public class CrawlingInit {
 
                 for (String reviewString : reviews) {
                     // 각 리뷰를 JSON 형식으로 파싱
-                    Map<String, Object> readValue = objectMapper.readValue(reviewString, new TypeReference<Map<String, Object>>() {});
+                    Map<String, Object> readValue = objectMapper.readValue(reviewString, new TypeReference<Map<String, Object>>() {
+                    });
 
                     // review 정보를 ReviewCrawlingAddDto로 변환
                     ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
@@ -297,7 +287,7 @@ public class CrawlingInit {
         for (Event event : events) {
             log.info("event : {}", event.getEventName());
 
-            for(int i = 0; i < 5; i++) {
+            for (int i = 0; i < 5; i++) {
                 Product product = eventProducts.get(productIndex++);
 //                Long productId = product.getId();
 
@@ -310,17 +300,15 @@ public class CrawlingInit {
             }
         }
 
-
-
         workbook.close();
         file.close();
     }
 
-    private String getCellValue(Cell cell) {
+    private String getCellValue (Cell cell){
         return cell == null ? "" : cell.getStringCellValue();
     }
 
-    public List<String> splitReviews(String reviewData) {
+    public List<String> splitReviews (String reviewData){
         // 중괄호를 기준으로 각 리뷰를 나눔
         List<String> reviews = new ArrayList<>();
         Matcher matcher = Pattern.compile("\\{[^}]*}").matcher(reviewData);
@@ -332,7 +320,7 @@ public class CrawlingInit {
     }
 
     // -------------------------------- parsing methods --------------------------------
-    public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
+    public List<Media> parseMedia (String thumbnailMedia, String mainMedia){
         List<Media> mediaList = new ArrayList<>();
 
         // thumbnailMedia를 Media 객체로 변환
@@ -367,8 +355,8 @@ public class CrawlingInit {
         return mediaList;
     }
 
-    public Product parseProduct(String productName, Double price, String descriptionImage,
-                                String descriptionTag) {
+    public Product parseProduct (String productName, Double price, String descriptionImage,
+            String descriptionTag){
         return Product.builder()
                 .productName(productName)
                 .price(price)
@@ -377,7 +365,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public TopCategory parseTopCategory(String categoryName, Integer sequence) {
+    public TopCategory parseTopCategory (String categoryName, Integer sequence){
         return TopCategory.builder()
                 .name(categoryName)
                 .sequence(sequence)
@@ -385,7 +373,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public MiddleCategory parseMiddleCategory(TopCategory topCategory, Integer sequence) {
+    public MiddleCategory parseMiddleCategory (TopCategory topCategory, Integer sequence){
         return MiddleCategory.builder()
                 .topCategory(topCategory)
                 .name("카테고리")
@@ -394,7 +382,7 @@ public class CrawlingInit {
                 .build();
     }
 
-    public BottomCategory parseBottomCategory(MiddleCategory middleCategory, String name, Integer sequence) {
+    public BottomCategory parseBottomCategory (MiddleCategory middleCategory, String name, Integer sequence){
         return BottomCategory.builder()
                 .middleCategory(middleCategory)
                 .name(name)
@@ -403,7 +391,8 @@ public class CrawlingInit {
                 .build();
     }
 
-    public ProductCategoryList parseProductCategory(String uuid, String topCode, String middleCode, String bottomCode) {
+    public ProductCategoryList parseProductCategory (String uuid, String topCode, String middleCode, String
+    bottomCode){
         return ProductCategoryList.builder()
                 .productUUID(uuid)
                 .topCode(topCode)
@@ -413,39 +402,41 @@ public class CrawlingInit {
     }
 
     // -------------------------------- save methods --------------------------------
-    private void saveTopCategory(TopCategory topCategory) {
+    private void saveTopCategory (TopCategory topCategory){
         topCategoryRepository.save(topCategory);
     }
 
 
-    private void saveBottomCategory(BottomCategory bottomCategory) {
+    private void saveBottomCategory (BottomCategory bottomCategory){
         bottomCategoryRepository.save(bottomCategory);
 
     }
 
-    private void saveMiddleCategory(MiddleCategory middleCategory) {
+    private void saveMiddleCategory (MiddleCategory middleCategory){
         middleCategoryRepository.save(middleCategory);
 
     }
 
-    private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
+    private void saveProductCategoryList (List < ProductCategoryList > productCategoryAll) {
         productCategoryListRepository.saveAll(productCategoryAll);
     }
-    private void saveProduct(Product product) {
+    private void saveProduct (Product product){
         productRepository.save(product);
     }
 
-    private void saveMedia(List<Media> mediaList) {
+    private void saveMedia (List < Media > mediaList) {
         mediaRepository.saveAll(mediaList);
     }
 
-    private void saveEvent(Event event) {
+    private void saveEvent (Event event){
         eventRepository.save(event);
     }
 
-    private void saveReview(Review review) {
+    private void saveReview (Review review){
         reviewRepository.save(review);
     }
+
+
 
 
 
