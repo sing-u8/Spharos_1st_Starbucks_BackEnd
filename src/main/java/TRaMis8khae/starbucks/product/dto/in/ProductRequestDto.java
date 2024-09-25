@@ -20,7 +20,6 @@ public class ProductRequestDto {
     private String productUUID;
     private Boolean engravingChecked;
     private Integer maxOrderCount;
-    private Integer minOrderCount;
 //    private String volumeName;
 
     public static ProductRequestDto toDto(ProductRequestVo productRequestVo) {
@@ -37,16 +36,18 @@ public class ProductRequestDto {
 
     public Product toEntity(String productUUID) {
         return Product.builder()
-                .productUUID(productUUID)
-                .productName(productName).productScore(0.0)
-                .price(price)
-                .description(description)
-                .additionalChecked(additionalChecked)
-                .isAdditionalTogether(isAdditionalTogether)
-                .engravingChecked(engravingChecked)
-                .maxOrderCount(maxOrderCount)
-                .minOrderCount(1)
-                .build();
+
+            .productUUID(productUUID)
+            .productName(productName)
+            .productScore(0.0)
+            .price(price)
+            .description(description)
+            .additionalChecked(additionalChecked)
+            .isAdditionalTogether(isAdditionalTogether)
+            .engravingChecked(engravingChecked)
+            .maxOrderCount(maxOrderCount)
+            .minOrderCount(1)
+            .build();
     }
 
 }

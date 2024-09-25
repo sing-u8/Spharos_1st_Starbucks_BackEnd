@@ -30,7 +30,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String memberMaskingId; // masking을 프론트에서 하거나 db 넣을 때 바로 masking
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 10000)
     private String reviewContext;
 
     private Integer reviewScore;
