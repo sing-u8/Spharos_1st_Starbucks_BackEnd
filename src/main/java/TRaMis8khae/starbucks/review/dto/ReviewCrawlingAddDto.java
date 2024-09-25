@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.review.dto;
 
 import TRaMis8khae.starbucks.media.entity.Media;
+import TRaMis8khae.starbucks.review.entity.Review;
 import lombok.*;
 
 import java.util.List;
@@ -20,6 +21,14 @@ public class ReviewCrawlingAddDto {
                 .reviewScore(rating)
                 .memberMaskingId(reviewer)
                 .reviewContext(reviewContent)
+                .build();
+    }
+
+    public Review toEntity() {
+        return Review.builder()
+                .reviewScore(Integer.parseInt(reviewScore))
+                .memberMaskingId(memberMaskingId)
+                .reviewContext(reviewContext)
                 .build();
     }
 
