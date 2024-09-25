@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-@RequiredArgsConstructor
-public class EventProductRepositoryCustomImpl implements EventProductRepositoryCustom {
-
-    @Override
-    public Slice<Product> findByProductUUID(String productUUID, PageRequest pageRequest) {
-        return null;
-    }
+//@Repository
+//@RequiredArgsConstructor
+//public class EventProductRepositoryCustomImpl implements EventProductRepositoryCustom {
+//
+//    @Override
+//    public Slice<Product> findByProductUUID(String productUUID, PageRequest pageRequest) {
+//        return null;
+//    }
 
 //    private final JPAQueryFactory jpaQueryFactory;
 
@@ -41,4 +41,4 @@ public class EventProductRepositoryCustomImpl implements EventProductRepositoryC
 //        return new SliceImpl<>(products, pageRequest, hasNext);
 //    }
 
-}
+//}

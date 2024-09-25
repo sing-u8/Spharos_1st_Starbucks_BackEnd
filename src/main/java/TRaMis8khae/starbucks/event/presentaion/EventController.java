@@ -5,6 +5,7 @@ import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.event.application.EventService;
 import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
+import TRaMis8khae.starbucks.event.dto.out.EventProductResponseDto;
 import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
 import TRaMis8khae.starbucks.event.vo.out.EventResponseVo;
 import TRaMis8khae.starbucks.event.vo.out.EventProductResponseVo;
@@ -50,7 +51,7 @@ public class EventController {
     }
 
     @GetMapping("/event/product/{eventId}")
-    public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
+    public BaseResponse<List<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
 
         List<String> productUUID = eventService.getProductUUID(eventId);
 
@@ -58,7 +59,12 @@ public class EventController {
 
         log.info("products: {}", products);
 
-        return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        List<EventProductResponseVo> productResponseVos = products.stream()
+                .map(EventProductResponseDto::toDto)
+                .map(EventProductResponseDto::toVo)
+                .toList();
+
+        return new BaseResponse<>(productResponseVos);
 
     }
 

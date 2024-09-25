@@ -22,7 +22,9 @@ public class EventProductResponseDto {
 
     public static EventProductResponseVo toVo(EventProductResponseDto responseDto) {
         return EventProductResponseVo.builder()
+                .discountRate(responseDto.getDiscountRate())
                 .productName(responseDto.getProductName())
+                .price(responseDto.getPrice())
                 .build();
     }
 

@@ -7,6 +7,8 @@ import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
+import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
+import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
@@ -42,9 +44,13 @@ import java.util.stream.Collectors;
 public class CrawlingInit {
 
     private final TopCategoryRepository topCategoryRepository;
+    private final ProductEventListRepository productEventListRepository;
+    private final EventRepository eventRepository;
 
-    public CrawlingInit(TopCategoryRepository topCategoryRepository) {
+    public CrawlingInit(TopCategoryRepository topCategoryRepository, ProductEventListRepository productEventListRepository, EventRepository eventRepository) {
         this.topCategoryRepository = topCategoryRepository;
+        this.productEventListRepository = productEventListRepository;
+        this.eventRepository = eventRepository;
     }
 
     @PostConstruct
@@ -58,6 +64,12 @@ public class CrawlingInit {
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             parseExcelData(excelFilePath);
+
+//            List<Product> eventProducts = new ArrayList<>();
+//            List<Event> events = addCrawlingEvent(8);
+
+
+
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
@@ -69,6 +81,9 @@ public class CrawlingInit {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
         int topCount = 0;
+
+        // 이벤트 상품 리스트
+        List<Product> eventProducts = new ArrayList<>();
 
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
@@ -131,6 +146,8 @@ public class CrawlingInit {
             log.info("topCategory : {}", requestDto.getName());
             log.info("topCategory : {}", requestDto.getSequence());
             log.info("topCategory : {}", CodeGenerator.generateCode(8));
+
+
 
             for (Row row : sheet) {
 
@@ -215,39 +232,9 @@ public class CrawlingInit {
                 Product parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 log.info("product : {}", parsedProduct);
 
-                // event 객체 생성
-                Integer discountRateValue = Integer.parseInt(discountRate);
+                // 이벤트 상품 저장
+                eventProducts.add(parsedProduct);
 
-                // discountRate가 0보다 큰 경우에만 저장 처리
-                if (discountRateValue > 0) {
-
-                    Event event = Event.builder()
-                            .discountRate(discountRateValue)
-                            .build();
-
-                    ProductEventList productEventList = ProductEventList.builder()
-                            .product(parsedProduct)
-                            .event(event)
-                            .build();
-
-                    log.info("!event : {}", event.getDiscountRate());
-                    log.info("!productEventList : {}", productEventList.getEvent());
-                    log.info("!productEventListProduct : {}", productEventList.getProduct());
-                }
-
-                // 임시 : eventMedia(이미지) 추가
-//                List<Media> eventMediaList = new ArrayList<>();
-//                eventMediaList = parseMedia(eventImage);
-//                for (Media media : eventMediaList) {
-//                    log.info("eventMedia : {}", media);
-//                }
-//                if (eventMediaList.size() > 0) {
-//                    EventRequestDto eventRequestDto = EventRequestDto.builder()
-//                            .eventId(event.getId())
-//                            .mediaList(eventMediaList)
-//                            .build();
-//                    eventRequestDtoList.add(eventRequestDto);
-//                }
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -295,6 +282,40 @@ public class CrawlingInit {
             }
 
         }
+
+        // event 객체 생성
+
+        List<Event> events = new ArrayList<>();
+
+        for (int i = 1; i <= 8; i++) {
+            Event event = Event.builder()
+                    .eventName("event" + i)
+                    .build();
+            eventRepository.save(event);
+            events.add(event);
+
+            log.info("event : {}", event.getEventName());
+        }
+
+        int productIndex = 0;
+
+        for (Event event : events) {
+            log.info("event : {}", event.getEventName());
+
+            for(int i = 0; i < 5; i++) {
+                Product product = eventProducts.get(productIndex++);
+//                Long productId = product.getId();
+
+                ProductEventList productEventList = ProductEventList.builder()
+                        .product(product)
+                        .event(event)
+                        .build();
+
+                productEventListRepository.save(productEventList);
+            }
+        }
+
+
 
         workbook.close();
         file.close();
@@ -420,4 +441,44 @@ public class CrawlingInit {
     private void saveMedia(List<Media> mediaList) {
         // mediaRepository.saveAll(mediaList); (repository나 service 호출)
     }
+
+
+//    // 이벤트 및 상품 매핑 관련 메서드들
+//    public List<Event> addCrawlingEvent(int numberOfEvents) {
+//        List<Event> events = new ArrayList<>();
+//        for (int i = 0; i < numberOfEvents; i++) {
+//            Event event = Event.builder()
+//                    .eventName("event" + i)
+//                    .discountRate(10)
+//                    .build();
+//            events.add(event);
+//        }
+//        return events;
+//    }
+//
+//    public void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent) {
+//        int eventIndex = 0;
+//        for (int i = 0; i < products.size(); i += productsPerEvent) {
+//            int endIndex = Math.min(i + productsPerEvent, products.size());
+//            List<Product> productSubList = products.subList(i, endIndex);
+//
+//            Event event = events.get(eventIndex);
+//            saveEventProductList(event, productSubList);
+//
+//            eventIndex++;
+//            if (eventIndex >= events.size()) {
+//                break;
+//            }
+//        }
+//    }
+//
+//    private void saveEventProductList(Event event, List<Product> products) {
+//        for (Product product : products) {
+//            ProductEventList productEventList = ProductEventList.builder()
+//                    .product(product)
+//                    .event(event)
+//                    .build();
+//            productEventListRepository.save(productEventList);
+//        }
+//    }
 }

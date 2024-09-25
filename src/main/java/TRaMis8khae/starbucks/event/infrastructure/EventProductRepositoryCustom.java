@@ -6,8 +6,8 @@ import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
-public interface EventProductRepositoryCustom {
-
-    Slice<Product> findByProductUUID(String productUUID, PageRequest pageRequest);
-
-}
+//public interface EventProductRepositoryCustom {
+//
+//    Slice<Product> findByProductUUID(String productUUID, PageRequest pageRequest);
+//
+//}
