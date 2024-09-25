@@ -18,7 +18,7 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 200)
     private String productName;
 
     @Column(nullable = false, length = 50)
@@ -29,6 +29,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false, length = 60000)
     private String description;
 
     private Boolean additionalChecked;
