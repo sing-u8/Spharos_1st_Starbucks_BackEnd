@@ -15,6 +15,7 @@ import TRaMis8khae.starbucks.member.application.MemberService;
 import TRaMis8khae.starbucks.member.dto.*;
 import TRaMis8khae.starbucks.member.vo.in.DeliveryAddressRequestVo;
 import TRaMis8khae.starbucks.member.vo.out.DeliveryAddressResponseVo;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,7 @@ public class MemberController {
     private final MemberAddressService memberAddressService;
     private final MemberAddressListRepository memberAddressListRepository;
 
+    @Operation(summary = "배송지 추가 API", description = "addDeliveryAddress API", tags = {"Member"})
     @PostMapping("delivery")
     public BaseResponse<Void> addDeliveryAddress(
             Authentication authentication,
@@ -45,6 +47,7 @@ public class MemberController {
 
     }
 
+    @Operation(summary = "배송지 조회 API", description = "getMemberDeliveryAddress API", tags = {"Member"})
     @GetMapping("delivery")
     public BaseResponse<List<DeliveryAddressResponseVo>> getMemberDeliveryAddress(Authentication authentication) {
 
@@ -57,6 +60,7 @@ public class MemberController {
 
     }
 
+    @Operation(summary = "배송지 삭제 API", description = "deleteDeliveryAddress API", tags = {"Member"})
     @DeleteMapping("delivery/{deliveryAddressId}")
     public BaseResponse<Void> deleteDeliveryAddress(@PathVariable Long deliveryAddressId,
                                                     Authentication authentication) {
@@ -70,6 +74,7 @@ public class MemberController {
 
     }
 
+    @Operation(summary = "배송지 수정 API", description = "updateDeliveryAddress API", tags = {"Member"})
     @PutMapping("delivery/{deliveryAddressId}")
     public BaseResponse<Void> updateDeliveryAddress(
             @PathVariable Long deliveryAddressId,

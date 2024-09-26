@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Terms { //네이밍
+public class Terms {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String termName; // 길이 설정 필요
+    @Column(length = 100)
+    private String termName;
 
     @Column(length = 500)
     private String termContent;

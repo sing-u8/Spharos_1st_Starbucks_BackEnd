@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.common.utils;
 
 import TRaMis8khae.starbucks.admin.application.CategoryService;
+
 import TRaMis8khae.starbucks.admin.application.MenuCategoryService;
 import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
@@ -64,6 +65,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +79,12 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CrawlingInit {
 
+    private final ReviewService reviewService;
+    private final EventService eventService;
+    private final ProductService productService;
+    private final ProductCategoryListService productCategoryListService;
+    private final MediaService mediaService;
+    private final CategoryService categoryService;
     private final ReviewRepository reviewRepository;
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
@@ -114,6 +122,10 @@ public class CrawlingInit {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
         int topCount = 0;
+
+        // 이벤트 상품 리스트
+        List<Product> eventProducts = new ArrayList<>();
+        List<Event> events = createEvents();
 
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
@@ -348,6 +360,7 @@ public class CrawlingInit {
             }
         }
 
+
         Sheet sheet = workbook.getSheetAt(11);
         for (Row row : sheet) {
             String catName = getCellValue(row.getCell(0));
@@ -367,6 +380,7 @@ public class CrawlingInit {
                 menuCategoryAll.add(parseMenuCategory(coffeeTeaTopCode, imageUrl));
 
                 break;
+
 
             case "라이프스타일":
                 menuCategoryAll.add(parseMenuCategory(lifeStyleTopCode, imageUrl));
@@ -388,6 +402,8 @@ public class CrawlingInit {
 
                 break;
 
+             
+
             case "음료/요거트":
                 menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
 
@@ -400,6 +416,8 @@ public class CrawlingInit {
                 menuCategoryService.addMenuCategory(menuCategoryRequestDto);
 
             }
+          
+            eventService.addCrawlEventProduct(productEventList);
         }
         workbook.close();
         file.close();
@@ -595,40 +613,65 @@ public class CrawlingInit {
 
     // -------------------------------- save methods --------------------------------
     private void saveTopCategory(TopCategory topCategory) {
-        topCategoryRepository.save(topCategory);
+        categoryService.save(topCategory);
     }
 
 
     private void saveBottomCategory(BottomCategory bottomCategory) {
-        bottomCategoryRepository.save(bottomCategory);
+        categoryService.save(bottomCategory);
 
     }
 
     private void saveMiddleCategory(MiddleCategory middleCategory) {
+        categoryService.save(middleCategory);
+
         middleCategoryRepository.save(middleCategory);
     }
 
     private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
-        productCategoryListRepository.saveAll(productCategoryAll);
+        productCategoryListService.saveAll(productCategoryAll);
     }
     private void saveProduct(Product product) {
-        productRepository.save(product);
+        productService.save(product);
     }
 
     private void saveMedia(List<Media> mediaList) {
-        mediaRepository.saveAll(mediaList);
+        mediaService.saveAll(mediaList);
     }
 
     private void saveEvent(Event event) {
-        eventRepository.save(event);
+        eventService.save(event);
     }
 
     private void saveReview(Review review) {
-        reviewRepository.save(review);
+        reviewService.save(review);
     }
+
+
+    private List<Event> createEvents() {
+        List<Event> events = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            int discountRate = 5;
+            String eventName = "event" + i;
+
+            if (eventService.findByEventName(eventName).isPresent()) {
+                continue;
+            }
+
+            Event event = Event.builder()
+                    .eventName(eventName)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .discountRate(discountRate)
+                    .build();
+            eventService.addCrawlEvent(event);
+            events.add(event);
+        }
+        return events;
 
 
     private void saveProductMedia(List<ProductMediaList> productMediaList) {
         productMediaListRepository.saveAll(productMediaList);
+
     }
 }
