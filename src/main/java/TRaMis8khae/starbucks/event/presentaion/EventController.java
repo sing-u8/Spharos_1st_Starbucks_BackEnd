@@ -53,18 +53,19 @@ public class EventController {
     @GetMapping("/event/product/{eventId}")
     public BaseResponse<List<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
 
-        List<String> productUUID = eventService.getProductUUID(eventId);
-
-        List<Product> products = productService.findProductsByProductUUID(productUUID);// product코드 사용
-
-        log.info("products: {}", products.get(0).getDescription());
-
-        List<EventProductResponseVo> productResponseVos = products.stream()
-                .map(EventProductResponseDto::toDto)
-                .map(EventProductResponseDto::toVo)
-                .toList();
-
-        return new BaseResponse<>(productResponseVos);
+//        List<String> productUUID = eventService.getProductUUID(eventId);
+//
+//        List<Product> products = productService.findProductsByProductUUID(productUUID);// product코드 사용
+//
+//        log.info("products: {}", products.get(0).getDescription());
+//
+//        List<EventProductResponseVo> productResponseVos = products.stream()
+//                .map(EventProductResponseDto::toDto)
+//                .map(EventProductResponseDto::toVo)
+//                .toList();
+//
+//        return new BaseResponse<>(productResponseVos);
+        return null;
 
     }
 }

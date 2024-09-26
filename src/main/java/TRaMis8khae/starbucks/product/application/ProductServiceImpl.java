@@ -29,13 +29,10 @@ public class ProductServiceImpl implements ProductService{
 
         String productUUID = CodeGenerator.generateCode(36);
 
-        if (productRepository.existsByproductName(requestDto.getProductName())
-        && productRepository.existsByProductUUID(productUUID)) {
+        if (productRepository.existsByProductUUID(productUUID)) {
             log.info(requestDto.getProductName());
             throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
         }
-
-
 
         productRepository.save(requestDto.toEntity(productUUID));
 
@@ -45,9 +42,9 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void updateProduct(ProductRequestDto requestDto) {
 
-        productRepository.findByProductUUID(requestDto.getProductUUID()).orElseThrow(
-            () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-        );
+        if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
+            throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
+        }
 
         productRepository.save(requestDto.toEntity(requestDto.getProductUUID()));
     }
