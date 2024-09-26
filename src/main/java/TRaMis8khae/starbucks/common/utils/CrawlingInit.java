@@ -58,9 +58,17 @@ import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.entity.ProductOption;
 import TRaMis8khae.starbucks.vendor.entity.Volume;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
+
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+
 import TRaMis8khae.starbucks.vendor.vo.in.ProductCategoryListRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.VolumeRequestVo;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -76,7 +84,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import java.io.InputStream;
+
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -111,22 +123,25 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "/D:/starbucks_products5.xlsx";
+
+        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             log.info("파일 읽기 시작");
-            parseExcelData(excelFilePath);
+            parseExcelData(s3object);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
     }
 
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
-    public void parseExcelData(String excelFilePath) throws IOException {
+    public void parseExcelData(S3Object s3Object) throws IOException {
 
-        FileInputStream file = new FileInputStream(excelFilePath);
-        Workbook workbook = new XSSFWorkbook(file);
+        InputStream inputStream = s3Object.getObjectContent();
+        Workbook workbook = new XSSFWorkbook(inputStream);
+
         int topCount = 0;
 
         // 이벤트 상품 리스트
@@ -462,7 +477,7 @@ public class CrawlingInit {
         }
 
         workbook.close();
-        file.close();
+        inputStream.close();
     }
     private String getCellValue(Cell cell) {
         return cell == null ? "" : cell.getStringCellValue();
