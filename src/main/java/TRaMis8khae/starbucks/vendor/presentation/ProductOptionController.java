@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -44,6 +46,13 @@ public class ProductOptionController {
 	public BaseResponse<ProductOptionResponseDto> getProductOption(@PathVariable String productUUID) {
 
 		return new BaseResponse<>(productOptionService.findProductOption(productUUID));
+	}
+
+	@GetMapping
+	@Operation(summary = "상품 용량 이름으로 조회", description = "상품의 용량 이름으로 조회합니다", tags = { "Product Option Service" })
+	public BaseResponse<List<String>> getProductsUUIDByVolume(@RequestParam String volumeName) {
+
+		return new BaseResponse<>(productOptionService.findProductUUIDSByVolume(volumeName));
 	}
 
 }
