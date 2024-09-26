@@ -108,5 +108,6 @@ public class EventController {
 
         return new BaseResponse<>(BaseResponseStatus.SUCCESS);
 
+
     }
 }
