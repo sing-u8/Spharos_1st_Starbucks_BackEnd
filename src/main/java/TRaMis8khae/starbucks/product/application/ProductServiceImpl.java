@@ -100,14 +100,5 @@ public class ProductServiceImpl implements ProductService{
         return new SliceImpl<>(products, pageable, hasNext);
     }
 
-    @Override
-    public Slice<ProductResponseDto> findProductsByVolume(String volumeName, Pageable pageable) {
-
-//        return productRepositoryCustom.getProductByVolume(volumeName).stream().map(
-//            ProductResponseDto::toDto
-//        ).toList();
-        List<Product> products = productRepositoryCustom.getProductByVolume(volumeName);
-    }
-
 
 }

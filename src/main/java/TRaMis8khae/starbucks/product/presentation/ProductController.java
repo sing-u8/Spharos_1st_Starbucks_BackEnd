@@ -4,11 +4,15 @@ import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
+import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
 import TRaMis8khae.starbucks.product.vo.out.ProductResponseVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -75,12 +79,16 @@ public class ProductController {
             .stream().map(ProductResponseDto::toVo).toList());
     }
 
-    @Operation(summary = "용량별 상품 분류", description = "용량별로 상품을 분류합니다", tags = {"Product Service"})
-    @GetMapping("/volume")
-    public BaseResponse<List<ProductResponseVo>> getProductsWithVolume(@RequestParam String volumeName) {
+    @Operation(summary = "상품 uuid 리스트로 상품 페이지 조회", description = "상품 uuid 리스트로 상품 페이지를 분류합니다", tags = {"Product Service"})
+    @GetMapping
+    public BaseResponse<Slice<Product>> getProductsWithUUID(
+        @RequestParam List<String> productUUID,
+        @RequestParam(required = false, defaultValue = "10") int pageSize,
+        @RequestParam(required = false, defaultValue = "0") int pageNumber) {
 
-        return new BaseResponse<>(productService.findProductsByVolume(volumeName)
-            .stream().map(ProductResponseDto::toVo).toList());
+        return new BaseResponse<>(productService.findProductsByProductUUID(
+            productUUID, PageRequest.of(pageNumber, pageSize)
+        ));
     }
 
 }

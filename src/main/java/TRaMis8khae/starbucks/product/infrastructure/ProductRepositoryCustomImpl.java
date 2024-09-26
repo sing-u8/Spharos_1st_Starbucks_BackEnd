@@ -29,22 +29,4 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 			.fetch();
 	}
 
-
-	@Override
-	public List<Product> getProductByVolume(String volumeName) {
-
-		QProductOption productOption = QProductOption.productOption;
-		QProduct qProduct = QProduct.product;
-
-		BooleanBuilder builder = new BooleanBuilder();
-		builder.and(productOption.volume.name.eq(volumeName));
-
-
-		return jpaQueryFactory
-			.select(qProduct)
-			.from(productOption)
-			.join(qProduct).on(productOption.productUUID.eq(qProduct.productUUID))
-			.where(builder)
-			.fetch();
-	}
 }
