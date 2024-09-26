@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -23,6 +25,8 @@ public class ReviewReadResponseDto {
 
     private Integer reviewScore;
 
+    private List<Long> mediaIdList;
+
     public ReviewReadResponseVo toVo() {
         return ReviewReadResponseVo.builder()
                 .productUUID(this.productUUID)
@@ -30,6 +34,7 @@ public class ReviewReadResponseDto {
                 .memberMaskingId(this.memberMaskingId)
                 .reviewContext(this.reviewContext)
                 .reviewScore(this.reviewScore)
+                .mediaIdList(this.mediaIdList)
                 .build();
     }
 

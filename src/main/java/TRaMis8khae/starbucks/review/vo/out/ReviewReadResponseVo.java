@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class ReviewReadResponseVo {
@@ -19,5 +21,7 @@ public class ReviewReadResponseVo {
     private String reviewContext;
 
     private Integer reviewScore;
+
+    private List<Long> mediaIdList;
 
 }

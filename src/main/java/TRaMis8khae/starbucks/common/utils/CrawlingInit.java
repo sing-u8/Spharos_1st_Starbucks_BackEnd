@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.common.utils;
 
 import TRaMis8khae.starbucks.admin.application.CategoryService;
+
 import TRaMis8khae.starbucks.admin.application.MenuCategoryService;
 import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
@@ -16,9 +17,16 @@ import TRaMis8khae.starbucks.admin.vo.BottomCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MenuCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
+import TRaMis8khae.starbucks.event.application.EventService;
+import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
+import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
+import TRaMis8khae.starbucks.event.entity.EventMedia;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
+import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
+import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
+import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
@@ -33,8 +41,12 @@ import TRaMis8khae.starbucks.product.infrastructure.ProductMediaListRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.product.vo.in.ProductMediaListRequestVo;
 import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
+import TRaMis8khae.starbucks.review.application.ReviewService;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
+import TRaMis8khae.starbucks.review.dto.ReviewMediaCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
+import TRaMis8khae.starbucks.review.entity.ReviewMediaList;
+import TRaMis8khae.starbucks.review.infrastructure.ReviewMediaListRepository;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
 import TRaMis8khae.starbucks.vendor.application.ProductOptionService;
@@ -46,9 +58,17 @@ import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.entity.ProductOption;
 import TRaMis8khae.starbucks.vendor.entity.Volume;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
+
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+
 import TRaMis8khae.starbucks.vendor.vo.in.ProductCategoryListRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.ProductOptionRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.VolumeRequestVo;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -64,6 +84,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+
+import java.io.InputStream;
+
+import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,27 +118,35 @@ public class CrawlingInit {
     private final VolumeService volumeService;
     private final ProductOptionService productOptionService;
     private final MenuCategoryService menuCategoryService;
+    private final EventService eventService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "/Users/starbucks_products.xlsx";
+
+        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             log.info("파일 읽기 시작");
-            parseExcelData(excelFilePath);
+            parseExcelData(s3object);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
     }
 
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
-    public void parseExcelData(String excelFilePath) throws IOException {
+    public void parseExcelData(S3Object s3Object) throws IOException {
 
-        FileInputStream file = new FileInputStream(excelFilePath);
-        Workbook workbook = new XSSFWorkbook(file);
+        InputStream inputStream = s3Object.getObjectContent();
+        Workbook workbook = new XSSFWorkbook(inputStream);
+
         int topCount = 0;
+
+        // 이벤트 상품 리스트
+        List<Product> eventProducts = new ArrayList<>();
+        List<Event> events = createEvents();
 
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
@@ -328,8 +361,6 @@ public class CrawlingInit {
                     log.info("!productEventListProduct : {}", productEventList.getProduct());
                 }
 
-                // todo event 저장
-
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
 
@@ -342,9 +373,10 @@ public class CrawlingInit {
 
                     // review 정보를 ReviewCrawlingAddDto로 변환
                     ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
-                        (String) readValue.get("rating"),
-                        (String) readValue.get("reviewer"),
-                        (String) readValue.get("reviewContent")
+                            (String) readValue.get("rating"),
+                            (String) readValue.get("reviewer"),
+                            (String) readValue.get("reviewContent"),
+                            productUUID
                     );
 
                     // reviewImages를 List<String>으로 변환
@@ -364,11 +396,15 @@ public class CrawlingInit {
                         }
                     }
 
-                    saveReview(reviewDto.toEntity());
+                    Review review = reviewDto.toEntity();
+                    saveReview(review);
                     saveMedia(reviewMediaList);
+                    saveReviewMediaList(review, reviewMediaList);
+                    log.info("reviewMediaList : {}", reviewMediaList);
                 }
             }
         }
+
 
         Sheet sheet = workbook.getSheetAt(11);
         for (Row row : sheet) {
@@ -389,6 +425,7 @@ public class CrawlingInit {
                 menuCategoryAll.add(parseMenuCategory(coffeeTeaTopCode, imageUrl));
 
                 break;
+
 
             case "라이프스타일":
                 menuCategoryAll.add(parseMenuCategory(lifeStyleTopCode, imageUrl));
@@ -418,13 +455,45 @@ public class CrawlingInit {
             default:
                 break;
             }
+
+
             for (MenuCategoryRequestDto menuCategoryRequestDto : menuCategoryAll) {
                 menuCategoryService.addMenuCategory(menuCategoryRequestDto);
 
             }
+
         }
+
+        // event
+
+        log.info("EVENT START!!!!!!!");
+        log.info("##### {}", events); ;
+        int productIndex = 0;
+
+        for (Event event : events) {
+
+            for (int i = 0; i < 5; i++) {
+                if (eventProducts.size() <= 3) {
+                    break;
+                }
+                Product product = eventProducts.get(productIndex++);
+
+                ProductEventList productEventList = ProductEventList.builder()
+                        .product(product)
+                        .event(event)
+                        .build();
+
+                log.info("@@@@@@@@@@@@@@@@@@productEventList : {}", productEventList);
+                log.info("@@@@@@@@@@@@@@@@@@productEventListProduct : {}", productEventList.getProduct());
+                log.info("@@@@@@@@@@@@@@@@@@productEventListEvent : {}", productEventList.getEvent());
+
+                eventService.addCrawlEventProduct(productEventList);
+
+            }
+        }
+
         workbook.close();
-        file.close();
+        inputStream.close();
     }
     private String getCellValue(Cell cell) {
         return cell == null ? "" : cell.getStringCellValue();
@@ -649,8 +718,55 @@ public class CrawlingInit {
         reviewRepository.save(review);
     }
 
+    private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
+//        for (Media media : reviewMediaList) {
+//            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
+//        }
+    }
+
+    private List<Event> createEvents() {
+        List<Event> events = new ArrayList<>();
+        for (int i = 1; i <= 8; i++) {
+            int discountRate = 5;
+            String eventName = "event" + i;
+
+            if (eventService.findByEventName(eventName).isPresent()) {
+                continue;
+            }
+
+            Event event = Event.builder()
+                    .eventName(eventName)
+                    .discountRate(discountRate)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .build();
+
+            EventRequestDto requestDto = EventRequestDto.toDto(EventRequestVo.builder()
+                    .eventName(eventName)
+                    .discountRate(discountRate)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .build());
+
+//            EventRequestVo requestVo = EventRequestVo.builder()
+//                    .eventName(eventName)
+//                    .discountRate(discountRate)
+//                    .startDate(LocalDate.now())
+//                    .endDate(LocalDate.now().plusDays(7))
+//                    .build();
+//
+//            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
+
+//            eventService.addCrawlEvent(event);
+            eventService.addCrawlEvent(requestDto);
+            events.add(event);
+        }
+        return events;
+    }
 
     private void saveProductMedia(List<ProductMediaList> productMediaList) {
+
         productMediaListRepository.saveAll(productMediaList);
+
     }
 }
