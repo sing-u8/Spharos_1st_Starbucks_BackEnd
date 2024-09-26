@@ -60,7 +60,8 @@ public class SecurityConfig {
                                 "/voucher/**",
                                 "/wish/**",
                                 "/media/**",
-                                    "/api/v1/event/**"
+                                    "/api/v1/event/**",
+                                "/api/v1/**"
 
 
                             )

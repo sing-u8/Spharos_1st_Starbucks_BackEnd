@@ -2,6 +2,7 @@ package TRaMis8khae.starbucks.vendor.application;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
+import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.out.VolumeResponseDto;
 import TRaMis8khae.starbucks.vendor.entity.ProductOption;
@@ -10,6 +11,9 @@ import TRaMis8khae.starbucks.vendor.infrastructure.VolumeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 
 @Slf4j
 @Service
@@ -33,8 +37,12 @@ public class VolumeServiceImpl implements VolumeService{
 		ProductOption productOption = productOptionRepository.findByProductUUID(productUUID).orElseThrow(
 			() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
 		);
-
+		log.info(productOption.getVolume().getName());
 		return VolumeResponseDto.toDto(productOption.getVolume());
 	}
 
+
+	public List<ProductRequestDto> findProductsByVolume(String volumeName) {
+		return null;
+	}
 }

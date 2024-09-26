@@ -28,10 +28,10 @@ public class VolumeController {
 		return new BaseResponse<>();
 	}
 
-	@Operation(summary = "상품 용량 가져오기", description = "상품의 용량을 가져옵니다", tags = {"Product Volume Service"})
+	@Operation(summary = "상품 용량 조회", description = "상품의 용량을 조회합니다.", tags = {"Product Volume Service"})
 	@GetMapping("/{productUUID}")
 	public BaseResponse<VolumeResponseDto> getVolume(@PathVariable String productUUID) {
-
+		log.info(productUUID);
 		return new BaseResponse<>(volumeService.findVolume(productUUID));
 	}
 
