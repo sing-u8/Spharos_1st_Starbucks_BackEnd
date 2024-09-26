@@ -1,7 +1,9 @@
 package TRaMis8khae.starbucks.common.utils;
 
 import TRaMis8khae.starbucks.admin.application.CategoryService;
+import TRaMis8khae.starbucks.admin.application.MenuCategoryService;
 import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
+import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.entity.BottomCategory;
@@ -11,6 +13,7 @@ import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
 import TRaMis8khae.starbucks.admin.vo.BottomCategoryRequestVo;
+import TRaMis8khae.starbucks.admin.vo.MenuCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.entity.Event;
@@ -89,11 +92,12 @@ public class CrawlingInit {
     private final ProductMediaService productMediaService;
     private final VolumeService volumeService;
     private final ProductOptionService productOptionService;
+    private final MenuCategoryService menuCategoryService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "C:\\Users\\ssginc20\\starbucks_products.xlsx";
+        String excelFilePath = "/Users/starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -186,10 +190,9 @@ public class CrawlingInit {
         for (Sheet sheet : workbook) {
             log.info("Sheet name : {}", sheet.getSheetName());
             String categoryName = sheet.getSheetName();
-
+            if (sheet.getSheetName().equals("메뉴 카테고리 이미지")) continue;
             for (Row row : sheet) {
                 if(row.getRowNum() == 0) { continue;}
-
                 // media
                 String thumbNailMedia = getCellValue(row.getCell(0));
                 String mainMedia = getCellValue(row.getCell(6));
@@ -235,8 +238,6 @@ public class CrawlingInit {
                         VolumeRequestDto volumeRequestDto = parseVolume(productName);
                         volumeService.addVolume(volumeRequestDto);
                         volumeName = volumeRequestDto.getName();
-
-
                         break;
                     case "컵-머그":
                         productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode2));
@@ -275,7 +276,12 @@ public class CrawlingInit {
                 }
                 for (ProductCategoryListRequestDto productCategoryListRequestDto : productCategoryAll) {
                     productCategoryListService.addProductByCategory(productCategoryListRequestDto);
+
                 }
+
+
+
+
 
                 ProductOptionRequestDto productOptionRequestDto = parseProductOption(productUUID, productName, Double.parseDouble(price), volumeName);
                 productOptionService.addProductOption(productOptionRequestDto);
@@ -342,6 +348,59 @@ public class CrawlingInit {
             }
         }
 
+        Sheet sheet = workbook.getSheetAt(11);
+        for (Row row : sheet) {
+            String catName = getCellValue(row.getCell(0));
+            String imageUrl = getCellValue(row.getCell(1));
+            log.info(imageUrl);
+            List<MenuCategoryRequestDto> menuCategoryAll = new ArrayList<>();
+            switch (catName) {
+                case "텀블러/보온병":
+                    menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
+                    break;
+
+                case "컵/머그":
+                    menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
+                    break;
+
+                case "커피/티용품":
+                    menuCategoryAll.add(parseMenuCategory(coffeeTeaTopCode, imageUrl));
+
+                    break;
+
+                case "라이프스타일":
+                    menuCategoryAll.add(parseMenuCategory(lifeStyleTopCode, imageUrl));
+
+                    break;
+
+                case "e-gift":
+                    menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
+
+                    break;
+
+                case "디저트":
+                    menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
+
+                    break;
+
+                case "베이커리":
+                    menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
+
+                    break;
+
+                case "음료/요거트":
+                    menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
+
+                    break;
+
+                default:
+                    break;
+                }
+                for (MenuCategoryRequestDto menuCategoryRequestDto : menuCategoryAll) {
+                    menuCategoryService.addMenuCategory(menuCategoryRequestDto);
+
+                }
+        }
         workbook.close();
         file.close();
     }
@@ -523,6 +582,15 @@ public class CrawlingInit {
                         .closedChecked(Boolean.FALSE)
                         .volumeName(volumeName)
                         .build());
+    }
+
+
+    public MenuCategoryRequestDto parseMenuCategory(String topCode, String imageUrl) {
+
+        return MenuCategoryRequestDto.toDto(MenuCategoryRequestVo.builder()
+                .topCode(topCode)
+                .imageUrl(imageUrl)
+                .build());
     }
 
     // -------------------------------- save methods --------------------------------
