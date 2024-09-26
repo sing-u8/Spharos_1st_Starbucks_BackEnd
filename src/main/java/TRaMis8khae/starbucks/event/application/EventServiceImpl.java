@@ -29,8 +29,6 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final ProductEventListRepository productEventListRepository;
-    private final EventMediaRepository eventMediaRepository;
-    private final ProductRepository productRepository;
 
     @Override
     public List<EventInfoResponseDto> getEventList(Long eventId) {
@@ -57,28 +55,6 @@ public class EventServiceImpl implements EventService {
         Event event = requestDto.toEntity(requestDto);
 
         eventRepository.save(event);
-
-    }
-
-    @Override
-    public void addCrawlEvent(EventRequestDto requestDto) {
-
-        Event event = requestDto.toEntity(requestDto);
-
-        eventRepository.save(event);
-
-    }
-
-    @Override
-    public void addCrawlEventProduct(ProductEventListRequestDto requestDto) {
-
-        Product product = productRepository.findByProductUUID(requestDto.getProduct().getProductUUID())
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-
-        ProductEventList productEventList = requestDto
-                .toEntity(requestDto.getEvent(), product);
-
-        productEventListRepository.save(productEventList);
 
     }
 
