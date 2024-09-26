@@ -38,7 +38,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "회원가입 API", description = "SignUp API 아이디, 비밀번호, 이름, 이메일 필수 입력", tags = {"AuthUserDetail"})
+    @Operation(summary = "회원가입 API", description = "SignUp API 아이디, 비밀번호, 이름, 이메일 필수 입력", tags = {"Auth"})
     @PostMapping("/signup")
     public BaseResponse<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 

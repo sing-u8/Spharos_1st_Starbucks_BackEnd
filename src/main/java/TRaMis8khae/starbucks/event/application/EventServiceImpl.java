@@ -10,6 +10,7 @@ import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
 import TRaMis8khae.starbucks.product.entity.Product;
+import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final ProductEventListRepository productEventListRepository;
     private final EventMediaRepository eventMediaRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public List<EventInfoResponseDto> getEventList(Long eventId) {
@@ -70,9 +72,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public void addCrawlEventProduct(ProductEventListRequestDto requestDto) {
 
-        log.info("%%%%%%%%%%%%%%%%%%%%%%productEventList: {}", requestDto);
+        Product product = productRepository.findByProductUUID(requestDto.getProduct().getProductUUID())
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
 
-        ProductEventList productEventList = requestDto.toEntity(requestDto.getEvent(), requestDto.getProduct());
+        ProductEventList productEventList = requestDto
+                .toEntity(requestDto.getEvent(), product);
 
         productEventListRepository.save(productEventList);
 
