@@ -133,18 +133,31 @@ public class CrawlingInit {
         TopCategoryRequestDto kitchenTable = parseTopCategory("키친/테이블", topCount++);
         String kitchenTableTopCode = categoryService.addTopCategory(kitchenTable);
 
-        MiddleCategoryRequestDto kitchenTableMid = parseMiddleCategory(kitchenTableTopCode, 0);
-        String kitchenTableMidCode = categoryService.addMiddleCategory(kitchenTableMid);
 
+
+        MiddleCategoryRequestDto kitchenTableMid = parseMiddleCategory(kitchenTableTopCode, "카테고리", 0);
+        MiddleCategoryRequestDto volumeMid = parseMiddleCategory(kitchenTableTopCode, "용량",  1);
+        String kitchenTableMidCode = categoryService.addMiddleCategory(kitchenTableMid);
+        String volumeCode = categoryService.addMiddleCategory(volumeMid);
         BottomCategoryRequestDto kitchenTableBot1 = parseBottomCategory(kitchenTableMidCode, tumblr.getSheetName(), 0);
         BottomCategoryRequestDto kitchenTableBot2 = parseBottomCategory(kitchenTableMidCode, mug.getSheetName(), 1);
         String kitchenTableBotCode1 = categoryService.addBottomCategory(kitchenTableBot1);
         String kitchenTableBotCode2 = categoryService.addBottomCategory(kitchenTableBot2);
+        BottomCategoryRequestDto Short = parseBottomCategory(volumeCode, "Short", 0);
+        BottomCategoryRequestDto tall = parseBottomCategory(volumeCode, "Tall", 1);
+        BottomCategoryRequestDto grande = parseBottomCategory(volumeCode, "Grande", 2);
+        BottomCategoryRequestDto venti = parseBottomCategory(volumeCode, "Venti", 3);
+        BottomCategoryRequestDto trenta = parseBottomCategory(volumeCode, "Trenta", 4);
+        String shortCode = categoryService.addBottomCategory(Short);
+        String tallCode = categoryService.addBottomCategory(tall);
+        String grandeCode = categoryService.addBottomCategory(grande);
+        String ventiCode = categoryService.addBottomCategory(venti);
+        String trentaCode = categoryService.addBottomCategory(trenta);
 
         TopCategoryRequestDto food = parseTopCategory("푸드", topCount++);
         String foodTopCode = categoryService.addTopCategory(food);
 
-        MiddleCategoryRequestDto foodMid = parseMiddleCategory(foodTopCode, 0);
+        MiddleCategoryRequestDto foodMid = parseMiddleCategory(foodTopCode, "카테고리",  0);
         String foodMidCode = categoryService.addMiddleCategory(foodMid);
 
         BottomCategoryRequestDto foodBot1 = parseBottomCategory(foodMidCode, bakery.getSheetName(), 0);
@@ -157,7 +170,7 @@ public class CrawlingInit {
         TopCategoryRequestDto coffeeTea = parseTopCategory("커피/티용품", topCount++);
         String coffeeTeaTopCode = categoryService.addTopCategory(coffeeTea);
 
-        MiddleCategoryRequestDto coffeeTeaMid = parseMiddleCategory(coffeeTeaTopCode, 0);
+        MiddleCategoryRequestDto coffeeTeaMid = parseMiddleCategory(coffeeTeaTopCode, "카테고리",0);
         String coffeeTeaMidCode = categoryService.addMiddleCategory(coffeeTeaMid);
 
         BottomCategoryRequestDto coffeeTeaBot = parseBottomCategory(coffeeTeaMidCode, coffee.getSheetName(), 0);
@@ -166,7 +179,7 @@ public class CrawlingInit {
         TopCategoryRequestDto lifeStyle = parseTopCategory("라이프스타일", topCount++);
         String lifeStyleTopCode = categoryService.addTopCategory(lifeStyle);
 
-        MiddleCategoryRequestDto lifeStyleMid = parseMiddleCategory(lifeStyleTopCode, 0);
+        MiddleCategoryRequestDto lifeStyleMid = parseMiddleCategory(lifeStyleTopCode,"카테고리", 0);
         String lifeStyleMidCode = categoryService.addMiddleCategory(lifeStyleMid);
 
         BottomCategoryRequestDto lifeStyleBot1 = parseBottomCategory(lifeStyleMidCode, fabric.getSheetName(), 0);
@@ -179,7 +192,7 @@ public class CrawlingInit {
         TopCategoryRequestDto coffeeBeverageGift = parseTopCategory("커피/음료/e-gift", topCount);
         String coffeeBeverageGiftTopCode = categoryService.addTopCategory(coffeeBeverageGift);
 
-        MiddleCategoryRequestDto coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGiftTopCode, 0);
+        MiddleCategoryRequestDto coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGiftTopCode,"카테고리", 0);
         String coffeeBeverageGiftMidCode = categoryService.addMiddleCategory(coffeeBeverageGiftMid);
 
         BottomCategoryRequestDto coffeeBeverageGiftBot1 = parseBottomCategory(coffeeBeverageGiftMidCode, drink.getSheetName(), 0);
@@ -238,13 +251,22 @@ public class CrawlingInit {
                     VolumeRequestDto volumeRequestDto = parseVolume(productName);
                     volumeService.addVolume(volumeRequestDto);
                     volumeName = volumeRequestDto.getName();
+                    if (volumeName.equals("Short")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, shortCode));
+                    else if (volumeName.equals("Tall")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, tallCode));
+                    else if (volumeName.equals("Grande")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, grandeCode));
+                    else if (volumeName.equals("Venti")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, ventiCode));
+                    else if (volumeName.equals("Trenta")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, trentaCode));
                     break;
                 case "컵-머그":
                     productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode2));
                     VolumeRequestDto volumeRequestDto1 = parseVolume(productName);
                     volumeService.addVolume(volumeRequestDto1);
                     volumeName = volumeRequestDto1.getName();
-
+                    if (volumeName.equals("Short")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, shortCode));
+                    else if (volumeName.equals("Tall")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, tallCode));
+                    else if (volumeName.equals("Grande")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, grandeCode));
+                    else if (volumeName.equals("Venti")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, ventiCode));
+                    else if (volumeName.equals("Trenta")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, trentaCode));
                     break;
                 case "베이커리":
                     productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode1));
@@ -544,10 +566,10 @@ public class CrawlingInit {
             .build());
     }
 
-    public MiddleCategoryRequestDto parseMiddleCategory(String topCode, Integer sequence) {
+    public MiddleCategoryRequestDto parseMiddleCategory(String topCode, String name, Integer sequence) {
         return MiddleCategoryRequestDto.toDto(MiddleCategoryRequestVo.builder()
             .topCategoryCode(topCode)
-            .name("카테고리")
+            .name(name)
             .sequence(sequence)
             .build());
     }
