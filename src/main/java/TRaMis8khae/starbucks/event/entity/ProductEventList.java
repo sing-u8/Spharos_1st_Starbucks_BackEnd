@@ -29,4 +29,5 @@ public class ProductEventList {
     public String getProductUUID() {
         return product.getProductUUID();
     }
+
 }

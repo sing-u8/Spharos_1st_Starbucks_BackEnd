@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.common.utils;
 
+
 import TRaMis8khae.starbucks.admin.application.CategoryService;
 import TRaMis8khae.starbucks.admin.application.MenuCategoryService;
 import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
@@ -19,6 +20,7 @@ import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
+import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
@@ -76,7 +78,7 @@ import java.util.regex.Pattern;
 @Component
 @RequiredArgsConstructor
 public class CrawlingInit {
-    
+
     private final ReviewRepository reviewRepository;
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
@@ -85,6 +87,7 @@ public class CrawlingInit {
     private final MediaRepository mediaRepository;
     private final TopCategoryRepository topCategoryRepository;
     private final CategoryService categoryService;
+    private final ProductEventListRepository productEventListRepository;
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
     private final ProductMediaListRepository productMediaListRepository;
@@ -97,7 +100,9 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
+
         String excelFilePath = "/Users/starbucks_products.xlsx";
+
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -114,6 +119,9 @@ public class CrawlingInit {
         FileInputStream file = new FileInputStream(excelFilePath);
         Workbook workbook = new XSSFWorkbook(file);
         int topCount = 0;
+
+        // 이벤트 상품 리스트
+        List<Product> eventProducts = new ArrayList<>();
 
         Sheet tumblr = workbook.getSheetAt(0); //키친/테이블
         Sheet mug = workbook.getSheetAt(1); //키친/테이블
@@ -301,12 +309,11 @@ public class CrawlingInit {
                             .event(event)
                             .build();
 
-                    log.info("!event : {}", event.getDiscountRate());
-                    log.info("!productEventList : {}", productEventList.getEvent());
-                    log.info("!productEventListProduct : {}", productEventList.getProduct());
-                }
+                // 이벤트 상품 저장
+                eventProducts.add(parsedProduct);
 
                 // todo event 저장
+
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -316,7 +323,8 @@ public class CrawlingInit {
 
                 for (String reviewString : reviews) {
                     // 각 리뷰를 JSON 형식으로 파싱
-                    Map<String, Object> readValue = objectMapper.readValue(reviewString, new TypeReference<Map<String, Object>>() {});
+                    Map<String, Object> readValue = objectMapper.readValue(reviewString, new TypeReference<Map<String, Object>>() {
+                    });
 
                     // review 정보를 ReviewCrawlingAddDto로 변환
                     ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
@@ -405,10 +413,46 @@ public class CrawlingInit {
         file.close();
     }
     private String getCellValue(Cell cell) {
+
+        // event 객체 생성
+
+        List<Event> events = new ArrayList<>();
+
+        for (int i = 1; i <= 8; i++) {
+            Event event = Event.builder()
+                    .eventName("event" + i)
+                    .build();
+            eventRepository.save(event);
+            events.add(event);
+
+        }
+
+        int productIndex = 0;
+
+        for (Event event : events) {
+
+            for (int i = 0; i < 5; i++) {
+                Product product = eventProducts.get(productIndex++);
+
+                ProductEventList productEventList = ProductEventList.builder()
+                        .product(product)
+                        .event(event)
+                        .build();
+
+                productEventListRepository.save(productEventList);
+            }
+        }
+
+        workbook.close();
+        file.close();
+    }
+
+    private String getCellValue (Cell cell){
+
         return cell == null ? "" : cell.getStringCellValue();
     }
 
-    public List<String> splitReviews(String reviewData) {
+    public List<String> splitReviews (String reviewData){
         // 중괄호를 기준으로 각 리뷰를 나눔
         List<String> reviews = new ArrayList<>();
         Matcher matcher = Pattern.compile("\\{[^}]*}").matcher(reviewData);

@@ -20,10 +20,10 @@ public interface EventService {
     EventInfoResponseDto getEvent(Long eventId);
 
 
-    // crawling event, eventProduct
-    List<Event> addCrawlingEvent(int numberOfEvents);
-
-    void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent);
-
-    void processEventProductMapping(List<Product> crawledProducts);
+//    // crawling event, eventProduct
+//    List<Event> addCrawlingEvent(int numberOfEvents);
+//
+//    void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent);
+//
+//    void processEventProductMapping(List<Product> crawledProducts, List<Event> events);
 }
