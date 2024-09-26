@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static TRaMis8khae.starbucks.review.entity.QReview.*;
+import static TRaMis8khae.starbucks.review.entity.QReviewMediaList.reviewMediaList;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,8 +29,12 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         review.memberUUID,
                         review.memberMaskingId,
                         review.reviewContext,
-                        review.reviewScore))
+                        review.reviewScore,
+                        reviewMediaList.mediaId
+                ))
                 .from(review)
+                    .join(reviewMediaList)
+                    .on(review.id.eq(reviewMediaList.review.id))
                 .where(eqProductUUID(productUUID))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

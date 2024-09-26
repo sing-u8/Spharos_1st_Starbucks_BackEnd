@@ -1,11 +1,12 @@
 package TRaMis8khae.starbucks.review.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @Entity
@@ -18,6 +19,12 @@ public class ReviewMediaList {
 
     private Long mediaId;
 
-    private String reviewUUID;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review review;
 
+    @Builder
+    public ReviewMediaList(Long mediaId, Review review) {
+        this.mediaId = mediaId;
+        this.review = review;
+    }
 }
