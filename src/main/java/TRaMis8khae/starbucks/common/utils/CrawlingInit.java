@@ -231,7 +231,7 @@ public class CrawlingInit {
 
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-//                saveMedia(mediaList);
+                saveMedia(mediaList);
 
 
                 // product 객체 생성
@@ -240,7 +240,7 @@ public class CrawlingInit {
 
                 //product media 객체 생성
                 List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
-//                saveMedia(productMedia);
+                saveMedia(productMedia);
 
                 //product media list 객체 생성
                 List<ProductMediaListRequestDto> productMediaLists = parseProductMediaList(productUUID, productMedia);
@@ -412,8 +412,6 @@ public class CrawlingInit {
 
                 break;
 
-             
-
             case "음료/요거트":
                 menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
 
@@ -422,13 +420,14 @@ public class CrawlingInit {
             default:
                 break;
             }
+
+
             for (MenuCategoryRequestDto menuCategoryRequestDto : menuCategoryAll) {
                 menuCategoryService.addMenuCategory(menuCategoryRequestDto);
 
             }
 
             // event
-
             int productIndex = 0;
 
             for (Event event : events) {
@@ -442,6 +441,7 @@ public class CrawlingInit {
                             .build();
 
                     eventService.addCrawlEventProduct(productEventList);
+
                 }
             }
         }
@@ -701,7 +701,6 @@ public class CrawlingInit {
 //                    .discountRate(discountRate)
 //                    .startDate(LocalDate.now())
 //                    .endDate(LocalDate.now().plusDays(7))
-//                    .discountRate(discountRate)
 //                    .build();
 //
 //            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
@@ -713,6 +712,7 @@ public class CrawlingInit {
     }
 
     private void saveProductMedia(List<ProductMediaList> productMediaList) {
+
         productMediaListRepository.saveAll(productMediaList);
 
     }

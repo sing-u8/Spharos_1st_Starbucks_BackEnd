@@ -13,7 +13,9 @@ public class EventMediaServiceImpl implements EventMediaService {
 
     @Override
     public void addEventMedia(EventMediaRequestDto requestDto) {
+
         eventMediaRepository.save(requestDto.toEntity());
+
     }
 
 }
