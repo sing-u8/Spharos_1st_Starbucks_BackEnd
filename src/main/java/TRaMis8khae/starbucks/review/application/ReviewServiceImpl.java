@@ -6,6 +6,8 @@ import TRaMis8khae.starbucks.review.dto.in.ReviewAddRequestDto;
 import TRaMis8khae.starbucks.review.dto.out.ReviewReadResponseDto;
 import TRaMis8khae.starbucks.review.dto.in.ReviewUpdateRequestDto;
 import TRaMis8khae.starbucks.review.entity.Review;
+import TRaMis8khae.starbucks.review.entity.ReviewMediaList;
+import TRaMis8khae.starbucks.review.infrastructure.ReviewMediaListRepository;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -21,11 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewMediaListRepository reviewMediaListRepository;
 
     @Transactional
     @Override
     public void addReview(ReviewAddRequestDto requestDto) {
-
         Review review = requestDto.toEntity();
         log.info("review: {}", review);
 

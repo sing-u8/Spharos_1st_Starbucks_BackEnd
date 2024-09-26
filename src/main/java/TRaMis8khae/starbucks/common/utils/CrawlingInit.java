@@ -18,7 +18,10 @@ import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
+import TRaMis8khae.starbucks.review.dto.ReviewMediaCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
+import TRaMis8khae.starbucks.review.entity.ReviewMediaList;
+import TRaMis8khae.starbucks.review.infrastructure.ReviewMediaListRepository;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
@@ -58,6 +61,7 @@ public class CrawlingInit {
     private final TopCategoryRepository topCategoryRepository;
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
+    private final ReviewMediaListRepository reviewMediaListRepository;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
@@ -272,8 +276,11 @@ public class CrawlingInit {
                         }
                     }
 
-                    saveReview(reviewDto.toEntity());
+                    Review review = reviewDto.toEntity();
+                    saveReview(review);
                     saveMedia(reviewMediaList);
+                    saveReviewMediaList(review, reviewMediaList);
+                    log.info("reviewMediaList : {}", reviewMediaList);
                 }
             }
         }
@@ -438,6 +445,12 @@ public class CrawlingInit {
 
     private void saveReview(Review review) {
         reviewRepository.save(review);
+    }
+
+    private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
+        for (Media media : reviewMediaList) {
+            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
+        }
     }
 
 }
