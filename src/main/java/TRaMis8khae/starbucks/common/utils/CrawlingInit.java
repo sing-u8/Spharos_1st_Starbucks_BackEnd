@@ -23,6 +23,7 @@ import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.EventMedia;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
+import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
 import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
@@ -89,12 +90,11 @@ import java.io.InputStream;
 
 import java.time.LocalDate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static TRaMis8khae.starbucks.review.entity.QReviewMediaList.reviewMediaList;
 
 @Slf4j
 @Profile("crawling")  // "crawling" 프로파일이 활성화되었을 때만 이 설정이 적용됨
@@ -119,28 +119,35 @@ public class CrawlingInit {
     private final ProductOptionService productOptionService;
     private final MenuCategoryService menuCategoryService;
     private final EventService eventService;
+    private final ReviewMediaListRepository reviewMediaListRepository;
+    private final EventMediaRepository eventMediaRepository;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
 
-        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
-        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
+//        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+//        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
+
+        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             log.info("파일 읽기 시작");
-            parseExcelData(s3object);
+            parseExcelData(excelFilePath);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
     }
 
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
-    public void parseExcelData(S3Object s3Object) throws IOException {
+    public void parseExcelData(String excelFilePath) throws IOException {
 
-        InputStream inputStream = s3Object.getObjectContent();
-        Workbook workbook = new XSSFWorkbook(inputStream);
+//        InputStream inputStream = s3Object.getObjectContent();
+//        Workbook workbook = new XSSFWorkbook(inputStream);
+
+        FileInputStream file = new FileInputStream(excelFilePath);
+        Workbook workbook = new XSSFWorkbook(file);
 
         int topCount = 0;
 
@@ -264,6 +271,7 @@ public class CrawlingInit {
                 ProductRequestDto parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 String productUUID = productService.addProduct(parsedProduct);
 
+
                 //product media 객체 생성
                 List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
                 saveMedia(productMedia);
@@ -334,32 +342,8 @@ public class CrawlingInit {
 
                 }
 
-
-
-
-
                 ProductOptionRequestDto productOptionRequestDto = parseProductOption(productUUID, productName, Double.parseDouble(price), volumeName);
                 productOptionService.addProductOption(productOptionRequestDto);
-
-                // event 객체 생성
-                int discountRateValue = Integer.parseInt(discountRate);
-
-                // discountRate가 0보다 큰 경우에만 저장 처리
-                if (discountRateValue > 0) {
-
-                    Event event = Event.builder()
-                        .discountRate(discountRateValue)
-                        .build();
-
-                    ProductEventList productEventList = ProductEventList.builder()
-                        .product(parsedProduct.toEntity(productUUID))
-                        .event(event)
-                        .build();
-
-                    log.info("!event : {}", event.getDiscountRate());
-                    log.info("!productEventList : {}", productEventList.getEvent());
-                    log.info("!productEventListProduct : {}", productEventList.getProduct());
-                }
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -402,6 +386,11 @@ public class CrawlingInit {
                     saveReviewMediaList(review, reviewMediaList);
                     log.info("reviewMediaList : {}", reviewMediaList);
                 }
+
+
+                // 이벤트 상품 저장
+                Product product = parsedProduct.toEntity(productUUID);
+                eventProducts.add(product);
             }
         }
 
@@ -464,37 +453,53 @@ public class CrawlingInit {
 
         }
 
-        // event
 
-        log.info("EVENT START!!!!!!!");
-        log.info("##### {}", events); ;
+        // event
         int productIndex = 0;
+
+        List<Optional<Media>> thumbCheckedTrue = mediaRepository
+                .findByThumbCheckedIsTrue();
+
+        List<Media> eventMediaList = new ArrayList<>();
+
+        for (Optional<Media> media : thumbCheckedTrue) {
+            eventMediaList.add(media.get());
+        }
+
+        for (Media media : eventMediaList) {
+            EventMedia eventMedia = EventMedia.builder()
+                    .event(events.get(0))
+                    .mediaId(media.getId())
+                    .build();
+            eventMediaRepository.save(eventMedia);
+        }
 
         for (Event event : events) {
 
             for (int i = 0; i < 5; i++) {
-                if (eventProducts.size() <= 3) {
+
+                if (eventProducts.size() <= 9) {
                     break;
                 }
+
                 Product product = eventProducts.get(productIndex++);
 
-                ProductEventList productEventList = ProductEventList.builder()
+                ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
                         .product(product)
                         .event(event)
                         .build();
 
-                log.info("@@@@@@@@@@@@@@@@@@productEventList : {}", productEventList);
-                log.info("@@@@@@@@@@@@@@@@@@productEventListProduct : {}", productEventList.getProduct());
-                log.info("@@@@@@@@@@@@@@@@@@productEventListEvent : {}", productEventList.getEvent());
-
-                eventService.addCrawlEventProduct(productEventList);
+                eventService.addCrawlEventProduct(requestDto);
 
             }
+
         }
 
         workbook.close();
-        inputStream.close();
+//        inputStream.close();
+        file.close();
     }
+
     private String getCellValue(Cell cell) {
         return cell == null ? "" : cell.getStringCellValue();
     }
@@ -719,9 +724,9 @@ public class CrawlingInit {
     }
 
     private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
-//        for (Media media : reviewMediaList) {
-//            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
-//        }
+        for (Media media : reviewMediaList) {
+            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
+        }
     }
 
     private List<Event> createEvents() {
@@ -734,13 +739,6 @@ public class CrawlingInit {
                 continue;
             }
 
-            Event event = Event.builder()
-                    .eventName(eventName)
-                    .discountRate(discountRate)
-                    .startDate(LocalDate.now())
-                    .endDate(LocalDate.now().plusDays(7))
-                    .build();
-
             EventRequestDto requestDto = EventRequestDto.toDto(EventRequestVo.builder()
                     .eventName(eventName)
                     .discountRate(discountRate)
@@ -748,20 +746,17 @@ public class CrawlingInit {
                     .endDate(LocalDate.now().plusDays(7))
                     .build());
 
-//            EventRequestVo requestVo = EventRequestVo.builder()
-//                    .eventName(eventName)
-//                    .discountRate(discountRate)
-//                    .startDate(LocalDate.now())
-//                    .endDate(LocalDate.now().plusDays(7))
-//                    .build();
-//
-//            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
-
-//            eventService.addCrawlEvent(event);
             eventService.addCrawlEvent(requestDto);
-            events.add(event);
+
+            for (Event event : eventRepository.findAll()) {
+                events.add(event);
+            }
+
+
         }
+
         return events;
+
     }
 
     private void saveProductMedia(List<ProductMediaList> productMediaList) {

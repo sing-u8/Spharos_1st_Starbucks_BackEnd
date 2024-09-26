@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventMedia {
@@ -20,8 +19,15 @@ public class EventMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String eventId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Event event;
 
     private Long mediaId;
+
+    @Builder
+    public EventMedia(Event event, Long mediaId) {
+        this.event = event;
+        this.mediaId = mediaId;
+    }
 
 }
