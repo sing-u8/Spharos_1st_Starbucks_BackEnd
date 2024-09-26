@@ -12,6 +12,7 @@ import TRaMis8khae.starbucks.vendor.entity.Volume;
 import TRaMis8khae.starbucks.vendor.infrastructure.ColorRepository;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductOptionRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
+import TRaMis8khae.starbucks.vendor.infrastructure.ProductOptionRepositoryCustom;
 import TRaMis8khae.starbucks.vendor.infrastructure.VolumeRepository;
 import TRaMis8khae.starbucks.vendor.vo.in.ColorRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.VolumeRequestVo;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static TRaMis8khae.starbucks.vendor.dto.in.ColorRequestDto.toDto;
 
@@ -32,6 +35,7 @@ public class ProductOptionServiceImpl implements ProductOptionService{
 	private final VolumeRepository volumeRepository;
 	private final ColorRepository colorRepository;
 	private final ProductOptionRepository productOptionRepository;
+	private final ProductOptionRepositoryCustom productOptionRepositoryCustom;
 
 	@Override
 	@Transactional
@@ -73,6 +77,12 @@ public class ProductOptionServiceImpl implements ProductOptionService{
 		);
 
 		return ProductOptionResponseDto.toDto(productOption);
+	}
+
+	@Override
+	public List<String> findProductUUIDSByVolume(String volumeName) {
+
+		return productOptionRepositoryCustom.getProductUUIDByVolume(volumeName);
 	}
 
 }

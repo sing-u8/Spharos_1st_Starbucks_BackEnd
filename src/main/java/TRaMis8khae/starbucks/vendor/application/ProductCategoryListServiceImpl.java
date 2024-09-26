@@ -2,6 +2,7 @@ package TRaMis8khae.starbucks.vendor.application;
 
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
+import TRaMis8khae.starbucks.common.utils.CursorPage;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
@@ -44,12 +45,23 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
         return null;
     }
 
-//    @Override
-//    public List<ProductCategoryListResponseDto> findProductsByTopCategory(String topCode) {
-//
-//        List<ProductCategoryList> productCategoryList = productCategoryListRepositoryCustom.findProductsByCategories(topCode, null, null);
-//
-//        return productCategoryList.stream().map(ProductCategoryListResponseDto::toDto).toList();
-//    }
+    @Override
+    public CursorPage<String> getProductCategoryListByCategories(
+        String topCategoryCode,
+        String middleCategoryCode,
+        String bottomCategoryCode,
+        Long lastId,
+        Integer pageSize,
+        Integer page
+    ) {
+        return productCategoryListRepositoryCustom.getProductCategoryListByCategories(
+            topCategoryCode,
+            middleCategoryCode,
+            bottomCategoryCode,
+            lastId,
+            pageSize,
+            page
+        );
+    }
 
 }

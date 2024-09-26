@@ -2,11 +2,14 @@ package TRaMis8khae.starbucks.product.infrastructure;
 
 
 import TRaMis8khae.starbucks.product.entity.*;
+import TRaMis8khae.starbucks.vendor.entity.QProductOption;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -25,4 +28,5 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
 			.where(product.price.between(minPrice, maxPrice))
 			.fetch();
 	}
+
 }
