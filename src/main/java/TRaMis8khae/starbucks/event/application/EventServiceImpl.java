@@ -68,14 +68,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addCrawlEventProduct(ProductEventList productEventList) {
+    public void addCrawlEventProduct(ProductEventListRequestDto requestDto) {
 
-        log.info("%%%%%%%%%%%%%%%%%%%%%%productEventList: {}", productEventList);
-        try {
-            productEventListRepository.save(productEventList);
-        }catch (Exception e){
-            log.error("error: {}", e);
-        }
+        log.info("%%%%%%%%%%%%%%%%%%%%%%productEventList: {}", requestDto);
+
+        ProductEventList productEventList = requestDto.toEntity(requestDto.getEvent(), requestDto.getProduct());
+
+        productEventListRepository.save(productEventList);
 
     }
 

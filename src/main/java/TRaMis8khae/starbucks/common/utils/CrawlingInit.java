@@ -435,6 +435,7 @@ public class CrawlingInit {
 
         for (Event event : events) {
 
+            log.info("######## {}", event);
             for (int i = 0; i < 5; i++) {
                 if (eventProducts.size() <= 3) {
                     break;
@@ -446,11 +447,16 @@ public class CrawlingInit {
                         .event(event)
                         .build();
 
+                ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
+                        .product(product)
+                        .event(event)
+                        .build();
+
                 log.info("@@@@@@@@@@@@@@@@@@productEventList : {}", productEventList);
                 log.info("@@@@@@@@@@@@@@@@@@productEventListProduct : {}", productEventList.getProduct());
                 log.info("@@@@@@@@@@@@@@@@@@productEventListEvent : {}", productEventList.getEvent());
 
-                eventService.addCrawlEventProduct(productEventList);
+                eventService.addCrawlEventProduct(requestDto);
 
             }
         }
@@ -697,12 +703,12 @@ public class CrawlingInit {
                 continue;
             }
 
-            Event event = Event.builder()
-                    .eventName(eventName)
-                    .discountRate(discountRate)
-                    .startDate(LocalDate.now())
-                    .endDate(LocalDate.now().plusDays(7))
-                    .build();
+//            Event event = Event.builder()
+//                    .eventName(eventName)
+//                    .discountRate(discountRate)
+//                    .startDate(LocalDate.now())
+//                    .endDate(LocalDate.now().plusDays(7))
+//                    .build();
 
             EventRequestDto requestDto = EventRequestDto.toDto(EventRequestVo.builder()
                     .eventName(eventName)
@@ -722,7 +728,12 @@ public class CrawlingInit {
 
 //            eventService.addCrawlEvent(event);
             eventService.addCrawlEvent(requestDto);
-            events.add(event);
+
+            for (Event event : eventRepository.findAll()) {
+                events.add(event);
+            }
+
+//            events.add(event);
         }
         return events;
     }

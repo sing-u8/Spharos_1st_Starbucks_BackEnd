@@ -16,7 +16,7 @@ public interface EventService {
 
     void addEvent(EventRequestDto requestDto);
     void addCrawlEvent(EventRequestDto requestDto);
-    void addCrawlEventProduct(ProductEventList productEventList);
+    void addCrawlEventProduct(ProductEventListRequestDto requestDto);
     void deleteEvent(Long eventId);
 
     EventInfoResponseDto getEvent(Long eventId);
