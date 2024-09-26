@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.event.application;
 
+import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
@@ -7,6 +8,7 @@ import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
+import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
 import TRaMis8khae.starbucks.product.entity.Product;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

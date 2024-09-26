@@ -75,7 +75,7 @@ public class EventController {
 //    }
 
 
-    // Slice로 변경
+//     Slice로 변경
 //    @Operation(summary = "이벤트 상품 조회 API", description = "getEventProductList API", tags = {"Event"})
 //    @GetMapping("/event/product/{eventId}")
 //    public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(
@@ -87,7 +87,7 @@ public class EventController {
 //
 //        List<String> productUUID = eventService.getProductUUID(eventId);
 //
-//        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable);// product코드 사용
+//        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
 //
 //        Slice<EventProductResponseVo> responseVos = products.map(product ->{
 //            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);

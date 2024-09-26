@@ -18,9 +18,14 @@ import TRaMis8khae.starbucks.admin.vo.MenuCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.application.EventService;
+import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
+import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
+import TRaMis8khae.starbucks.event.entity.EventMedia;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
+import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
+import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
 import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
@@ -92,14 +97,11 @@ public class CrawlingInit {
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
     private final ProductCategoryListRepository productCategoryListRepository;
-    private final ProductCategoryListService productCategoryListService;
     private final MediaRepository mediaRepository;
     private final TopCategoryRepository topCategoryRepository;
-    private final CategoryService categoryService;
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
     private final ProductMediaListRepository productMediaListRepository;
-    private final ProductService productService;
     private final ProductMediaService productMediaService;
     private final VolumeService volumeService;
     private final ProductOptionService productOptionService;
@@ -108,7 +110,7 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "/Users/starbucks_products.xlsx";
+        String excelFilePath = "D:/starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -226,7 +228,7 @@ public class CrawlingInit {
 
                 // media 객체 생성
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-                saveMedia(mediaList);
+//                saveMedia(mediaList);
 
 
                 // product 객체 생성
@@ -235,7 +237,7 @@ public class CrawlingInit {
 
                 //product media 객체 생성
                 List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
-                saveMedia(productMedia);
+//                saveMedia(productMedia);
 
                 //product media list 객체 생성
                 List<ProductMediaListRequestDto> productMediaLists = parseProductMediaList(productUUID, productMedia);
@@ -357,8 +359,8 @@ public class CrawlingInit {
                         }
                     }
 
-                    saveReview(reviewDto.toEntity());
-                    saveMedia(reviewMediaList);
+//                    saveReview(reviewDto.toEntity());
+//                    saveMedia(reviewMediaList);
                 }
             }
         }
@@ -419,8 +421,24 @@ public class CrawlingInit {
                 menuCategoryService.addMenuCategory(menuCategoryRequestDto);
 
             }
-          
-            eventService.addCrawlEventProduct(productEventList);
+
+            // event
+
+            int productIndex = 0;
+
+            for (Event event : events) {
+
+                for (int i = 0; i < 5; i++) {
+                    Product product = eventProducts.get(productIndex++);
+
+                    ProductEventList productEventList = ProductEventList.builder()
+                            .product(product)
+                            .event(event)
+                            .build();
+
+                    eventService.addCrawlEventProduct(productEventList);
+                }
+            }
         }
         workbook.close();
         file.close();
@@ -614,40 +632,12 @@ public class CrawlingInit {
             .build());
     }
 
-    // -------------------------------- save methods --------------------------------
-    private void saveTopCategory(TopCategory topCategory) {
-        categoryService.save(topCategory);
-    }
-
-
-    private void saveBottomCategory(BottomCategory bottomCategory) {
-        categoryService.save(bottomCategory);
-
-    }
-
-    private void saveMiddleCategory(MiddleCategory middleCategory) {
-        categoryService.save(middleCategory);
-
-        middleCategoryRepository.save(middleCategory);
-    }
-
-    private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
-        productCategoryListService.saveAll(productCategoryAll);
-    }
-    private void saveProduct(Product product) {
-        productService.save(product);
-    }
-
     private void saveMedia(List<Media> mediaList) {
-        mediaService.saveAll(mediaList);
-    }
-
-    private void saveEvent(Event event) {
-        eventService.save(event);
+//        mediaService.saveAll(mediaList);
     }
 
     private void saveReview(Review review) {
-        reviewService.save(review);
+//        reviewService.save(review);
     }
 
 
@@ -662,19 +652,25 @@ public class CrawlingInit {
             }
 
             Event event = Event.builder()
-                    .eventName(eventName)
-                    .startDate(LocalDate.now())
-                    .endDate(LocalDate.now().plusDays(7))
-                    .discountRate(discountRate)
-                    .build();
+                .eventName(eventName)
+                .discountRate(discountRate)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(7))
+                .build();
+
+//            EventRequestVo requestVo = EventRequestVo.builder()
+//                    .eventName(eventName)
+//                    .discountRate(discountRate)
+//                    .startDate(LocalDate.now())
+//                    .endDate(LocalDate.now().plusDays(7))
+//                    .discountRate(discountRate)
+//                    .build();
+//
+//            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
+
             eventService.addCrawlEvent(event);
             events.add(event);
         }
         return events;
-
-
-    private void saveProductMedia(List<ProductMediaList> productMediaList) {
-        productMediaListRepository.saveAll(productMediaList);
-
     }
 }

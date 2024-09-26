@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.event.application;
 
+import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
