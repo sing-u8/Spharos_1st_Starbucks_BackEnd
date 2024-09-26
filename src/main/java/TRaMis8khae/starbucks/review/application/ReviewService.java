@@ -14,5 +14,5 @@ public interface ReviewService {
 
     void updateReview(ReviewUpdateRequestDto dto);
 
-    void deleteReview(Long id, String memberUUID);
+    void deleteReview(String reviewUUID, String memberUUID);
 }

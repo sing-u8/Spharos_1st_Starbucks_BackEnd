@@ -10,6 +10,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRep
 
     Optional<Review> findByReviewUUID(String reviewUUID);
 
-    void deleteByIdAndMemberUUID(Long id, String memberUUID);
+    void deleteByReviewUUIDAndMemberUUID(String reviewUUID, String memberUUID);
 
 }

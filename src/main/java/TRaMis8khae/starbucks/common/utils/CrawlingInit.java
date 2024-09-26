@@ -43,7 +43,10 @@ import TRaMis8khae.starbucks.product.vo.in.ProductMediaListRequestVo;
 import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
 import TRaMis8khae.starbucks.review.application.ReviewService;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
+import TRaMis8khae.starbucks.review.dto.ReviewMediaCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
+import TRaMis8khae.starbucks.review.entity.ReviewMediaList;
+import TRaMis8khae.starbucks.review.infrastructure.ReviewMediaListRepository;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
 import TRaMis8khae.starbucks.vendor.application.ProductOptionService;
@@ -97,10 +100,10 @@ public class CrawlingInit {
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
     private final ProductCategoryListRepository productCategoryListRepository;
-    private final MediaRepository mediaRepository;
     private final TopCategoryRepository topCategoryRepository;
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
+
     private final ProductMediaListRepository productMediaListRepository;
     private final ProductMediaService productMediaService;
     private final VolumeService volumeService;
@@ -110,7 +113,7 @@ public class CrawlingInit {
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "D:/starbucks_products5.xlsx";
+        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -323,8 +326,6 @@ public class CrawlingInit {
                     log.info("!productEventListProduct : {}", productEventList.getProduct());
                 }
 
-                // todo event 저장
-
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
 
@@ -337,9 +338,10 @@ public class CrawlingInit {
 
                     // review 정보를 ReviewCrawlingAddDto로 변환
                     ReviewCrawlingAddDto reviewDto = ReviewCrawlingAddDto.toDto(
-                        (String) readValue.get("rating"),
-                        (String) readValue.get("reviewer"),
-                        (String) readValue.get("reviewContent")
+                            (String) readValue.get("rating"),
+                            (String) readValue.get("reviewer"),
+                            (String) readValue.get("reviewContent"),
+                            productUUID
                     );
 
                     // reviewImages를 List<String>으로 변환
@@ -359,8 +361,11 @@ public class CrawlingInit {
                         }
                     }
 
-//                    saveReview(reviewDto.toEntity());
-//                    saveMedia(reviewMediaList);
+                    Review review = reviewDto.toEntity();
+                    saveReview(review);
+                    saveMedia(reviewMediaList);
+                    saveReviewMediaList(review, reviewMediaList);
+                    log.info("reviewMediaList : {}", reviewMediaList);
                 }
             }
         }
@@ -632,14 +637,47 @@ public class CrawlingInit {
             .build());
     }
 
+    // -------------------------------- save methods --------------------------------
+    private void saveTopCategory(TopCategory topCategory) {
+//        categoryService.save(topCategory);
+    }
+
+
+    private void saveBottomCategory(BottomCategory bottomCategory) {
+//        categoryService.save(bottomCategory);
+
+    }
+
+    private void saveMiddleCategory(MiddleCategory middleCategory) {
+//        categoryService.save(middleCategory);
+
+//        middleCategoryRepository.save(middleCategory);
+    }
+
+    private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
+//        productCategoryListService.saveAll(productCategoryAll);
+    }
+    private void saveProduct(Product product) {
+//        productService.save(product);
+    }
+
     private void saveMedia(List<Media> mediaList) {
 //        mediaService.saveAll(mediaList);
+    }
+
+    private void saveEvent(Event event) {
+//        eventService.save(event);
     }
 
     private void saveReview(Review review) {
 //        reviewService.save(review);
     }
 
+    private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
+//        for (Media media : reviewMediaList) {
+//            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
+//        }
+    }
 
     private List<Event> createEvents() {
         List<Event> events = new ArrayList<>();
@@ -652,11 +690,11 @@ public class CrawlingInit {
             }
 
             Event event = Event.builder()
-                .eventName(eventName)
-                .discountRate(discountRate)
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(7))
-                .build();
+                    .eventName(eventName)
+                    .discountRate(discountRate)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .build();
 
 //            EventRequestVo requestVo = EventRequestVo.builder()
 //                    .eventName(eventName)
@@ -672,5 +710,10 @@ public class CrawlingInit {
             events.add(event);
         }
         return events;
+    }
+
+    private void saveProductMedia(List<ProductMediaList> productMediaList) {
+        productMediaListRepository.saveAll(productMediaList);
+
     }
 }

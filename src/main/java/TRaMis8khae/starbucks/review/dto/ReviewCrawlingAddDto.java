@@ -1,5 +1,6 @@
 package TRaMis8khae.starbucks.review.dto;
 
+import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.review.entity.Review;
 import lombok.*;
@@ -15,12 +16,14 @@ public class ReviewCrawlingAddDto {
     private String memberMaskingId;
     private String reviewContext;
     private List<Media> mediaList;
+    private String productUUID;
 
-    public static ReviewCrawlingAddDto toDto(String rating, String reviewer, String reviewContent) {
+    public static ReviewCrawlingAddDto toDto(String rating, String reviewer, String reviewContent, String productUUID) {
         return ReviewCrawlingAddDto.builder()
                 .reviewScore(rating)
                 .memberMaskingId(reviewer)
                 .reviewContext(reviewContent)
+                .productUUID(productUUID)
                 .build();
     }
 
@@ -29,6 +32,8 @@ public class ReviewCrawlingAddDto {
                 .reviewScore(Integer.parseInt(reviewScore))
                 .memberMaskingId(memberMaskingId)
                 .reviewContext(reviewContext)
+                .productUUID(productUUID)
+                .reviewUUID(CodeGenerator.generateCode(36))
                 .build();
     }
 
