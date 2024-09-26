@@ -76,27 +76,29 @@ public class EventController {
 
 
 //     Slice로 변경
-//    @Operation(summary = "이벤트 상품 조회 API", description = "getEventProductList API", tags = {"Event"})
-//    @GetMapping("/event/product/{eventId}")
-//    public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(
-//            @PathVariable Long eventId,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "5") int size) {
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        List<String> productUUID = eventService.getProductUUID(eventId);
-//
-//        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
-//
-//        Slice<EventProductResponseVo> responseVos = products.map(product ->{
-//            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);
-//            return EventProductResponseDto.toVo(responseDto);
-//        });
-//
-//        return new BaseResponse<>(responseVos);
-//
-//    }
+    @Operation(summary = "이벤트 상품 조회 API", description = "getEventProductList API", tags = {"Event"})
+    @GetMapping("/event/product/{eventId}")
+    public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(
+            @PathVariable Long eventId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<String> productUUID = eventService.getProductUUID(eventId);
+
+        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
+
+        log.info("@@@@@@@@@@@@@@@@@@@@@@SLICE!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+        Slice<EventProductResponseVo> responseVos = products.map(product ->{
+            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);
+            return EventProductResponseDto.toVo(responseDto);
+        });
+
+        return new BaseResponse<>(responseVos);
+
+    }
 
     @Operation(summary = "이벤트 삭제 API", description = "deleteEvent API", tags = {"Event"})
     @DeleteMapping("/event/{eventId}")

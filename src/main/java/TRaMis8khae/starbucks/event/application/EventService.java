@@ -15,7 +15,7 @@ public interface EventService {
     List<String> getProductUUID(Long eventId);
 
     void addEvent(EventRequestDto requestDto);
-    void addCrawlEvent(Event event);
+    void addCrawlEvent(EventRequestDto requestDto);
     void addCrawlEventProduct(ProductEventList productEventList);
     void deleteEvent(Long eventId);
 

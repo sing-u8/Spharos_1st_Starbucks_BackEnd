@@ -90,30 +90,28 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CrawlingInit {
 
-    private final ReviewService reviewService;
-    private final EventService eventService;
-    private final ProductService productService;
-    private final ProductCategoryListService productCategoryListService;
-    private final MediaService mediaService;
-    private final CategoryService categoryService;
     private final ReviewRepository reviewRepository;
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
     private final ProductCategoryListRepository productCategoryListRepository;
+    private final ProductCategoryListService productCategoryListService;
+    private final MediaRepository mediaRepository;
     private final TopCategoryRepository topCategoryRepository;
+    private final CategoryService categoryService;
     private final MiddleCategoryRepository middleCategoryRepository;
     private final BottomCategoryRepository bottomCategoryRepository;
-
     private final ProductMediaListRepository productMediaListRepository;
+    private final ProductService productService;
     private final ProductMediaService productMediaService;
     private final VolumeService volumeService;
     private final ProductOptionService productOptionService;
     private final MenuCategoryService menuCategoryService;
+    private final EventService eventService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
-        String excelFilePath = "D:\\starbucks_products5.xlsx";
+        String excelFilePath = "/D:/starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -427,24 +425,36 @@ public class CrawlingInit {
 
             }
 
-            // event
-            int productIndex = 0;
+        }
 
-            for (Event event : events) {
+        // event
 
-                for (int i = 0; i < 5; i++) {
-                    Product product = eventProducts.get(productIndex++);
+        log.info("EVENT START!!!!!!!");
+        log.info("##### {}", events); ;
+        int productIndex = 0;
 
-                    ProductEventList productEventList = ProductEventList.builder()
-                            .product(product)
-                            .event(event)
-                            .build();
+        for (Event event : events) {
 
-                    eventService.addCrawlEventProduct(productEventList);
-
+            for (int i = 0; i < 5; i++) {
+                if (eventProducts.size() <= 3) {
+                    break;
                 }
+                Product product = eventProducts.get(productIndex++);
+
+                ProductEventList productEventList = ProductEventList.builder()
+                        .product(product)
+                        .event(event)
+                        .build();
+
+                log.info("@@@@@@@@@@@@@@@@@@productEventList : {}", productEventList);
+                log.info("@@@@@@@@@@@@@@@@@@productEventListProduct : {}", productEventList.getProduct());
+                log.info("@@@@@@@@@@@@@@@@@@productEventListEvent : {}", productEventList.getEvent());
+
+                eventService.addCrawlEventProduct(productEventList);
+
             }
         }
+
         workbook.close();
         file.close();
     }
@@ -639,38 +649,36 @@ public class CrawlingInit {
 
     // -------------------------------- save methods --------------------------------
     private void saveTopCategory(TopCategory topCategory) {
-//        categoryService.save(topCategory);
+        topCategoryRepository.save(topCategory);
     }
 
 
     private void saveBottomCategory(BottomCategory bottomCategory) {
-//        categoryService.save(bottomCategory);
+        bottomCategoryRepository.save(bottomCategory);
 
     }
 
     private void saveMiddleCategory(MiddleCategory middleCategory) {
-//        categoryService.save(middleCategory);
-
-//        middleCategoryRepository.save(middleCategory);
+        middleCategoryRepository.save(middleCategory);
     }
 
     private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
-//        productCategoryListService.saveAll(productCategoryAll);
+        productCategoryListRepository.saveAll(productCategoryAll);
     }
     private void saveProduct(Product product) {
-//        productService.save(product);
+        productRepository.save(product);
     }
 
     private void saveMedia(List<Media> mediaList) {
-//        mediaService.saveAll(mediaList);
+        mediaRepository.saveAll(mediaList);
     }
 
     private void saveEvent(Event event) {
-//        eventService.save(event);
+        eventRepository.save(event);
     }
 
     private void saveReview(Review review) {
-//        reviewService.save(review);
+        reviewRepository.save(review);
     }
 
     private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
@@ -696,6 +704,13 @@ public class CrawlingInit {
                     .endDate(LocalDate.now().plusDays(7))
                     .build();
 
+            EventRequestDto requestDto = EventRequestDto.toDto(EventRequestVo.builder()
+                    .eventName(eventName)
+                    .discountRate(discountRate)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .build());
+
 //            EventRequestVo requestVo = EventRequestVo.builder()
 //                    .eventName(eventName)
 //                    .discountRate(discountRate)
@@ -705,7 +720,8 @@ public class CrawlingInit {
 //
 //            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
 
-            eventService.addCrawlEvent(event);
+//            eventService.addCrawlEvent(event);
+            eventService.addCrawlEvent(requestDto);
             events.add(event);
         }
         return events;

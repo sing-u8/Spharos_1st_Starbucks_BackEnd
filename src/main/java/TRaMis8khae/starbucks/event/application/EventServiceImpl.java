@@ -59,7 +59,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addCrawlEvent(Event event) {
+    public void addCrawlEvent(EventRequestDto requestDto) {
+
+        Event event = requestDto.toEntity(requestDto);
 
         eventRepository.save(event);
 
@@ -68,7 +70,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public void addCrawlEventProduct(ProductEventList productEventList) {
 
-        productEventListRepository.save(productEventList);
+        log.info("%%%%%%%%%%%%%%%%%%%%%%productEventList: {}", productEventList);
+        try {
+            productEventListRepository.save(productEventList);
+        }catch (Exception e){
+            log.error("error: {}", e);
+        }
 
     }
 
