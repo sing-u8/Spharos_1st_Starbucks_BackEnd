@@ -24,15 +24,21 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void addProduct(ProductRequestDto requestDto) {
-
-        if (productRepository.existsByproductName(requestDto.getProductName())) {
-            throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
-        }
+    public String addProduct(ProductRequestDto requestDto) {
 
         String productUUID = CodeGenerator.generateCode(36);
 
+        if (productRepository.existsByproductName(requestDto.getProductName())
+        && productRepository.existsByProductUUID(productUUID)) {
+            log.info(requestDto.getProductName());
+            throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
+        }
+
+
+
         productRepository.save(requestDto.toEntity(productUUID));
+
+        return productUUID;
     }
 
     @Override

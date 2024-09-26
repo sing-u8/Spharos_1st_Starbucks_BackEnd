@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void addTopCategory(TopCategoryRequestDto requestDto) {
+    public String addTopCategory(TopCategoryRequestDto requestDto) {
 
         if (topCategoryRepository.existsByName(requestDto.getName())) {
             throw new BaseException(BaseResponseStatus.DUPLICATED_CATEGORY);
@@ -41,35 +41,39 @@ public class CategoryServiceImpl implements CategoryService {
         if (topCategoryRepository.existsBySequence(requestDto.getSequence())) {
             throw new BaseException(BaseResponseStatus.DUPLICATED_CATEGORY_ORDER);
         }
+        String code = CodeGenerator.generateCode(8);
+        topCategoryRepository.save(requestDto.toEntity(code));
 
-        topCategoryRepository.save(requestDto.toEntity(
-            CodeGenerator.generateCode(8)));
+        return code;
     }
 
 
     @Override
-    public void addMiddleCategory(MiddleCategoryRequestDto requestDto) {
+    public String addMiddleCategory(MiddleCategoryRequestDto requestDto) {
 
         TopCategory topCategory = topCategoryRepository.findByCode(requestDto.getTopCategoryCode())
                     .orElseThrow(
                         () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
                     );
-
+        String code = CodeGenerator.generateCode(8);
         middleCategoryRepository.save(requestDto.toEntity(
-            topCategory, CodeGenerator.generateCode(8)));
+            topCategory, code));
+
+        return code;
     }
 
 
     @Override
-    public void addBottomCategory(BottomCategoryRequestDto requestDto) {
+    public String addBottomCategory(BottomCategoryRequestDto requestDto) {
 
         MiddleCategory middleCategory = middleCategoryRepository.findByCode(requestDto.getMiddleCategoryCode())
             .orElseThrow(
                 () -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY)
             );
-
+        String code = CodeGenerator.generateCode(8);
         bottomCategoryRepository.save(requestDto.toEntity(
-            middleCategory, CodeGenerator.generateCode(8)));
+            middleCategory, code));
+        return code;
     }
 
 
