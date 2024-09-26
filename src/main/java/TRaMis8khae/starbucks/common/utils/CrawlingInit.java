@@ -1,26 +1,27 @@
 package TRaMis8khae.starbucks.common.utils;
 
+import TRaMis8khae.starbucks.admin.application.CategoryService;
 import TRaMis8khae.starbucks.admin.entity.BottomCategory;
 import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
 import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
+import TRaMis8khae.starbucks.event.application.EventService;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
-import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
+import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
-import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
+import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.entity.Product;
-import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
+import TRaMis8khae.starbucks.review.application.ReviewService;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
-import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
+import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
-import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -50,15 +51,12 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CrawlingInit {
 
-    private final ReviewRepository reviewRepository;
-    private final EventRepository eventRepository;
-    private final ProductRepository productRepository;
-    private final ProductCategoryListRepository productCategoryListRepository;
-    private final MediaRepository mediaRepository;
-    private final TopCategoryRepository topCategoryRepository;
-    private final ProductEventListRepository productEventListRepository;
-    private final MiddleCategoryRepository middleCategoryRepository;
-    private final BottomCategoryRepository bottomCategoryRepository;
+    private final ReviewService reviewService;
+    private final EventService eventService;
+    private final ProductService productService;
+    private final ProductCategoryListService productCategoryListService;
+    private final MediaService mediaService;
+    private final CategoryService categoryService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
@@ -284,7 +282,7 @@ public class CrawlingInit {
                         .event(event)
                         .build();
 
-                productEventListRepository.save(productEventList);
+                eventService.addCrawlEventProduct(productEventList);
             }
         }
 
@@ -417,37 +415,37 @@ public class CrawlingInit {
 
     // -------------------------------- save methods --------------------------------
     private void saveTopCategory(TopCategory topCategory) {
-        topCategoryRepository.save(topCategory);
+        categoryService.save(topCategory);
     }
 
 
     private void saveBottomCategory(BottomCategory bottomCategory) {
-        bottomCategoryRepository.save(bottomCategory);
+        categoryService.save(bottomCategory);
 
     }
 
     private void saveMiddleCategory(MiddleCategory middleCategory) {
-        middleCategoryRepository.save(middleCategory);
+        categoryService.save(middleCategory);
 
     }
 
     private void saveProductCategoryList(List<ProductCategoryList> productCategoryAll) {
-        productCategoryListRepository.saveAll(productCategoryAll);
+        productCategoryListService.saveAll(productCategoryAll);
     }
     private void saveProduct(Product product) {
-        productRepository.save(product);
+        productService.save(product);
     }
 
     private void saveMedia(List<Media> mediaList) {
-        mediaRepository.saveAll(mediaList);
+        mediaService.saveAll(mediaList);
     }
 
     private void saveEvent(Event event) {
-        eventRepository.save(event);
+        eventService.save(event);
     }
 
     private void saveReview(Review review) {
-        reviewRepository.save(review);
+        reviewService.save(review);
     }
 
     private List<Event> createEvents() {
@@ -456,7 +454,7 @@ public class CrawlingInit {
             int discountRate = 5;
             String eventName = "event" + i;
 
-            if (eventRepository.findByEventName(eventName).isPresent()) {
+            if (eventService.findByEventName(eventName).isPresent()) {
                 continue;
             }
 
@@ -466,7 +464,7 @@ public class CrawlingInit {
                     .endDate(LocalDate.now().plusDays(7))
                     .discountRate(discountRate)
                     .build();
-            eventRepository.save(event);
+            eventService.addCrawlEvent(event);
             events.add(event);
         }
         return events;

@@ -50,6 +50,24 @@ public class EventServiceImpl implements EventService {
     @Override
     public void addEvent(EventRequestDto requestDto) {
 
+        Event event = requestDto.toEntity(requestDto);
+
+        eventRepository.save(event);
+
+    }
+
+    @Override
+    public void addCrawlEvent(Event event) {
+
+        eventRepository.save(event);
+
+    }
+
+    @Override
+    public void addCrawlEventProduct(ProductEventList productEventList) {
+
+        productEventListRepository.save(productEventList);
+
     }
 
     @Override
@@ -66,6 +84,13 @@ public class EventServiceImpl implements EventService {
         Optional<Event> event = eventRepository.findById(eventId);
 
         return event.map(EventInfoResponseDto::toDto).orElse(null);
+
+    }
+
+    @Override
+    public Optional<Event> findByEventName(String eventName) {
+
+        return eventRepository.findByEventName(eventName);
 
     }
 
