@@ -24,4 +24,6 @@ public interface ProductService {
 
     Slice<Product> findProductsByProductUUID(List<String> productUUID, Pageable pageable);
 
+    List<ProductResponseDto> findProductsByVolume(String volumeName);
+
 }

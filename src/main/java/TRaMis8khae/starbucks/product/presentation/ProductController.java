@@ -75,4 +75,12 @@ public class ProductController {
             .stream().map(ProductResponseDto::toVo).toList());
     }
 
+    @Operation(summary = "용량별 상품 분류", description = "용량별로 상품을 분류합니다", tags = {"Product Service"})
+    @GetMapping("/volume")
+    public BaseResponse<List<ProductResponseVo>> getProductsWithVolume(@RequestParam String volumeName) {
+
+        return new BaseResponse<>(productService.findProductsByVolume(volumeName)
+            .stream().map(ProductResponseDto::toVo).toList());
+    }
+
 }

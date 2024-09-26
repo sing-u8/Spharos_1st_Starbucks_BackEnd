@@ -3,6 +3,7 @@ package TRaMis8khae.starbucks.product.application;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
+import TRaMis8khae.starbucks.common.utils.CursorPage;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
@@ -98,5 +99,15 @@ public class ProductServiceImpl implements ProductService{
 
         return new SliceImpl<>(products, pageable, hasNext);
     }
+
+    @Override
+    public Slice<ProductResponseDto> findProductsByVolume(String volumeName, Pageable pageable) {
+
+//        return productRepositoryCustom.getProductByVolume(volumeName).stream().map(
+//            ProductResponseDto::toDto
+//        ).toList();
+        List<Product> products = productRepositoryCustom.getProductByVolume(volumeName);
+    }
+
 
 }
