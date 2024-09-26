@@ -313,8 +313,6 @@ public class CrawlingInit {
     }
 
     // -------------------------------- parsing methods --------------------------------
-
-
     public List<Media> parseProductDescriptionMedia(String description) {
 
         List<String> mediaUrls = Arrays.stream(description.split(","))
