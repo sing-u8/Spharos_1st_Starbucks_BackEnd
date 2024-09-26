@@ -10,10 +10,6 @@ import lombok.*;
 @ToString
 public class DeliveryAddressResponseVo {
 
-    private Long memberAddressId;
-
-    private String memberUUID;
-
     private boolean addressDefaultCheck;
 
     private Long deliveryAddressId;

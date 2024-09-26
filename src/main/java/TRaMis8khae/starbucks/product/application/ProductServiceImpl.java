@@ -9,6 +9,7 @@ import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,15 +25,21 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public void addProduct(ProductRequestDto requestDto) {
-
-        if (productRepository.existsByproductName(requestDto.getProductName())) {
-            throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
-        }
+    public String addProduct(ProductRequestDto requestDto) {
 
         String productUUID = CodeGenerator.generateCode(36);
 
+        if (productRepository.existsByproductName(requestDto.getProductName())
+        && productRepository.existsByProductUUID(productUUID)) {
+            log.info(requestDto.getProductName());
+            throw new BaseException(BaseResponseStatus.DUPLICATED_PRODUCT);
+        }
+
+
+
         productRepository.save(requestDto.toEntity(productUUID));
+
+        return productUUID;
     }
 
     @Override
@@ -82,12 +89,17 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> findProductsByProductUUID(List<String> productUUID) {
+    public Slice<Product> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
 
-        return productUUID.stream()
-            .map(productRepository::findByProductUUID)
-            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
-            .toList();
+        boolean hasNext = false;
+
+        List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
+
+        if (products.size() == pageable.getPageSize()) {
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(products, pageable, hasNext);
     }
 
 }

@@ -28,13 +28,13 @@ public class ProductCategoryListServiceImpl implements ProductCategoryListServic
 
     @Override
     @Transactional
-    public void addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
+    public ProductCategoryList addProductByCategory(ProductCategoryListRequestDto productCategoryListRequestDto) {
 
-        if (productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
+        if (!productRepository.existsByProductUUID((productCategoryListRequestDto.getProductUUID()))) {
             throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
         }
 
-        productCategoryListRepository.save(productCategoryListRequestDto.toEntity());
+        return productCategoryListRepository.save(productCategoryListRequestDto.toEntity());
 
     }
 
