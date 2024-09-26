@@ -40,22 +40,13 @@ public class ProductOptionServiceImpl implements ProductOptionService{
 		if (!productRepository.existsByProductUUID(requestDto.getProductUUID())) {
 			throw new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT);
 		}
-
-		Volume volume = volumeRepository.findByName(requestDto.getVolumeName())
-			.orElseGet(() -> volumeRepository.save(
-				VolumeRequestDto.toDto(VolumeRequestVo.builder()
-					.name(requestDto.getVolumeName())
-					.build()).toEntity()
-			));
-
-		Color color = colorRepository.findByName(requestDto.getColorName())
-			.orElseGet(() -> colorRepository.save(
-				toDto(ColorRequestVo.builder()
-					.name(requestDto.getColorName())
-					.build()).toEntity()
-			));
-
-		productOptionRepository.save(requestDto.toEntity(volume, color));
+		Volume volume = null;
+		if (!requestDto.getVolumeName().isEmpty()) {
+			volume = volumeRepository.findByName(requestDto.getVolumeName())
+					.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+					);
+		}
+		productOptionRepository.save(requestDto.toEntity(volume, null));
 	}
 
 	@Override

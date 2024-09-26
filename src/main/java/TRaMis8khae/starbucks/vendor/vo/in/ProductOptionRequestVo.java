@@ -1,9 +1,10 @@
 package TRaMis8khae.starbucks.vendor.vo.in;
 
 
+import lombok.Builder;
 import lombok.Getter;
 
-
+@Builder
 @Getter
 public class ProductOptionRequestVo {
 
