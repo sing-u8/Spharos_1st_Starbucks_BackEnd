@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -269,18 +270,7 @@ public class CrawlingInit {
             }
         }
 
-        // event 객체 생성
-
-//        List<Event> events = new ArrayList<>();
-//
-//        for (int i = 1; i <= 8; i++) {
-//            Event event = Event.builder()
-//                    .eventName("event" + i)
-//                    .build();
-//            eventRepository.save(event);
-//            events.add(event);
-//
-//        }
+        // event
 
         int productIndex = 0;
 
@@ -463,8 +453,18 @@ public class CrawlingInit {
     private List<Event> createEvents() {
         List<Event> events = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
+            int discountRate = 5;
+            String eventName = "event" + i;
+
+            if (eventRepository.findByEventName(eventName).isPresent()) {
+                continue;
+            }
+
             Event event = Event.builder()
-                    .eventName("event" + i)
+                    .eventName(eventName)
+                    .startDate(LocalDate.now())
+                    .endDate(LocalDate.now().plusDays(7))
+                    .discountRate(discountRate)
                     .build();
             eventRepository.save(event);
             events.add(event);

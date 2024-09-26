@@ -8,6 +8,7 @@ import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.product.entity.Product;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void addEvent(EventRequestDto requestDto) {
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteEvent(Long eventId) {
+
+        eventRepository.deleteById(eventId);
 
     }
 

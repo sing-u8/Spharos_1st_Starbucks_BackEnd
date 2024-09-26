@@ -14,6 +14,7 @@ public interface EventService {
     List<String> getProductUUID(Long eventId);
 
     void addEvent(EventRequestDto requestDto);
+    void deleteEvent(Long eventId);
 
     EventInfoResponseDto getEvent(Long eventId);
 
