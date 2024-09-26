@@ -8,8 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Date;
 
 @Getter
+@Builder
 @ToString
-@NoArgsConstructor
+@AllArgsConstructor
 public class SignUpRequestDto {
 
     private String name;
@@ -25,33 +26,6 @@ public class SignUpRequestDto {
     private Boolean EmailMarketingConsent;
     private Boolean SMSMarketingConsent;
 
-    @Builder
-    public SignUpRequestDto(
-            String name,
-            String loginId,
-            String password,
-            Date birth,
-            String phoneNumber,
-            String email,
-            String nickname,
-            String address,
-            String paymentPassword,
-            Boolean marketingConsentEmail,
-            Boolean marketingConsentSms
-    ) {
-        this.name = name;
-        this.loginId = loginId;
-        this.password = password;
-        this.birth = birth;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.nickname = nickname;
-        this.address = address;
-        this.paymentPassword = paymentPassword;
-        this.EmailMarketingConsent = marketingConsentEmail;
-        this.SMSMarketingConsent = marketingConsentSms;
-    }
-
     public static SignUpRequestDto toDto(SignUpRequestVo signUpRequestVo) {
         return SignUpRequestDto.builder()
                 .name(signUpRequestVo.getName())
@@ -61,8 +35,6 @@ public class SignUpRequestDto {
                 .phoneNumber(signUpRequestVo.getPhoneNumber())
                 .email(signUpRequestVo.getEmail())
                 .nickname(signUpRequestVo.getNickname())
-//                .EmailMarketingConsent(signUpRequestVo.getEmailMarketingConsent())
-//                .SMSMarketingConsent(signUpRequestVo.getSmsMarketingConsent())
                 .build();
     }
 

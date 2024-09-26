@@ -21,7 +21,7 @@ public class ProductOption {
     @Column(nullable = false, length = 50)
     private String productUUID;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 500)
     private String productName;
 
     @Column(nullable = false)

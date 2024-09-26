@@ -26,6 +26,4 @@ public class ProductRequestVo {
 
     private Integer minOrderCount;
 
-    private List<Long> mediaIds;
-
 }

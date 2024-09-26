@@ -17,6 +17,7 @@ import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.jwt.JwtTokenProvider;
 import TRaMis8khae.starbucks.member.vo.out.TermsResponseVo;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,16 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthRepository authRepository;
 
-    @Parameter(name = "signUpRequestVo", description = "이름, 로그인아이디, 비밀번호, 이메일 필수", required = true)
+    @Operation(summary = "회원가입 API", description = "SignUp API 아이디, 비밀번호, 이름, 이메일 필수 입력", tags = {"AuthUserDetail"})
     @PostMapping("/signup")
     public BaseResponse<Void> SignUp(@RequestBody SignUpRequestVo signUpRequestVo) {
 
@@ -51,6 +50,7 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "로그인 API", description = "logIn API", tags = {"Auth"})
     @PostMapping("/login")
     public BaseResponse<LogInResponseVo> logIn(@RequestBody LogInRequestVo logInRequestVo) {
 
@@ -66,6 +66,7 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "회원탈퇴 API", description = "signOut API", tags = {"Auth"})
     @DeleteMapping("/signout")
     public BaseResponse<Void> signOut(Authentication authentication) {
 
@@ -75,6 +76,7 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "회원 정보 수정 API", description = "updateMemberInfo API", tags = {"Auth"})
     @PutMapping("/member_info")
     public BaseResponse<Void> updateMemberInfo(Authentication authentication,
                                                        @RequestBody UpdateMemberInfoRequestVo UpdateMemberInfoRequestVo) {
@@ -88,6 +90,7 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "회원 찾기 API", description = "findMember API", tags = {"Auth"})
     @PostMapping("/find_member")
     public BaseResponse<FindMemberResponseVo> findMember(@RequestBody FindMemberRequestVo findMemberRequestVo) {
 
@@ -101,7 +104,7 @@ public class AuthController {
 
     }
 
-    @Parameter(name = "resetPassword", description = "본인 인증 처리로 인해 보류", required = true)
+    @Operation(summary = "비밀번호 변경 API", description = "resetPassword API", tags = {"Auth"})
     @PutMapping("/reset_password") // 본인 인증에 관한 처리로 인해 보류
     public BaseResponse<Void> resetPassword(@RequestBody ResetPasswordRequestVo resetPasswordRequestVo) {
 
@@ -113,6 +116,7 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "약관 동의 조회 API", description = "getTermsConsentList API", tags = {"Auth"})
     @GetMapping("terms")
     public BaseResponse<List<TermsResponseVo>> getTermsConsentList() {
         List<TermsResponseDto> termsConsentList = authService.getTermsConsentList();

@@ -17,6 +17,6 @@ public class EventProductResponseVo {
 
     private Integer price;
 
-    private List<String> mediaPath;
+    private String description;
 
 }

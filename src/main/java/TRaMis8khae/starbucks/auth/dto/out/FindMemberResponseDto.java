@@ -2,20 +2,15 @@ package TRaMis8khae.starbucks.auth.dto.out;
 
 import TRaMis8khae.starbucks.auth.vo.out.FindMemberResponseVo;
 import TRaMis8khae.starbucks.member.entity.Member;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@Builder
+@ToString
+@AllArgsConstructor
 public class FindMemberResponseDto {
 
     private String loginId;
-
-    @Builder
-    public FindMemberResponseDto(String loginId) {
-        this.loginId = loginId;
-    }
 
     public static FindMemberResponseDto toDto(Member member) {
         return FindMemberResponseDto.builder()

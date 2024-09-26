@@ -93,24 +93,4 @@ public class JwtTokenProvider {
         }
     }
 
-//    public Authentication getAuthentication(String token) {
-//
-//        log.info("token : {}", token);
-//
-//        Claims claims = getClaims(token);
-//        log.info("claims : {}", claims);
-//
-//        String memberUUID = claims.get("memberUUID", String.class);
-//
-//        log.info("memberUUID : {}", memberUUID);
-//
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(memberUUID);
-//
-//        return new UsernamePasswordAuthenticationToken(
-//                userDetails,
-//                null,
-//                userDetails.getAuthorities()
-//        );
-//    }
-
 }
