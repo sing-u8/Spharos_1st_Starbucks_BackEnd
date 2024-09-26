@@ -20,7 +20,4 @@ public interface AuthService {
 
     List<TermsResponseDto> getTermsConsentList();
 
-//    void addTermsConsent(String memberUUID);
-//    void addMarketingConsent(Member member, boolean emailConsentChecked, boolean smsConsentChecked);
-
 }

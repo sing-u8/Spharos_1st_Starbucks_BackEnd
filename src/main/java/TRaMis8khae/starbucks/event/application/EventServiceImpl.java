@@ -3,12 +3,12 @@ package TRaMis8khae.starbucks.event.application;
 import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
-import TRaMis8khae.starbucks.event.entity.EventMedia;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
 import TRaMis8khae.starbucks.product.entity.Product;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
@@ -52,79 +50,48 @@ public class EventServiceImpl implements EventService {
     @Override
     public void addEvent(EventRequestDto requestDto) {
 
+        Event event = requestDto.toEntity(requestDto);
+
+        eventRepository.save(event);
+
     }
-//
-//    @Override
-//    public Optional<Event> getEventWithMedia(Long eventId) {
-//        return eventRepository.findById(eventId);
-//    }
+
+    @Override
+    public void addCrawlEvent(Event event) {
+
+        eventRepository.save(event);
+
+    }
+
+    @Override
+    public void addCrawlEventProduct(ProductEventList productEventList) {
+
+        productEventListRepository.save(productEventList);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteEvent(Long eventId) {
+
+        eventRepository.deleteById(eventId);
+
+    }
 
     @Override
     public EventInfoResponseDto getEvent(Long eventId) {
+
         Optional<Event> event = eventRepository.findById(eventId);
 
-//        Event event = eventOptional.get();
-
-//        List<EventMedia> eventMediaList = eventMediaRepository.findByEventId(eventId);
-
-//        List<String> mediaPath = eventMediaList.stream()
-//                .map(EventMedia::getMediaUrl)
-//                .collect(toList());
-
         return event.map(EventInfoResponseDto::toDto).orElse(null);
-    }
-
-
-    // crawling event, eventProduct 추가
-    @Override
-    public List<Event> addCrawlingEvent(int numberOfEvents) {
-
-        List<Event> events = new ArrayList<>();
-
-        for (int i = 0; i < numberOfEvents; i++) {
-            Event event = Event.builder()
-                    .eventName("event" + i)
-                    .discountRate(10)
-                    .build();
-            events.add(event);
-        }
-
-        return events;
 
     }
 
     @Override
-    public void assignProductsToEvents(List<Product> products, List<Event> events, int productsPerEvent) {
-        int eventIndex = 0;
+    public Optional<Event> findByEventName(String eventName) {
 
-        for (int i = 0; i < products.size(); i += productsPerEvent) {
-            int endIndex = Math.min(i + productsPerEvent, products.size());
-            List<Product> productSubList = products.subList(i, endIndex);
+        return eventRepository.findByEventName(eventName);
 
-            Event event = events.get(eventIndex);
-            saveEventProductList(event, productSubList);
-
-            eventIndex++;
-            if (eventIndex >= events.size()) {
-                break;
-            }
-        }
-    }
-
-    private void saveEventProductList(Event event, List<Product> products) {
-        for (Product product : products) {
-            ProductEventList productEventList = ProductEventList.builder()
-                    .product(product)
-                    .event(event)
-                    .build();
-            productEventListRepository.save(productEventList);
-        }
-    }
-
-    @Override
-    public void processEventProductMapping(List<Product> crawledProducts) {
-        List<Event> events = addCrawlingEvent(8);
-        assignProductsToEvents(crawledProducts, events, 5);
     }
 
 }

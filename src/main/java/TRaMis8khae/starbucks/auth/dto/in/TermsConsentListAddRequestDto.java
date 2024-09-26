@@ -7,18 +7,13 @@ import TRaMis8khae.starbucks.member.vo.in.AddTermsConsentListRequestVo;
 import lombok.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@ToString
+@AllArgsConstructor
 public class TermsConsentListAddRequestDto {
 
     private boolean termsConsentChecked;
     private String memberUUID;
-
-    @Builder
-    public TermsConsentListAddRequestDto(boolean termsConsentChecked, String memberUUID) {
-        this.termsConsentChecked = termsConsentChecked;
-        this.memberUUID = memberUUID;
-    }
 
     public static TermsConsentListAddRequestDto toDto(AddTermsConsentListRequestVo requestVo) {
         return TermsConsentListAddRequestDto.builder()

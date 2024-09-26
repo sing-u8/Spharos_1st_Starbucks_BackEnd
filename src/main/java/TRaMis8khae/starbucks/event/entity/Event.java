@@ -1,20 +1,19 @@
 package TRaMis8khae.starbucks.event.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@Where(clause = "is_deleted = false")
+@SQLDelete(sql = "UPDATE event SET is_deleted = true WHERE id = ?")
 public class Event {
 
     @Id
@@ -30,5 +29,14 @@ public class Event {
 
     private LocalDate endDate;
 
+    private Boolean isDeleted = false;
+
+    @Builder
+    public Event(String eventName, Integer discountRate, LocalDate startDate, LocalDate endDate) {
+        this.eventName = eventName;
+        this.discountRate = discountRate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
 }

@@ -55,14 +55,6 @@ public class AuthServiceImpl implements AuthService{
 
         authRepository.save(newMember);
 
-//        log.info(signUpRequestDto.toString());
-//        log.info(newMember.toString());
-
-//        memberServiceImpl.addMarketingConsent(newMember,
-//                signUpRequestDto.getEmailMarketingConsent(),
-//                signUpRequestDto.getSMSMarketingConsent()
-//        );
-
         termConsentListRepository.save(TermsConsentList.builder()
                 .memberUUID(newMember.getMemberUUID())
                 .termsConsentChecked(true)
@@ -73,17 +65,6 @@ public class AuthServiceImpl implements AuthService{
                         .smsConsentChecked(signUpRequestDto.getSMSMarketingConsent())
                         .build()
         );
-
-        // 마케팅 수신 동의
-//        addMarketingConsent(newMember,
-//                signUpRequestDto.getEmailMarketingConsent(),
-//                signUpRequestDto.getSMSMarketingConsent()
-//        );
-
-        // 약관 동의
-//        memberServiceImpl.addTerms(newMember,
-//                signUpRequestDto.getTermsConsent()
-//        );
 
     }
 
@@ -104,12 +85,6 @@ public class AuthServiceImpl implements AuthService{
         );
 
         try {
-//            Authentication authentication = authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            member.getMemberUUID(),
-//                            logInRequestDto.getPassword()
-//                    )
-//            );
             String accessToken = generateAccessToken(member.getMemberUUID());
             String refreshToken = generateRefreshToken(authenticate(member, logInRequestDto.getPassword()));
             LogInResponseDto logInResponseDto = LogInResponseDto.toDto(member, accessToken, refreshToken);
@@ -161,52 +136,6 @@ public class AuthServiceImpl implements AuthService{
     public String generateRefreshToken(Authentication authentication) {
         return jwtTokenProvider.generateRefreshToken(authentication);
     }
-
-//    @Override
-//    public void addTermsConsent(String memberUUID, boolean termsConsentChecked) {
-
-//        List<Terms> terms = termRepository.findAll();
-//
-//        for (Terms term : terms) {
-//            TermsConsentListAddRequestDto requestDto = TermsConsentListAddRequestDto.builder()
-//                    .termsConsentChecked(termsConsentChecked)
-//                    .memberUUID(member.getMemberUUID())
-//                    .build();
-//
-//            TermsConsentList termsConsentList = requestDto.toEntity(member, term);
-//
-//            termConsentListRepository.save(termsConsentList);
-//
-//        }
-
-//        TermsConsentList termsConsentList = TermsConsentList.builder()
-//                .memberUUID(memberUUID)
-//                .termsConsentChecked(termsConsentChecked)
-//                .build();
-//
-//    }
-
-//    @Override
-//    public void addMarketingConsent(Member member,
-//                                    boolean emailConsentChecked,
-//                                    boolean smsConsentChecked) {
-//
-//        List<Marketing> marketingList = marketingRepository.findAll();
-//
-//        for (Marketing marketing : marketingList) {
-//            MarketingConsentListAddRequestDto requestDto = MarketingConsentListAddRequestDto.builder()
-//                    .EmailConsentChecked(emailConsentChecked)
-//                    .SMSConsentChecked(smsConsentChecked)
-//                    .memberUUID(member.getMemberUUID())
-//                    .marketingId(marketing.getId())
-//                    .build();
-//
-//            MarketingConsentList marketingConsentList = requestDto.toEntity(member, marketing);
-//
-//            marketingConsentListRepository.save(marketingConsentList);
-//
-//        }
-//    }
 
     @Override
     public List<TermsResponseDto> getTermsConsentList() {
