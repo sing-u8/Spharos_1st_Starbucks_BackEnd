@@ -28,7 +28,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @Operation(summary = "create top category")
+    @Operation(summary = "top 카테고리 생성", description = "top 카테고리를 생성합니다", tags = {"Category Service"})
     @PostMapping("/top")
     public BaseResponse<Void> createTopCategory(@RequestBody TopCategoryRequestVo topCategoryRequestVo) {
 
@@ -37,7 +37,7 @@ public class CategoryController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "create middle category")
+    @Operation(summary = "middle 카테고리 생성", description = "middle 카테고리를 생성합니다", tags = {"Category Service"})
     @PostMapping("/middle")
     public BaseResponse<Void> createMiddleCategory(@RequestBody MiddleCategoryRequestVo middleCategoryRequestVo) {
 
@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
 
-    @Operation(summary = "create bottom category")
+    @Operation(summary = "bottom 카테고리 생성", description = "bottom 카테고리를 생성합니다", tags = {"Category Service"})
     @PostMapping("/bottom")
     public BaseResponse<Void> createBottomCategory(@RequestBody BottomCategoryRequestVo bottomCategoryRequestVo) {
 
@@ -56,42 +56,42 @@ public class CategoryController {
         return new BaseResponse<>();
     }
 
-    @Operation(summary = "get top category")
+    @Operation(summary = "top 카테고리 조회", description = "top 카테고리를 조회합니다", tags = {"Category Service"})
     @GetMapping("/top/{topCode}")
     public BaseResponse<TopCategoryResponseVo> getTopCategory(@PathVariable String topCode) {
 
         return new BaseResponse<>(categoryService.findTopCategoryByCode(topCode).toVo());
     }
 
-    @Operation(summary = "get middle category")
+    @Operation(summary = "middle 카테고리 조회", description = "middle 카테고리를 조회합니다", tags = {"Category Service"})
     @GetMapping("/middle/{middleCode}")
     public BaseResponse<MiddleCategoryResponseVo> getMiddleCategory(@PathVariable String middleCode) {
 
         return new BaseResponse<>(categoryService.findMiddleCategoryByCode(middleCode).toVo());
     }
 
-    @Operation(summary = "get bottom category")
+    @Operation(summary = "bottom 카테고리 조회", description = "bottom 카테고리를 조회합니다", tags = {"Category Service"})
     @GetMapping("/bottom/{bottomCode}")
     public BaseResponse<BottomCategoryResponseVo> getBottomCategory(@PathVariable String bottomCode) {
 
         return new BaseResponse<>(categoryService.findBottomCategoryByCode(bottomCode).toVo());
     }
 
-    @Operation(summary = "get top category list")
+    @Operation(summary = "top 카테고리 리스트 조회", description = "top 카테고리 리스트를 조회합니다", tags = {"Category Service"})
     @GetMapping("/topCategories")
     public BaseResponse<List<TopCategoryResponseVo>> getTopCategories() {
 
         return new BaseResponse<>(categoryService.findTopCategories().stream().map(TopCategoryResponseDto::toVo).toList());
     }
 
-    @Operation(summary = "get middle category list", description = "top 카테고리 코드로 middle 카테고리 리스트 가져오기")
+    @Operation(summary = "middle 카테고리 리스트 조회", description = "middle 카테고리 리스트를 조회합니다", tags = {"Category Service"})
     @GetMapping("/{topCode}/middleCategories")
     public BaseResponse<List<MiddleCategoryResponseVo>> getSubCategories(@PathVariable String topCode) {
 
         return new BaseResponse<>(categoryService.findMiddleCategories(topCode).stream().map(MiddleCategoryResponseDto::toVo).toList());
     }
 
-    @Operation(summary = "get bottom category list", description = "middle 카테고리 코드로 bottom 카테고리 리스트 가져오기")
+    @Operation(summary = "bottom 카테고리 리스트 조회", description = "bottom 카테고리 리스트를 조회합니다", tags = {"Category Service"})
     @GetMapping("/{middleCode}/bottomCategories")
     public BaseResponse<List<BottomCategoryResponseVo>> getBottomCategories(@PathVariable String middleCode) {
 
