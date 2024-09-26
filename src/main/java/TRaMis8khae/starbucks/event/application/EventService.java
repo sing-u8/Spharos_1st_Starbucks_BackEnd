@@ -15,11 +15,10 @@ public interface EventService {
     List<String> getProductUUID(Long eventId);
 
     void addEvent(EventRequestDto requestDto);
-    void addCrawlEvent(EventRequestDto requestDto);
-    void addCrawlEventProduct(ProductEventListRequestDto requestDto);
     void deleteEvent(Long eventId);
 
     EventInfoResponseDto getEvent(Long eventId);
 
     Optional<Event> findByEventName(String eventName);
+
 }

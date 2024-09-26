@@ -17,6 +17,7 @@ import TRaMis8khae.starbucks.admin.vo.BottomCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MenuCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
+import TRaMis8khae.starbucks.event.application.EventCrawlingService;
 import TRaMis8khae.starbucks.event.application.EventService;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
@@ -121,6 +122,7 @@ public class CrawlingInit {
     private final EventService eventService;
     private final ReviewMediaListRepository reviewMediaListRepository;
     private final EventMediaRepository eventMediaRepository;
+    private final EventCrawlingService eventCrawlingService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
@@ -489,7 +491,7 @@ public class CrawlingInit {
                         .event(event)
                         .build();
 
-                eventService.addCrawlEventProduct(requestDto);
+                eventCrawlingService.addCrawlEventProduct(requestDto);
 
             }
 
@@ -746,13 +748,12 @@ public class CrawlingInit {
                     .endDate(LocalDate.now().plusDays(7))
                     .build());
 
-            eventService.addCrawlEvent(requestDto);
+            eventCrawlingService.addCrawlEvent(requestDto);
 
-            for (Event event : eventRepository.findAll()) {
-                events.add(event);
-            }
+        }
 
-
+        for (Event event : eventRepository.findAll()) {
+            events.add(event);
         }
 
         return events;
