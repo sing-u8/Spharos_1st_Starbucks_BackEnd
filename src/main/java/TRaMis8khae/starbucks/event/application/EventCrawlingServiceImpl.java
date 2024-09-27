@@ -6,12 +6,14 @@ import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
-import TRaMis8khae.starbucks.event.infrastructure.ProductEventListRepository;
+import TRaMis8khae.starbucks.event.infrastructure.EventProductListRepository;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EventCrawlingServiceImpl implements EventCrawlingService {
@@ -19,7 +21,7 @@ public class EventCrawlingServiceImpl implements EventCrawlingService {
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
     private final EventMediaRepository eventMediaRepository;
-    private final ProductEventListRepository productEventListRepository;
+    private final EventProductListRepository eventProductListRepository;
 
     @Override
     public void addCrawlEvent(EventRequestDto requestDto) {
@@ -33,13 +35,16 @@ public class EventCrawlingServiceImpl implements EventCrawlingService {
     @Override
     public void addCrawlEventProduct(ProductEventListRequestDto requestDto) {
 
-        Product product = productRepository.findByProductUUID(requestDto.getProduct().getProductUUID())
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+        Product product = productRepository.findByProductUUID(
+                requestDto.getProduct().getProductUUID())
+                .orElseThrow();
+
+        log.info("TEST!!!!product: {}", requestDto.getEvent());
 
         ProductEventList productEventList = requestDto
                 .toEntity(requestDto.getEvent(), product);
 
-        productEventListRepository.save(productEventList);
+        eventProductListRepository.save(productEventList);
 
     }
 
