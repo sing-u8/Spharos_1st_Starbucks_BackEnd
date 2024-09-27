@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,24 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Slice<ReviewReadResponseDto> findReviews(Pageable pageable, String productUUID) {
-        return reviewRepository.findReviews(pageable, productUUID);
+
+        // 리뷰 데이터를 가져옴
+        List<ReviewReadResponseDto> reviewDtos = reviewRepository.findReviews(pageable, productUUID);
+
+        // 각 리뷰에 대해 mediaIdList 설정
+        for (ReviewReadResponseDto reviewDto : reviewDtos) {
+            Long reviewId = reviewDto.getReviewId();
+
+            List<Long> mediaIds = reviewMediaListRepository.findMediaIdsByReviewId(reviewId);
+
+            reviewDto.setMediaIdList(mediaIds);
+        }
+
+        // 다음 페이지가 있는지 여부 계산
+        boolean hasNext = reviewDtos.size() == pageable.getPageSize();
+
+        // SliceImpl로 반환
+        return new SliceImpl<>(reviewDtos, pageable, hasNext);
     }
 
     @Transactional
