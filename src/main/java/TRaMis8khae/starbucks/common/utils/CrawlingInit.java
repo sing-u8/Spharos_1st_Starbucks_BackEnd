@@ -17,16 +17,15 @@ import TRaMis8khae.starbucks.admin.vo.BottomCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MenuCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
+import TRaMis8khae.starbucks.event.application.EventCrawlingService;
 import TRaMis8khae.starbucks.event.application.EventService;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.entity.EventMedia;
-import TRaMis8khae.starbucks.event.entity.ProductEventList;
+import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
-import TRaMis8khae.starbucks.event.vo.in.ProductEventListRequestVo;
-import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.entity.MediaType;
@@ -41,11 +40,9 @@ import TRaMis8khae.starbucks.product.infrastructure.ProductMediaListRepository;
 import TRaMis8khae.starbucks.product.infrastructure.ProductRepository;
 import TRaMis8khae.starbucks.product.vo.in.ProductMediaListRequestVo;
 import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
-import TRaMis8khae.starbucks.review.application.ReviewService;
 import TRaMis8khae.starbucks.review.dto.ReviewCrawlingAddDto;
 import TRaMis8khae.starbucks.review.dto.ReviewMediaCrawlingAddDto;
 import TRaMis8khae.starbucks.review.entity.Review;
-import TRaMis8khae.starbucks.review.entity.ReviewMediaList;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewMediaListRepository;
 import TRaMis8khae.starbucks.review.infrastructure.ReviewRepository;
 import TRaMis8khae.starbucks.vendor.application.ProductCategoryListService;
@@ -55,8 +52,6 @@ import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
 import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
-import TRaMis8khae.starbucks.vendor.entity.ProductOption;
-import TRaMis8khae.starbucks.vendor.entity.Volume;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 
 import com.amazonaws.regions.Regions;
@@ -64,6 +59,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import java.io.InputStream;
 
 import TRaMis8khae.starbucks.vendor.vo.in.ProductCategoryListRequestVo;
 import TRaMis8khae.starbucks.vendor.vo.in.ProductOptionRequestVo;
@@ -85,14 +81,9 @@ import org.springframework.stereotype.Component;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import java.io.InputStream;
-
 import java.time.LocalDate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,28 +110,36 @@ public class CrawlingInit {
     private final ProductOptionService productOptionService;
     private final MenuCategoryService menuCategoryService;
     private final EventService eventService;
+    private final ReviewMediaListRepository reviewMediaListRepository;
+    private final EventMediaRepository eventMediaRepository;
+    private final EventCrawlingService eventCrawlingService;
 
     @PostConstruct
     public void parseAndSaveData() throws IOException {
         // 엑셀 파일 경로 (예시로 로컬 파일 경로 사용)
 
-        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
-        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
+//        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+//        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
+
+        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
             log.info("파일 읽기 시작");
-            parseExcelData(s3object);
+            parseExcelData(excelFilePath);
         } catch (IOException e) {
             log.error("파일 읽기 오류 : {}", e.getMessage());
         }
     }
 
     // 엑셀 데이터를 파싱하고 DB에 저장하는 메서드
-    public void parseExcelData(S3Object s3Object) throws IOException {
+    public void parseExcelData(String excelFilePath) throws IOException {
 
-        InputStream inputStream = s3Object.getObjectContent();
-        Workbook workbook = new XSSFWorkbook(inputStream);
+//        InputStream inputStream = s3Object.getObjectContent();
+//        Workbook workbook = new XSSFWorkbook(inputStream);
+
+        FileInputStream file = new FileInputStream(excelFilePath);
+        Workbook workbook = new XSSFWorkbook(file);
 
         int topCount = 0;
 
@@ -161,64 +160,75 @@ public class CrawlingInit {
         Sheet eGift = workbook.getSheetAt(10); //커피/음료/e-gift
 
         TopCategoryRequestDto total = parseTopCategory("전체", topCount++);
-        String totalTopCode = categoryService.addTopCategory(total);
+        String totalTopCode = getTotalTopCode(total);
 
         TopCategoryRequestDto kitchenTable = parseTopCategory("키친/테이블", topCount++);
-        String kitchenTableTopCode = categoryService.addTopCategory(kitchenTable);
+        String kitchenTableTopCode = getTotalTopCode(kitchenTable);
 
-        MiddleCategoryRequestDto kitchenTableMid = parseMiddleCategory(kitchenTableTopCode, 0);
-        String kitchenTableMidCode = categoryService.addMiddleCategory(kitchenTableMid);
-
+        MiddleCategoryRequestDto kitchenTableMid = parseMiddleCategory(kitchenTableTopCode, "카테고리", 0);
+        MiddleCategoryRequestDto volumeMid = parseMiddleCategory(kitchenTableTopCode, "용량",  1);
+        String kitchenTableMidCode = getMiddleCategory(kitchenTableMid);
+        String volumeCode = getMiddleCategory(volumeMid);
         BottomCategoryRequestDto kitchenTableBot1 = parseBottomCategory(kitchenTableMidCode, tumblr.getSheetName(), 0);
         BottomCategoryRequestDto kitchenTableBot2 = parseBottomCategory(kitchenTableMidCode, mug.getSheetName(), 1);
-        String kitchenTableBotCode1 = categoryService.addBottomCategory(kitchenTableBot1);
-        String kitchenTableBotCode2 = categoryService.addBottomCategory(kitchenTableBot2);
+        String kitchenTableBotCode1 = getBottomCategory(kitchenTableBot1);
+        String kitchenTableBotCode2 = getBottomCategory(kitchenTableBot2);
+        BottomCategoryRequestDto Short = parseBottomCategory(volumeCode, "Short", 0);
+        BottomCategoryRequestDto tall = parseBottomCategory(volumeCode, "Tall", 1);
+        BottomCategoryRequestDto grande = parseBottomCategory(volumeCode, "Grande", 2);
+        BottomCategoryRequestDto venti = parseBottomCategory(volumeCode, "Venti", 3);
+        BottomCategoryRequestDto trenta = parseBottomCategory(volumeCode, "Trenta", 4);
+        String shortCode = getBottomCategory(Short);
+        String tallCode = getBottomCategory(tall);
+        String grandeCode = getBottomCategory(grande);
+        String ventiCode = getBottomCategory(venti);
+        String trentaCode = getBottomCategory(trenta);
 
         TopCategoryRequestDto food = parseTopCategory("푸드", topCount++);
-        String foodTopCode = categoryService.addTopCategory(food);
+        String foodTopCode = getTotalTopCode(food);
 
-        MiddleCategoryRequestDto foodMid = parseMiddleCategory(foodTopCode, 0);
-        String foodMidCode = categoryService.addMiddleCategory(foodMid);
+        MiddleCategoryRequestDto foodMid = parseMiddleCategory(foodTopCode, "카테고리",  0);
+        String foodMidCode = getMiddleCategory(foodMid);
 
         BottomCategoryRequestDto foodBot1 = parseBottomCategory(foodMidCode, bakery.getSheetName(), 0);
         BottomCategoryRequestDto foodBot2 = parseBottomCategory(foodMidCode, cake.getSheetName(), 1);
         BottomCategoryRequestDto foodBot3 = parseBottomCategory(foodMidCode, sandwich.getSheetName(), 2);
-        String foodBotCode1 = categoryService.addBottomCategory(foodBot1);
-        String foodBotCode2 = categoryService.addBottomCategory(foodBot2);
-        String foodBotCode3 = categoryService.addBottomCategory(foodBot3);
+        String foodBotCode1 = getBottomCategory(foodBot1);
+        String foodBotCode2 = getBottomCategory(foodBot2);
+        String foodBotCode3 = getBottomCategory(foodBot3);
 
         TopCategoryRequestDto coffeeTea = parseTopCategory("커피/티용품", topCount++);
-        String coffeeTeaTopCode = categoryService.addTopCategory(coffeeTea);
+        String coffeeTeaTopCode = getTotalTopCode(coffeeTea);
 
-        MiddleCategoryRequestDto coffeeTeaMid = parseMiddleCategory(coffeeTeaTopCode, 0);
-        String coffeeTeaMidCode = categoryService.addMiddleCategory(coffeeTeaMid);
+        MiddleCategoryRequestDto coffeeTeaMid = parseMiddleCategory(coffeeTeaTopCode, "카테고리",0);
+        String coffeeTeaMidCode = getMiddleCategory(coffeeTeaMid);
 
         BottomCategoryRequestDto coffeeTeaBot = parseBottomCategory(coffeeTeaMidCode, coffee.getSheetName(), 0);
-        String coffeeTeaBotCode = categoryService.addBottomCategory(coffeeTeaBot);
+        String coffeeTeaBotCode = getBottomCategory(coffeeTeaBot);
 
         TopCategoryRequestDto lifeStyle = parseTopCategory("라이프스타일", topCount++);
-        String lifeStyleTopCode = categoryService.addTopCategory(lifeStyle);
+        String lifeStyleTopCode = getTotalTopCode(lifeStyle);
 
-        MiddleCategoryRequestDto lifeStyleMid = parseMiddleCategory(lifeStyleTopCode, 0);
-        String lifeStyleMidCode = categoryService.addMiddleCategory(lifeStyleMid);
+        MiddleCategoryRequestDto lifeStyleMid = parseMiddleCategory(lifeStyleTopCode,"카테고리", 0);
+        String lifeStyleMidCode = getMiddleCategory(lifeStyleMid);
 
         BottomCategoryRequestDto lifeStyleBot1 = parseBottomCategory(lifeStyleMidCode, fabric.getSheetName(), 0);
         BottomCategoryRequestDto lifeStyleBot2 = parseBottomCategory(lifeStyleMidCode, homeDeco.getSheetName(), 1);
         BottomCategoryRequestDto lifeStyleBot3 = parseBottomCategory(lifeStyleMidCode, fancy.getSheetName(), 2);
-        String lifeStyleBotCode1 = categoryService.addBottomCategory(lifeStyleBot1);
-        String lifeStyleBotCode2 = categoryService.addBottomCategory(lifeStyleBot2);
-        String lifeStyleBotCode3 = categoryService.addBottomCategory(lifeStyleBot3);
+        String lifeStyleBotCode1 = getBottomCategory(lifeStyleBot1);
+        String lifeStyleBotCode2 = getBottomCategory(lifeStyleBot2);
+        String lifeStyleBotCode3 = getBottomCategory(lifeStyleBot3);
 
         TopCategoryRequestDto coffeeBeverageGift = parseTopCategory("커피/음료/e-gift", topCount);
-        String coffeeBeverageGiftTopCode = categoryService.addTopCategory(coffeeBeverageGift);
+        String coffeeBeverageGiftTopCode = getTotalTopCode(coffeeBeverageGift);
 
-        MiddleCategoryRequestDto coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGiftTopCode, 0);
-        String coffeeBeverageGiftMidCode = categoryService.addMiddleCategory(coffeeBeverageGiftMid);
+        MiddleCategoryRequestDto coffeeBeverageGiftMid = parseMiddleCategory(coffeeBeverageGiftTopCode,"카테고리", 0);
+        String coffeeBeverageGiftMidCode = getMiddleCategory(coffeeBeverageGiftMid);
 
         BottomCategoryRequestDto coffeeBeverageGiftBot1 = parseBottomCategory(coffeeBeverageGiftMidCode, drink.getSheetName(), 0);
         BottomCategoryRequestDto coffeeBeverageGiftBot2 = parseBottomCategory(coffeeBeverageGiftMidCode, eGift.getSheetName(), 1);
-        String coffeeBeverageGiftBotCode1 = categoryService.addBottomCategory(coffeeBeverageGiftBot1);
-        String coffeeBeverageGiftBotCode2 = categoryService.addBottomCategory(coffeeBeverageGiftBot2);
+        String coffeeBeverageGiftBotCode1 = getBottomCategory(coffeeBeverageGiftBot1);
+        String coffeeBeverageGiftBotCode2 = getBottomCategory(coffeeBeverageGiftBot2);
 
         for (Sheet sheet : workbook) {
             log.info("Sheet name : {}", sheet.getSheetName());
@@ -246,7 +256,6 @@ public class CrawlingInit {
                 List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
                 saveMedia(mediaList);
 
-
                 // product 객체 생성
                 ProductRequestDto parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 String productUUID = productService.addProduct(parsedProduct);
@@ -266,78 +275,63 @@ public class CrawlingInit {
                 productCategoryAll.add(parseProductCategory(productUUID, totalTopCode, null, null));
                 String volumeName = "";
                 switch (categoryName) {
-                case "텀블러-보온병":
-                    productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode1));
-                    VolumeRequestDto volumeRequestDto = parseVolume(productName);
-                    volumeService.addVolume(volumeRequestDto);
-                    volumeName = volumeRequestDto.getName();
-                    break;
-                case "컵-머그":
-                    productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode2));
-                    VolumeRequestDto volumeRequestDto1 = parseVolume(productName);
-                    volumeService.addVolume(volumeRequestDto1);
-                    volumeName = volumeRequestDto1.getName();
-
-                    break;
-                case "베이커리":
-                    productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode1));
-                    break;
-                case "디저트-케이크":
-                    productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode2));
-                    break;
-                case "샐러드-샌드위치":
-                    productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode3));
-                    break;
-                case "커피용품":
-                    productCategoryAll.add(parseProductCategory(productUUID, coffeeTeaTopCode, coffeeTeaMidCode, coffeeTeaBotCode));
-                    break;
-                case "페브릭":
-                    productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode1));
-                    break;
-                case "홈데코":
-                    productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode2));
-                    break;
-                case "문구-팬시":
-                    productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode3));
-                    break;
-                case "음료-요거트":
-                    productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGiftTopCode, coffeeBeverageGiftMidCode, coffeeBeverageGiftBotCode1));
-                    break;
-                case "e-gift":
-                    productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGiftTopCode, coffeeBeverageGiftMidCode, coffeeBeverageGiftBotCode2));
-                    break;
+                    case "텀블러-보온병":
+                        productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode1));
+                        VolumeRequestDto volumeRequestDto = parseVolume(productName);
+                        volumeService.addVolume(volumeRequestDto);
+                        volumeName = volumeRequestDto.getName();
+                        if (volumeName.equals("Short")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, shortCode));
+                        else if (volumeName.equals("Tall")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, tallCode));
+                        else if (volumeName.equals("Grande")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, grandeCode));
+                        else if (volumeName.equals("Venti")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, ventiCode));
+                        else if (volumeName.equals("Trenta")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, trentaCode));
+                        break;
+                    case "컵-머그":
+                        productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, kitchenTableMidCode, kitchenTableBotCode2));
+                        VolumeRequestDto volumeRequestDto1 = parseVolume(productName);
+                        volumeService.addVolume(volumeRequestDto1);
+                        volumeName = volumeRequestDto1.getName();
+                        if (volumeName.equals("Short")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, shortCode));
+                        else if (volumeName.equals("Tall")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, tallCode));
+                        else if (volumeName.equals("Grande")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, grandeCode));
+                        else if (volumeName.equals("Venti")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, ventiCode));
+                        else if (volumeName.equals("Trenta")) productCategoryAll.add(parseProductCategory(productUUID, kitchenTableTopCode, volumeCode, trentaCode));
+                        break;
+                    case "베이커리":
+                        productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode1));
+                        break;
+                    case "디저트-케이크":
+                        productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode2));
+                        break;
+                    case "샐러드-샌드위치":
+                        productCategoryAll.add(parseProductCategory(productUUID, foodTopCode, foodMidCode, foodBotCode3));
+                        break;
+                    case "커피용품":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeTeaTopCode, coffeeTeaMidCode, coffeeTeaBotCode));
+                        break;
+                    case "페브릭":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode1));
+                        break;
+                    case "홈데코":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode2));
+                        break;
+                    case "문구-팬시":
+                        productCategoryAll.add(parseProductCategory(productUUID, lifeStyleTopCode, lifeStyleMidCode, lifeStyleBotCode3));
+                        break;
+                    case "음료-요거트":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGiftTopCode, coffeeBeverageGiftMidCode, coffeeBeverageGiftBotCode1));
+                        break;
+                    case "e-gift":
+                        productCategoryAll.add(parseProductCategory(productUUID, coffeeBeverageGiftTopCode, coffeeBeverageGiftMidCode, coffeeBeverageGiftBotCode2));
+                        break;
                 }
                 for (ProductCategoryListRequestDto productCategoryListRequestDto : productCategoryAll) {
                     productCategoryListService.addProductByCategory(productCategoryListRequestDto);
 
                 }
 
-
-
-
-
                 ProductOptionRequestDto productOptionRequestDto = parseProductOption(productUUID, productName, Double.parseDouble(price), volumeName);
                 productOptionService.addProductOption(productOptionRequestDto);
-
-                // event 객체 생성
-                int discountRateValue = Integer.parseInt(discountRate);
-
-                // discountRate가 0보다 큰 경우에만 저장 처리
-                if (discountRateValue > 0) {
-
-                    Event event = Event.builder()
-                        .discountRate(discountRateValue)
-                        .build();
-
-                    ProductEventList productEventList = ProductEventList.builder()
-                        .product(parsedProduct.toEntity(productUUID))
-                        .event(event)
-                        .build();
-
-                    log.info("!event : {}", event.getDiscountRate());
-                    log.info("!productEventList : {}", productEventList.getEvent());
-                    log.info("!productEventListProduct : {}", productEventList.getProduct());
-                }
 
                 // review 객체 생성
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -380,9 +374,12 @@ public class CrawlingInit {
                     saveReviewMediaList(review, reviewMediaList);
                     log.info("reviewMediaList : {}", reviewMediaList);
                 }
+
+                // 이벤트 상품 저장
+                Product product = parsedProduct.toEntity(productUUID);
+                eventProducts.add(product);
             }
         }
-
 
         Sheet sheet = workbook.getSheetAt(11);
         for (Row row : sheet) {
@@ -391,88 +388,93 @@ public class CrawlingInit {
             log.info(imageUrl);
             List<MenuCategoryRequestDto> menuCategoryAll = new ArrayList<>();
             switch (catName) {
-            case "텀블러/보온병":
-                menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
-                break;
-
-            case "컵/머그":
-                menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
-                break;
-
-            case "커피/티용품":
-                menuCategoryAll.add(parseMenuCategory(coffeeTeaTopCode, imageUrl));
-
-                break;
-
-
-            case "라이프스타일":
-                menuCategoryAll.add(parseMenuCategory(lifeStyleTopCode, imageUrl));
-
-                break;
-
-            case "e-gift":
-                menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
-
-                break;
-
-            case "디저트":
-                menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
-
-                break;
-
-            case "베이커리":
-                menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
-
-                break;
-
-            case "음료/요거트":
-                menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
-
-                break;
-
-            default:
-                break;
+                case "텀블러/보온병":
+                    menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
+                    break;
+                case "컵/머그":
+                    menuCategoryAll.add(parseMenuCategory(kitchenTableTopCode, imageUrl));
+                    break;
+                case "커피/티용품":
+                    menuCategoryAll.add(parseMenuCategory(coffeeTeaTopCode, imageUrl));
+                    break;
+                case "라이프스타일":
+                    menuCategoryAll.add(parseMenuCategory(lifeStyleTopCode, imageUrl));
+                    break;
+                case "e-gift":
+                    menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
+                    break;
+                case "디저트":
+                    menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
+                    break;
+                case "베이커리":
+                    menuCategoryAll.add(parseMenuCategory(foodTopCode, imageUrl));
+                    break;
+                case "음료/요거트":
+                    menuCategoryAll.add(parseMenuCategory(coffeeBeverageGiftTopCode, imageUrl));
+                    break;
+                default:
+                    break;
             }
-
 
             for (MenuCategoryRequestDto menuCategoryRequestDto : menuCategoryAll) {
                 menuCategoryService.addMenuCategory(menuCategoryRequestDto);
-
             }
-
         }
 
         // event
-
-        log.info("EVENT START!!!!!!!");
-        log.info("##### {}", events); ;
         int productIndex = 0;
 
-        for (Event event : events) {
+        List<Optional<Media>> thumbCheckedTrue = mediaRepository
+                .findByThumbCheckedIsTrue();
 
+        List<Media> eventMediaList = new ArrayList<>();
+
+        for (Optional<Media> media : thumbCheckedTrue) {
+            eventMediaList.add(media.get());
+        }
+
+        for (Media media : eventMediaList) {
+            EventMedia eventMedia = EventMedia.builder()
+                    .event(events.get(0))
+                    .mediaId(media.getId())
+                    .build();
+            eventMediaRepository.save(eventMedia);
+        }
+
+        for (Event event : events) {
             for (int i = 0; i < 5; i++) {
-                if (eventProducts.size() <= 3) {
+                if (eventProducts.size() <= 9) {
                     break;
                 }
+
                 Product product = eventProducts.get(productIndex++);
 
-                ProductEventList productEventList = ProductEventList.builder()
+                ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
                         .product(product)
                         .event(event)
                         .build();
 
-                log.info("@@@@@@@@@@@@@@@@@@productEventList : {}", productEventList);
-                log.info("@@@@@@@@@@@@@@@@@@productEventListProduct : {}", productEventList.getProduct());
-                log.info("@@@@@@@@@@@@@@@@@@productEventListEvent : {}", productEventList.getEvent());
-
-                eventService.addCrawlEventProduct(productEventList);
-
+                eventCrawlingService.addCrawlEventProduct(requestDto);
             }
         }
 
         workbook.close();
-        inputStream.close();
+//        inputStream.close();
+        file.close();
     }
+
+    private String getBottomCategory(BottomCategoryRequestDto kitchenTableBot1) {
+        return categoryService.addBottomCategory(kitchenTableBot1);
+    }
+
+    private String getMiddleCategory(MiddleCategoryRequestDto kitchenTableMid) {
+        return categoryService.addMiddleCategory(kitchenTableMid);
+    }
+
+    private String getTotalTopCode(TopCategoryRequestDto total) {
+        return categoryService.addTopCategory(total);
+    }
+
     private String getCellValue(Cell cell) {
         return cell == null ? "" : cell.getStringCellValue();
     }
@@ -513,28 +515,28 @@ public class CrawlingInit {
         }
 
         return VolumeRequestDto.toDto(VolumeRequestVo.builder()
-            .name(name)
-            .build());
+                .name(name)
+                .build());
 
     }
 
     public List<Media> parseProductDescriptionMedia(String description) {
 
         List<String> mediaUrls = Arrays.stream(description.split(","))
-            .map(String::trim) // 각 URL에서 공백 제거
-            .toList();
+                .map(String::trim) // 각 URL에서 공백 제거
+                .toList();
 
         List<Media> mediaList = new ArrayList<>();
 
         int count = 0;
         for (String mediaUrl : mediaUrls) {
             Media media = Media.builder()
-                .mediaUrl(mediaUrl)
-                .thumbChecked(Boolean.FALSE)
-                .mediaType(MediaType.IMAGE)
-                .mediaKind(MediaKind.PRODUCT)
-                .mediaSeq(count++)
-                .build();
+                    .mediaUrl(mediaUrl)
+                    .thumbChecked(Boolean.FALSE)
+                    .mediaType(MediaType.IMAGE)
+                    .mediaKind(MediaKind.PRODUCT)
+                    .mediaSeq(count++)
+                    .build();
             mediaList.add(media);
 
         }
@@ -549,10 +551,10 @@ public class CrawlingInit {
         for (Media media : medias) {
 
             productMediaLists.add(ProductMediaListRequestDto.toDto(
-                ProductMediaListRequestVo.builder()
-                    .mediaId(media.getId())
-                    .productUUID(productUUID)
-                    .build()));
+                    ProductMediaListRequestVo.builder()
+                            .mediaId(media.getId())
+                            .productUUID(productUUID)
+                            .build()));
         }
 
         return productMediaLists;
@@ -563,29 +565,29 @@ public class CrawlingInit {
 
         // thumbnailMedia를 Media 객체로 변환
         Media thumbMedia = Media.builder()
-            .mediaUrl(thumbnailMedia)
-            .thumbChecked(true)
-            .mediaType(MediaType.IMAGE)
-            .mediaKind(MediaKind.PRODUCT)
-            .mediaSeq(1) // 썸네일의 seq는 1로 설정
-            .build();
+                .mediaUrl(thumbnailMedia)
+                .thumbChecked(true)
+                .mediaType(MediaType.IMAGE)
+                .mediaKind(MediaKind.PRODUCT)
+                .mediaSeq(1) // 썸네일의 seq는 1로 설정
+                .build();
 
         mediaList.add(thumbMedia);
 
         // mainMedia를 쉼표 기준으로 분리하여 각각 Media 객체로 변환
         List<String> mediaUrls = Arrays.stream(mainMedia.split(","))
-            .map(String::trim) // 각 URL에서 공백 제거
-            .toList();
+                .map(String::trim) // 각 URL에서 공백 제거
+                .toList();
 
         // 나머지 이미지들은 thumbChecked = false로 설정하여 Media 객체로 추가
         for (int i = 0; i < mediaUrls.size(); i++) {
             Media detailMedia = Media.builder()
-                .mediaUrl(mediaUrls.get(i))
-                .thumbChecked(false)
-                .mediaType(MediaType.IMAGE)
-                .mediaKind(MediaKind.PRODUCT)
-                .mediaSeq(i + 2) // seq는 2부터 시작
-                .build();
+                    .mediaUrl(mediaUrls.get(i))
+                    .thumbChecked(false)
+                    .mediaType(MediaType.IMAGE)
+                    .mediaKind(MediaKind.PRODUCT)
+                    .mediaSeq(i + 2) // seq는 2부터 시작
+                    .build();
 
             mediaList.add(detailMedia);
         }
@@ -594,72 +596,72 @@ public class CrawlingInit {
     }
 
     public ProductRequestDto parseProduct(String productName, Double price, String descriptionImage,
-        String descriptionTag) {
+                                          String descriptionTag) {
         return ProductRequestDto.toDto(ProductRequestVo.builder()
-            .productName(productName)
-            .price(price)
-            .description(descriptionTag)
-            .additionalChecked(Boolean.FALSE)
-            .isAdditionalTogether(Boolean.FALSE)
-            .engravingChecked(Boolean.FALSE)
-            .maxOrderCount(3)
-            .build());
+                .productName(productName)
+                .price(price)
+                .description(descriptionTag)
+                .additionalChecked(Boolean.FALSE)
+                .isAdditionalTogether(Boolean.FALSE)
+                .engravingChecked(Boolean.FALSE)
+                .maxOrderCount(3)
+                .build());
     }
 
     public TopCategoryRequestDto parseTopCategory(String categoryName, Integer sequence) {
         return TopCategoryRequestDto.toDto(TopCategoryRequestVo.builder()
-            .name(categoryName)
-            .sequence(sequence)
-            .build());
+                .name(categoryName)
+                .sequence(sequence)
+                .build());
     }
 
-    public MiddleCategoryRequestDto parseMiddleCategory(String topCode, Integer sequence) {
+    public MiddleCategoryRequestDto parseMiddleCategory(String topCode, String name, Integer sequence) {
         return MiddleCategoryRequestDto.toDto(MiddleCategoryRequestVo.builder()
-            .topCategoryCode(topCode)
-            .name("카테고리")
-            .sequence(sequence)
-            .build());
+                .topCategoryCode(topCode)
+                .name(name)
+                .sequence(sequence)
+                .build());
     }
 
     public BottomCategoryRequestDto parseBottomCategory(String midCode, String name, Integer sequence) {
         return BottomCategoryRequestDto.toDto(BottomCategoryRequestVo.builder()
-            .middleCategoryCode(midCode)
-            .name(name)
-            .sequence(sequence)
-            .build());
+                .middleCategoryCode(midCode)
+                .name(name)
+                .sequence(sequence)
+                .build());
     }
 
     public ProductCategoryListRequestDto parseProductCategory(String uuid, String topCode, String middleCode, String bottomCode) {
         return ProductCategoryListRequestDto.toDto(ProductCategoryListRequestVo.builder()
-            .productUUID(uuid)
-            .topCode(topCode)
-            .middleCode(middleCode)
-            .bottomCode(bottomCode)
-            .build());
+                .productUUID(uuid)
+                .topCode(topCode)
+                .middleCode(middleCode)
+                .bottomCode(bottomCode)
+                .build());
     }
 
     public ProductOptionRequestDto parseProductOption(String uuid, String productName, Double price, String volumeName) {
 
         return ProductOptionRequestDto.toDto(ProductOptionRequestVo.builder()
-            .productUUID(uuid)
-            .productName(productName)
-            .price(price)
-            .stockQuantity(1000)
-            .limitCnt(3)
-            .soldOutChecked(Boolean.FALSE)
-            .openChecked(Boolean.TRUE)
-            .closedChecked(Boolean.FALSE)
-            .volumeName(volumeName)
-            .build());
+                .productUUID(uuid)
+                .productName(productName)
+                .price(price)
+                .stockQuantity(1000)
+                .limitCnt(3)
+                .soldOutChecked(Boolean.FALSE)
+                .openChecked(Boolean.TRUE)
+                .closedChecked(Boolean.FALSE)
+                .volumeName(volumeName)
+                .build());
     }
 
 
     public MenuCategoryRequestDto parseMenuCategory(String topCode, String imageUrl) {
 
         return MenuCategoryRequestDto.toDto(MenuCategoryRequestVo.builder()
-            .topCode(topCode)
-            .imageUrl(imageUrl)
-            .build());
+                .topCode(topCode)
+                .imageUrl(imageUrl)
+                .build());
     }
 
     // -------------------------------- save methods --------------------------------
@@ -697,9 +699,9 @@ public class CrawlingInit {
     }
 
     private void saveReviewMediaList(Review review, List<Media> reviewMediaList) {
-//        for (Media media : reviewMediaList) {
-//            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
-//        }
+        for (Media media : reviewMediaList) {
+            reviewMediaListRepository.save(ReviewMediaCrawlingAddDto.toDto(media.getId(), review).toEntity());
+        }
     }
 
     private List<Event> createEvents() {
@@ -712,13 +714,6 @@ public class CrawlingInit {
                 continue;
             }
 
-            Event event = Event.builder()
-                    .eventName(eventName)
-                    .discountRate(discountRate)
-                    .startDate(LocalDate.now())
-                    .endDate(LocalDate.now().plusDays(7))
-                    .build();
-
             EventRequestDto requestDto = EventRequestDto.toDto(EventRequestVo.builder()
                     .eventName(eventName)
                     .discountRate(discountRate)
@@ -726,20 +721,16 @@ public class CrawlingInit {
                     .endDate(LocalDate.now().plusDays(7))
                     .build());
 
-//            EventRequestVo requestVo = EventRequestVo.builder()
-//                    .eventName(eventName)
-//                    .discountRate(discountRate)
-//                    .startDate(LocalDate.now())
-//                    .endDate(LocalDate.now().plusDays(7))
-//                    .build();
-//
-//            EventRequestDto requestDto = EventRequestDto.toDto(requestVo);
+            eventCrawlingService.addCrawlEvent(requestDto);
 
-//            eventService.addCrawlEvent(event);
-            eventService.addCrawlEvent(requestDto);
+        }
+
+        for (Event event : eventRepository.findAll()) {
             events.add(event);
         }
+
         return events;
+
     }
 
     private void saveProductMedia(List<ProductMediaList> productMediaList) {
