@@ -8,4 +8,11 @@ import java.util.List;
 
 @Repository
 public interface EventMediaRepository extends JpaRepository<EventMedia, Long> {
+
+    List<EventMedia> findAllByEventId(Long eventId);
+
+    List<EventMedia> findByProductId(Long productId);
+
+    EventMedia findByMediaId(Long mediaId);
+
 }

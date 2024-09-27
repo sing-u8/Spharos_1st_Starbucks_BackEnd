@@ -7,10 +7,6 @@ import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MenuCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.entity.BottomCategory;
-import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
-import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
@@ -52,7 +48,6 @@ import TRaMis8khae.starbucks.vendor.application.VolumeService;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
-import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 
 import com.amazonaws.regions.Regions;
@@ -122,7 +117,12 @@ public class CrawlingInit {
 //        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
 //        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
-        String excelFilePath = "/Users/starbucks_products.xlsx";
+
+        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
+        //String excelFilePath = "/Users/starbucks_products.xlsx";
+
+//        String excelFilePath = "/Users/starbucks_products.xlsx";
+//        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -426,34 +426,39 @@ public class CrawlingInit {
 
         // event
         int productIndex = 0;
-
-        List<Optional<Media>> thumbCheckedTrue = mediaRepository
-                .findByThumbCheckedIsTrue();
-
-        List<Media> eventMediaList = new ArrayList<>();
-
-        for (Optional<Media> media : thumbCheckedTrue) {
-            eventMediaList.add(media.get());
-        }
-
-        for (Media media : eventMediaList) {
-            EventMedia eventMedia = EventMedia.builder()
-                    .event(events.get(0))
-                    .mediaId(media.getId())
-                    .build();
-            eventMediaRepository.save(eventMedia);
-        }
+        int eventProductIndex = 0;
 
         for (Event event : events) {
+
+            Product product = eventProducts.get(eventProductIndex++);
+
+            Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
+
+            if (productEvent.isEmpty()) {
+                continue;
+            }
+
+            List<ProductMediaList> byProductUUID = productMediaListRepository
+                    .findByProductUUID(productEvent.get().getProductUUID());
+
+            for (ProductMediaList productMediaList : byProductUUID) {
+                EventMedia eventMedia = EventMedia.builder()
+                        .eventId(event.getId())
+                        .mediaId(productMediaList.getMediaId())
+                        .productId(productEvent.get().getId())
+                        .build();
+                eventMediaRepository.save(eventMedia);
+            }
+
             for (int i = 0; i < 5; i++) {
-                if (eventProducts.size() <= 9) {
+                if (eventProducts.size() <= 9 || productIndex >= eventProducts.size()) {
                     break;
                 }
 
-                Product product = eventProducts.get(productIndex++);
+                Product eventProduct = eventProducts.get(productIndex++);
 
                 ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
-                        .product(product)
+                        .product(eventProduct)
                         .event(event)
                         .build();
 
@@ -705,7 +710,9 @@ public class CrawlingInit {
     }
 
     private List<Event> createEvents() {
+
         List<Event> events = new ArrayList<>();
+
         for (int i = 1; i <= 8; i++) {
             int discountRate = 5;
             String eventName = "event" + i;

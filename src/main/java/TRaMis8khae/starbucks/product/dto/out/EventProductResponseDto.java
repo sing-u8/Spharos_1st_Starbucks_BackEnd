@@ -15,6 +15,10 @@ public class EventProductResponseDto {
 
 	private Double price;
 
+	private String productUUID;
+
+	private Long productId;
+
 	private Long productMediaId;
 
 	private String productUUID;
@@ -26,6 +30,17 @@ public class EventProductResponseDto {
 			.productMediaId(media.getId())
 			.price(product.getPrice())
 			.productUUID(product.getProductUUID())
+			.productId(product.getId())
 			.build();
+	}
+
+	public EventProductResponseDto toVo(EventProductResponseDto responseDto) {
+		return EventProductResponseDto.builder()
+				.name(responseDto.getName())
+				.productMediaId(responseDto.getProductMediaId())
+				.price(responseDto.getPrice())
+				.productUUID(responseDto.getProductUUID())
+				.productId(responseDto.getProductId())
+				.build();
 	}
 }

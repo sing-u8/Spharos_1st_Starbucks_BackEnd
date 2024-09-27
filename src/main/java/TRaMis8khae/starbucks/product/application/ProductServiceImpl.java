@@ -3,9 +3,11 @@ package TRaMis8khae.starbucks.product.application;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
+
 import TRaMis8khae.starbucks.common.utils.CursorPage;
 import TRaMis8khae.starbucks.event.dto.in.EventProductRequestDto;
 import TRaMis8khae.starbucks.media.application.MediaService;
+
 import TRaMis8khae.starbucks.media.entity.Media;
 import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
@@ -15,7 +17,6 @@ import TRaMis8khae.starbucks.product.dto.out.ProductDetailResponseDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
-import TRaMis8khae.starbucks.product.vo.out.ProductDetailResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -95,7 +96,7 @@ public class ProductServiceImpl implements ProductService{
 
         List<EventProductResponseDto> eventProductResponseDtos = new ArrayList<>();
         List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
-        Media media = null;
+        Media media = new Media();
 
         for (Product product : products) {
             List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(product.getProductUUID());
@@ -111,6 +112,10 @@ public class ProductServiceImpl implements ProductService{
             }
             eventProductResponseDtos.add(EventProductResponseDto.toDto(product, media));
         }
+
+        log.info("@@@@@@@@@@ eventProductResponseDtos: {}", eventProductResponseDtos);
+        log.info("@@@@@@@@@@ products: {}", products.get(0));
+        log.info("@@@@@@@@@@ media: {}", products.get(1));
 
         if (eventProductResponseDtos.size() == pageable.getPageSize()) {
             hasNext = true;

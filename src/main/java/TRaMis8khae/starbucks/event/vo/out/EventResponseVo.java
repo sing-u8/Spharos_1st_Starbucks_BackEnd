@@ -20,6 +20,6 @@ public class EventResponseVo {
 
     private LocalDate endDate;
 
-    private List<String> mediaPath;
+//    private List<String> mediaPath;
 
 }
