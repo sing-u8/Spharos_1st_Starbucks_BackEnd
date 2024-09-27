@@ -20,6 +20,7 @@ import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.application.EventCrawlingService;
 import TRaMis8khae.starbucks.event.application.EventService;
+import TRaMis8khae.starbucks.event.dto.in.EventMediaRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
@@ -122,7 +123,8 @@ public class CrawlingInit {
 //        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
 //        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
-        String excelFilePath = "/Users/starbucks_products.xlsx";
+//        String excelFilePath = "/Users/starbucks_products.xlsx";
+        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -426,9 +428,9 @@ public class CrawlingInit {
         }
 
         // event
+        int eventIndex = 0;
         int productIndex = 0;
         int eventProductIndex = 0;
-        int eventIndex = 0;
 
         List<Optional<Media>> thumbCheckedTrue = mediaRepository
                 .findByThumbCheckedIsTrue();
@@ -443,7 +445,7 @@ public class CrawlingInit {
             int mediaCount = 0;
 
             for (Media media : eventMediaList) {
-                if (mediaCount >= 5) {
+                if (mediaCount >= 5) { // 각 이벤트당 5개의 상품을 매칭
                     break;
                 }
 
@@ -453,21 +455,29 @@ public class CrawlingInit {
 
                 Product product = eventProducts.get(eventProductIndex++);
 
-                Optional<Product> optionalProduct = productRepository.findByProductUUID(product.getProductUUID());
-                if (optionalProduct.isEmpty()) {
+                Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
+
+                if (productEvent.isEmpty()) {
                     continue;
                 }
 
-                EventMedia eventMedia = EventMedia.builder()
-                        .event(event)
-                        .mediaId(media.getId())
-                        .productId(optionalProduct.get().getId())
-                        .build();
+                List<ProductMediaList> byProductUUID = productMediaListRepository
+                        .findByProductUUID(productEvent.get().getProductUUID());
 
-                eventMediaRepository.save(eventMedia);
+                for (ProductMediaList productMediaList : byProductUUID) {
+                    EventMedia eventMedia = EventMedia.builder()
+                            .eventId(event.getId())
+                            .mediaId(productMediaList.getMediaId())
+                            .productId(productEvent.get().getId())
+                            .build();
+                    eventMediaRepository.save(eventMedia);
+                }
+
                 mediaCount++;
                 eventIndex = (eventIndex + 1) % events.size();
             }
+
+//            productMediaListRepository.findByProductUUID();
 
             for (int i = 0; i < 5; i++) {
                 if (eventProducts.size() <= 9 || productIndex >= eventProducts.size()) {

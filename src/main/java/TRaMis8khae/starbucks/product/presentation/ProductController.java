@@ -74,7 +74,7 @@ public class ProductController {
     }
     //이름, 가격, 썸네일(prouct media id)
     @Operation(summary = "상품 상세 조회하기", description = "상품 상세를 조회합니다", tags = {"Product Service"})
-    @GetMapping("/{productUUID}")
+    @GetMapping("detail/{productUUID}")
     public BaseResponse<ProductDetailResponseVo> getDetailProduct(@PathVariable String productUUID) {
 
         ProductDetailResponseDto productDetailResponseDto = productService.findDetailProduct(productUUID);

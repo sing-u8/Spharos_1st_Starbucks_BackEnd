@@ -9,7 +9,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @AllArgsConstructor
-public class EventProductRequestDto {
+public class EventProductListRequestDto {
 
     private String productUUID;
 

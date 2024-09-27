@@ -11,6 +11,8 @@ public interface EventMediaRepository extends JpaRepository<EventMedia, Long> {
 
     List<EventMedia> findAllByEventId(Long eventId);
 
-    EventMedia findByProductId(Long productId);
+    List<EventMedia> findByProductId(Long productId);
+
+    EventMedia findByMediaId(Long mediaId);
 
 }
