@@ -33,7 +33,7 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
                         reviewMediaList.mediaId
                 ))
                 .from(review)
-                    .join(reviewMediaList)
+                    .leftJoin(reviewMediaList)
                     .on(review.id.eq(reviewMediaList.review.id))
                 .where(eqProductUUID(productUUID))
                 .offset(pageable.getOffset())
