@@ -428,66 +428,44 @@ public class CrawlingInit {
         }
 
         // event
-        int eventIndex = 0;
         int productIndex = 0;
         int eventProductIndex = 0;
 
-        List<Optional<Media>> thumbCheckedTrue = mediaRepository
-                .findByThumbCheckedIsTrue();
-
-        List<Media> eventMediaList = new ArrayList<>();
-
-        for (Optional<Media> media : thumbCheckedTrue) {
-            eventMediaList.add(media.get());
-        }
-
         for (Event event : events) {
-            int mediaCount = 0;
 
-            for (Media media : eventMediaList) {
-                if (mediaCount >= 5) { // 각 이벤트당 5개의 상품을 매칭
-                    break;
-                }
+//            if (eventProductIndex >= eventProducts.size()) {
+//                break;
+//            }
 
-                if (eventProductIndex >= eventProducts.size()) {
-                    break;
-                }
+            Product product = eventProducts.get(eventProductIndex++);
 
-                Product product = eventProducts.get(eventProductIndex++);
+            Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
 
-                Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
-
-                if (productEvent.isEmpty()) {
-                    continue;
-                }
-
-                List<ProductMediaList> byProductUUID = productMediaListRepository
-                        .findByProductUUID(productEvent.get().getProductUUID());
-
-                for (ProductMediaList productMediaList : byProductUUID) {
-                    EventMedia eventMedia = EventMedia.builder()
-                            .eventId(event.getId())
-                            .mediaId(productMediaList.getMediaId())
-                            .productId(productEvent.get().getId())
-                            .build();
-                    eventMediaRepository.save(eventMedia);
-                }
-
-                mediaCount++;
-                eventIndex = (eventIndex + 1) % events.size();
+            if (productEvent.isEmpty()) {
+                continue;
             }
 
-//            productMediaListRepository.findByProductUUID();
+            List<ProductMediaList> byProductUUID = productMediaListRepository
+                    .findByProductUUID(productEvent.get().getProductUUID());
+
+            for (ProductMediaList productMediaList : byProductUUID) {
+                EventMedia eventMedia = EventMedia.builder()
+                        .eventId(event.getId())
+                        .mediaId(productMediaList.getMediaId())
+                        .productId(productEvent.get().getId())
+                        .build();
+                eventMediaRepository.save(eventMedia);
+            }
 
             for (int i = 0; i < 5; i++) {
                 if (eventProducts.size() <= 9 || productIndex >= eventProducts.size()) {
                     break;
                 }
 
-                Product product = eventProducts.get(productIndex++);
+                Product eventProduct = eventProducts.get(productIndex++);
 
                 ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
-                        .product(product)
+                        .product(eventProduct)
                         .event(event)
                         .build();
 
