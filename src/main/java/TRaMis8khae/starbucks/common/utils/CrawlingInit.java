@@ -121,7 +121,7 @@ public class CrawlingInit {
 //        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
 //        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
-        String excelFilePath = "D:\\starbucks_products5.xlsx";
+        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
