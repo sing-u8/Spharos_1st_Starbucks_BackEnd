@@ -470,51 +470,38 @@ public class CrawlingInit {
             eventMediaList.add(media.get());
         }
 
-//        for (Media media : eventMediaList) {
-//
-//
-//            Event currentEvent = events.get(eventIndex);
-//
-//            EventMedia eventMedia = EventMedia.builder()
-//                    .event(currentEvent)
-//                    .mediaId(media.getId())
-//                    .build();
-//
-//            eventMediaRepository.save(eventMedia);
-//
-//            eventIndex = (eventIndex + 1) % events.size();
-//        }
-
         for (Event event : events) {
-
             int mediaCount = 0;
 
             for (Media media : eventMediaList) {
-
                 if (mediaCount >= 5) {
+                    break;
+                }
+
+                if (eventProductIndex >= eventProducts.size()) {
                     break;
                 }
 
                 Product product = eventProducts.get(eventProductIndex++);
 
-                Optional<Product> productId = productRepository.findByProductUUID(product.getProductUUID());
+                Optional<Product> optionalProduct = productRepository.findByProductUUID(product.getProductUUID());
+                if (optionalProduct.isEmpty()) {
+                    continue;
+                }
 
                 EventMedia eventMedia = EventMedia.builder()
                         .event(event)
                         .mediaId(media.getId())
-                        .productId(productId.get().getId())
+                        .productId(optionalProduct.get().getId())
                         .build();
 
                 eventMediaRepository.save(eventMedia);
-
                 mediaCount++;
                 eventIndex = (eventIndex + 1) % events.size();
             }
 
-
             for (int i = 0; i < 5; i++) {
-
-                if (eventProducts.size() <= 9) {
+                if (eventProducts.size() <= 9 || productIndex >= eventProducts.size()) {
                     break;
                 }
 
@@ -526,9 +513,7 @@ public class CrawlingInit {
                         .build();
 
                 eventCrawlingService.addCrawlEventProduct(requestDto);
-
             }
-
         }
 
         workbook.close();
