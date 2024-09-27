@@ -83,21 +83,21 @@ public class EventController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
-
-        List<String> productUUID = eventService.getProductUUID(eventId);
-
-        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
-
-        log.info("@@@@@@@@@@@@@@@@@@@@@@SLICE!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-        Slice<EventProductResponseVo> responseVos = products.map(product ->{
-            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);
-            return EventProductResponseDto.toVo(responseDto);
-        });
-
-        return new BaseResponse<>(responseVos);
-
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        List<String> productUUID = eventService.getProductUUID(eventId);
+//
+//        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
+//
+//        log.info("@@@@@@@@@@@@@@@@@@@@@@SLICE!!!!!!!!!!!!!!!!!!!!!!!!!");
+//
+//        Slice<EventProductResponseVo> responseVos = products.map(product ->{
+//            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);
+//            return EventProductResponseDto.toVo(responseDto);
+//        });
+//
+//        return new BaseResponse<>(responseVos);
+        return null;
     }
 
     @Operation(summary = "이벤트 삭제 API", description = "deleteEvent API", tags = {"Event"})

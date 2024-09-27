@@ -4,6 +4,8 @@ package TRaMis8khae.starbucks.product.vo.out;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -15,12 +17,13 @@ public class ProductDetailResponseVo {
 
 	private Double price;
 
-	private Double productScore;
-
 	private Boolean isAdditionalTogether;
 
 	private Boolean additionalChecked;
 
 	private Integer maxOrderCount;
 
+	private Long thumbId;
+
+	private List<Long> detailIds;
 }

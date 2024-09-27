@@ -14,4 +14,8 @@ public interface ProductMediaService {
 
 	List<ProductMediaListResponseDto> findProductMedia(String productUUID);
 
+	Long findThumbMediaId(String productUUID);
+
+	List<Long> findDetailMediaId(String productUUID);
+
 }

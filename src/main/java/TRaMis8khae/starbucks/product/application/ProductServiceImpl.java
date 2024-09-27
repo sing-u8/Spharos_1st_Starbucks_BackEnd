@@ -20,6 +20,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -88,9 +89,8 @@ public class ProductServiceImpl implements ProductService{
     public Slice<EventProductResponseDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
 
         boolean hasNext = false;
-        Long mediaId = 0L;
 
-        List<EventProductResponseDto> eventProductResponseDtos = null;
+        List<EventProductResponseDto> eventProductResponseDtos = new ArrayList<>();
         List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
         Media media = null;
 
@@ -121,8 +121,25 @@ public class ProductServiceImpl implements ProductService{
 
         Product product = productRepository.findByProductUUID(productUUID)
             .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
+        List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(productUUID);
+
+        List<Long> productDetailImageIds = new ArrayList<>();
+        Long productThumbImageId = null;
+
+        for (ProductMediaList productMediaList : productMediaLists) {
+            Media media = mediaRepository.findById(productMediaList.getId()).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+            );
+
+            if (media.getThumbChecked()) {
+                productThumbImageId = media.getId();
+                continue;
+            }
+            productDetailImageIds.add(media.getId());
 
 
-        return ProductDetailResponseDto.toDto(product);
+        }
+
+        return ProductDetailResponseDto.toDto(product, productThumbImageId, productDetailImageIds);
     }
 }

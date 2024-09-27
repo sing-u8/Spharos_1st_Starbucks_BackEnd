@@ -6,6 +6,9 @@ import TRaMis8khae.starbucks.product.vo.out.ProductDetailResponseVo;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
+
 @Getter
 @Builder
 public class ProductDetailResponseDto {
@@ -16,25 +19,28 @@ public class ProductDetailResponseDto {
 
 	private Double price;
 
-	private Double productScore;
-
 	private Boolean isAdditionalTogether;
 
 	private Boolean additionalChecked;
 
 	private Integer maxOrderCount;
 
+	private Long thumbId;
 
-	public static ProductDetailResponseDto toDto(Product product) {
+	private List<Long> detailIds;
+
+
+	public static ProductDetailResponseDto toDto(Product product, Long thumbId, List<Long> detailIds) {
 
 		return ProductDetailResponseDto.builder()
 			.price(product.getPrice())
 			.productName(product.getProductName())
 			.description(product.getDescription())
-			.productScore(product.getProductScore())
 			.isAdditionalTogether(product.getIsAdditionalTogether())
 			.additionalChecked(product.getAdditionalChecked())
 			.maxOrderCount(product.getMaxOrderCount())
+			.thumbId(thumbId)
+			.detailIds(detailIds)
 			.build();
 	}
 
@@ -45,10 +51,11 @@ public class ProductDetailResponseDto {
 			.price(price)
 			.productName(productName)
 			.description(description)
-			.productScore(productScore)
 			.isAdditionalTogether(isAdditionalTogether)
 			.additionalChecked(additionalChecked)
 			.maxOrderCount(maxOrderCount)
+			.thumbId(thumbId)
+			.detailIds(detailIds)
 			.build();
 	}
 }
