@@ -4,10 +4,16 @@ import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.common.utils.CursorPage;
+import TRaMis8khae.starbucks.event.dto.in.EventProductRequestDto;
+import TRaMis8khae.starbucks.media.entity.Media;
+import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.EventProductResponseDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductDetailResponseDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.*;
 import TRaMis8khae.starbucks.product.infrastructure.*;
+import TRaMis8khae.starbucks.product.vo.out.ProductDetailResponseVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -23,6 +29,8 @@ public class ProductServiceImpl implements ProductService{
 
     private final ProductRepository productRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
+    private final ProductMediaListRepository productMediaListRepository;
+    private final MediaRepository mediaRepository;
 
     @Override
     @Transactional
@@ -77,19 +85,31 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<ProductResponseDto> findProductDtosByProductUUID(List<String> productUUID) {
-
-
-        return productUUID.stream()
-            .map(productRepository::findByProductUUID)
-            .map(products -> products.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)))
-            .map(ProductResponseDto::toDto).toList();
-    }
-
-    @Override
-    public Slice<Product> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
+    public Slice<EventProductRequestDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
 
         boolean hasNext = false;
+        Long mediaId = 0L;
+
+        List<EventProductResponseDto> eventProductResponseDtos = null;
+
+        for (String uuid : productUUID) {
+            List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(uuid);
+            Product product = productRepository.findByProductUUID(uuid).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
+            );
+            Media media = null;
+            for (ProductMediaList productMediaList : productMediaLists) {
+                media = mediaRepository.findById(productMediaList.getMediaId()).orElseThrow(
+                    () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+                );
+
+                if (media.getThumbChecked()) {
+                    break;
+                }
+            }
+            eventProductResponseDtos.add(EventProductResponseDto.toDto(product, media));
+        }
+
 
         List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
 
@@ -97,8 +117,16 @@ public class ProductServiceImpl implements ProductService{
             hasNext = true;
         }
 
-        return new SliceImpl<>(products, pageable, hasNext);
+        return new SliceImpl<>(eventProductResponseDtos, pageable, hasNext);
     }
 
+    @Override
+    public ProductDetailResponseDto findDetailProduct(String productUUID) {
 
+        Product product = productRepository.findByProductUUID(productUUID)
+            .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
+
+
+        return ProductDetailResponseDto.toDto(product);
+    }
 }
