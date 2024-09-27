@@ -24,10 +24,12 @@ public class EventMedia {
 
     private Long mediaId;
 
+    private Long productId;
+
     @Builder
-    public EventMedia(Event event, Long mediaId) {
+    public EventMedia(Event event, Long mediaId, Long productId) {
         this.event = event;
         this.mediaId = mediaId;
+        this.productId = productId;
     }
-
 }
