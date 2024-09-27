@@ -427,6 +427,8 @@ public class CrawlingInit {
 
         // event
         int productIndex = 0;
+        int eventProductIndex = 0;
+        int eventIndex = 0;
 
         List<Optional<Media>> thumbCheckedTrue = mediaRepository
                 .findByThumbCheckedIsTrue();
@@ -437,17 +439,38 @@ public class CrawlingInit {
             eventMediaList.add(media.get());
         }
 
-        for (Media media : eventMediaList) {
-            EventMedia eventMedia = EventMedia.builder()
-                    .event(events.get(0))
-                    .mediaId(media.getId())
-                    .build();
-            eventMediaRepository.save(eventMedia);
-        }
-
         for (Event event : events) {
+            int mediaCount = 0;
+
+            for (Media media : eventMediaList) {
+                if (mediaCount >= 5) {
+                    break;
+                }
+
+                if (eventProductIndex >= eventProducts.size()) {
+                    break;
+                }
+
+                Product product = eventProducts.get(eventProductIndex++);
+
+                Optional<Product> optionalProduct = productRepository.findByProductUUID(product.getProductUUID());
+                if (optionalProduct.isEmpty()) {
+                    continue;
+                }
+
+                EventMedia eventMedia = EventMedia.builder()
+                        .event(event)
+                        .mediaId(media.getId())
+                        .productId(optionalProduct.get().getId())
+                        .build();
+
+                eventMediaRepository.save(eventMedia);
+                mediaCount++;
+                eventIndex = (eventIndex + 1) % events.size();
+            }
+
             for (int i = 0; i < 5; i++) {
-                if (eventProducts.size() <= 9) {
+                if (eventProducts.size() <= 9 || productIndex >= eventProducts.size()) {
                     break;
                 }
 
@@ -697,7 +720,9 @@ public class CrawlingInit {
     }
 
     private List<Event> createEvents() {
+
         List<Event> events = new ArrayList<>();
+
         for (int i = 1; i <= 8; i++) {
             int discountRate = 5;
             String eventName = "event" + i;

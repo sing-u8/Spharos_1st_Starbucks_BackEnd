@@ -47,6 +47,9 @@ public class Member implements UserDetails {
     @Column(length = 100)
     private String address;
 
+    @Column(length = 50)
+    private String memberMaskingId;
+
     @Column(length = 6)
     private String paymentPassword;
 
@@ -65,6 +68,7 @@ public class Member implements UserDetails {
                   String address,
                   String paymentPassword,
                   Boolean memberStatus,
+                  String memberMaskingId,
                   Boolean marketingConsentEmail,
                   Boolean marketingConsentSms
     ) {
@@ -78,6 +82,7 @@ public class Member implements UserDetails {
         this.email = email;
         this.nickname = nickname;
         this.address = address;
+        this.memberMaskingId = memberMaskingId;
         this.paymentPassword = paymentPassword;
         this.memberStatus = memberStatus;
     }

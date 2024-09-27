@@ -20,7 +20,6 @@ public class EventInfoResponseDto {
     private Integer discountRate;
     private LocalDate startDate;
     private LocalDate endDate;
-
     private List<String> eventImage;
 
     public static EventInfoResponseDto toDto(Event event) {

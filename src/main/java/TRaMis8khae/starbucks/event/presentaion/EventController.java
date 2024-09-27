@@ -6,9 +6,12 @@ import TRaMis8khae.starbucks.event.application.EventService;
 import TRaMis8khae.starbucks.event.dto.out.EventInfoResponseDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.out.EventProductResponseDto;
+import TRaMis8khae.starbucks.event.entity.EventMedia;
+import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.vo.in.EventRequestVo;
 import TRaMis8khae.starbucks.event.vo.out.EventResponseVo;
 import TRaMis8khae.starbucks.event.vo.out.EventProductResponseVo;
+import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.entity.Product;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +32,8 @@ public class EventController {
 
     private final EventService eventService;
     private final ProductService productService;
+    private final EventMediaRepository eventMediaRepository;
+    private final MediaRepository mediaRepository;
 
     @Operation(summary = "이벤트 생성 API", description = "createEvent API", tags = {"Event"})
     @PostMapping("/event")
@@ -55,27 +60,6 @@ public class EventController {
 
     }
 
-//    @Operation(summary = "이벤트 상품 조회 API", description = "getEventProductList API", tags = {"Event"})
-//    @GetMapping("/event/product/{eventId}")
-//    public BaseResponse<List<EventProductResponseVo>> getEventProductList(@PathVariable Long eventId) {
-//
-//        List<String> productUUID = eventService.getProductUUID(eventId);
-//
-//        List<Product> products = productService.findProductsByProductUUID(productUUID);// product코드 사용
-//
-//        log.info("products: {}", products.get(0).getDescription());
-//
-//        List<EventProductResponseVo> productResponseVos = products.stream()
-//                .map(EventProductResponseDto::toDto)
-//                .map(EventProductResponseDto::toVo)
-//                .toList();
-//
-//        return new BaseResponse<>(productResponseVos);
-//
-//    }
-
-
-//     Slice로 변경
     @Operation(summary = "이벤트 상품 조회 API", description = "getEventProductList API", tags = {"Event"})
     @GetMapping("/event/product/{eventId}")
     public BaseResponse<Slice<EventProductResponseVo>> getEventProductList(
@@ -87,12 +71,16 @@ public class EventController {
 
         List<String> productUUID = eventService.getProductUUID(eventId);
 
-        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable); // product코드 사용
-
-        log.info("@@@@@@@@@@@@@@@@@@@@@@SLICE!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Slice<Product> products = productService.findProductsByProductUUID(productUUID, pageable);
 
         Slice<EventProductResponseVo> responseVos = products.map(product ->{
-            EventProductResponseDto responseDto = EventProductResponseDto.toDto(product);
+
+            Long mediaId = eventMediaRepository.findByProductId(product.getId()).getMediaId();
+            String media = mediaRepository.findById(mediaId).get().getMediaUrl();
+
+            EventProductResponseDto responseDto = EventProductResponseDto.toDto(
+                    product, media);
+
             return EventProductResponseDto.toVo(responseDto);
         });
 
