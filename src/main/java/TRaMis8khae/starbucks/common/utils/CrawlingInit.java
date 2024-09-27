@@ -7,10 +7,6 @@ import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MenuCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.entity.BottomCategory;
-import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
-import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
@@ -20,7 +16,6 @@ import TRaMis8khae.starbucks.admin.vo.MiddleCategoryRequestVo;
 import TRaMis8khae.starbucks.admin.vo.TopCategoryRequestVo;
 import TRaMis8khae.starbucks.event.application.EventCrawlingService;
 import TRaMis8khae.starbucks.event.application.EventService;
-import TRaMis8khae.starbucks.event.dto.in.EventMediaRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
@@ -53,7 +48,6 @@ import TRaMis8khae.starbucks.vendor.application.VolumeService;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
-import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 
 import com.amazonaws.regions.Regions;
@@ -123,8 +117,12 @@ public class CrawlingInit {
 //        AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
 //        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
+
+        String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
+        //String excelFilePath = "/Users/starbucks_products.xlsx";
+
 //        String excelFilePath = "/Users/starbucks_products.xlsx";
-        String excelFilePath = "D:\\starbucks_products5.xlsx";
+//        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -432,10 +430,6 @@ public class CrawlingInit {
         int eventProductIndex = 0;
 
         for (Event event : events) {
-
-//            if (eventProductIndex >= eventProducts.size()) {
-//                break;
-//            }
 
             Product product = eventProducts.get(eventProductIndex++);
 

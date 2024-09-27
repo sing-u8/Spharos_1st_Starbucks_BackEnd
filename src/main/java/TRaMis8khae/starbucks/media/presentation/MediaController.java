@@ -44,7 +44,7 @@ public class MediaController {
      */
     @Operation(summary = "Get Media API", description = "Get Media API 입니다.", tags = {"Media"})
     @GetMapping("/{mediaId}")
-    public BaseResponse<MediaAddResponseVo> getMedia(@PathVariable Long mediaId) {
+    public BaseResponse<MediaAddResponseVo> getMedia(@PathVariable Long mediaId, String reviewUUID) {
         return new BaseResponse<>(
                 mediaService.getMedia(mediaId).toVo()
         );

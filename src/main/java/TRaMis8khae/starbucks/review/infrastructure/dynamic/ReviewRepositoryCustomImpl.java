@@ -26,10 +26,10 @@ public class ReviewRepositoryCustomImpl implements ReviewRepositoryCustom {
         List<ReviewReadResponseDto> content = queryFactory
                 .select(Projections.constructor(ReviewReadResponseDto.class,
                         review.productUUID,
-                        review.memberUUID,
                         review.memberMaskingId,
                         review.reviewContext,
                         review.reviewScore,
+                        review.updatedAt,
                         reviewMediaList.mediaId
                 ))
                 .from(review)
