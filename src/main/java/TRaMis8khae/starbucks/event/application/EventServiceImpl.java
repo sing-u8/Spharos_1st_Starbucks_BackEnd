@@ -5,9 +5,13 @@ import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventProductListRepository;
+import TRaMis8khae.starbucks.product.dto.out.EventProductResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,6 +77,12 @@ public class EventServiceImpl implements EventService {
 
         return eventRepository.findByEventName(eventName);
 
+    }
+
+    @Override
+    public Slice<EventProductResponseDto> getEventProductList(Pageable pageable, Slice productSlice) {
+
+        return null;
     }
 
 }

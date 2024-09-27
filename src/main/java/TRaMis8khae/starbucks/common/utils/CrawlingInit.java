@@ -7,10 +7,6 @@ import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MenuCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.entity.BottomCategory;
-import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
-import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
@@ -52,7 +48,6 @@ import TRaMis8khae.starbucks.vendor.application.VolumeService;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
-import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 
 import com.amazonaws.regions.Regions;
@@ -123,6 +118,7 @@ public class CrawlingInit {
 //        S3Object s3object = s3client.getObject(new GetObjectRequest("t-ramis8khae.bucket", "starbucks_products.xlsx"));
 
         String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
+        //String excelFilePath = "D:\\starbucks_products5.xlsx";
         //String excelFilePath = "/Users/starbucks_products.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
@@ -270,15 +266,14 @@ public class CrawlingInit {
                 String readReview = getCellValue(row.getCell(9));
 
                 // media 객체 생성
-                List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-                saveMedia(mediaList);
+                List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia, MediaKind.PRODUCT);
 
                 // product 객체 생성
                 ProductRequestDto parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 String productUUID = saveProduct(parsedProduct);
 
                 //product media 객체 생성
-                List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
+                List<Media> productMedia = parseProductDescriptionMedia(descriptionImage, mediaList);
                 saveMedia(productMedia);
 
                 //product media list 객체 생성
@@ -373,12 +368,12 @@ public class CrawlingInit {
                     if (reviewImages != null && !reviewImages.isEmpty()) {
                         if (reviewImages.size() == 1) {
                             // 이미지가 1개일 때
-                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
+                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0), MediaKind.REVIEW);  // 썸네일만 전달, mainMedia는 null
                         } else {
                             // 이미지가 2개 이상일 때
                             String thumbnailMedia = reviewImages.get(0);  // 첫 번째 이미지를 썸네일로
                             String reviewMedia = String.join(", ", reviewImages.subList(1, reviewImages.size()));  // 나머지를 mainMedia로
-                            reviewMediaList = parseMedia(thumbnailMedia, reviewMedia);  // 썸네일과 나머지 이미지를 함께 전달
+                            reviewMediaList = parseMedia(thumbnailMedia, reviewMedia, MediaKind.REVIEW);  // 썸네일과 나머지 이미지를 함께 전달
                         }
                     }
 
@@ -429,45 +424,27 @@ public class CrawlingInit {
         // event
         int productIndex = 0;
         int eventProductIndex = 0;
-        int eventIndex = 0;
-
-        List<Optional<Media>> thumbCheckedTrue = mediaRepository
-                .findByThumbCheckedIsTrue();
-
-        List<Media> eventMediaList = new ArrayList<>();
-
-        for (Optional<Media> media : thumbCheckedTrue) {
-            eventMediaList.add(media.get());
-        }
 
         for (Event event : events) {
-            int mediaCount = 0;
 
-            for (Media media : eventMediaList) {
-                if (mediaCount >= 5) {
-                    break;
-                }
+            Product product = eventProducts.get(eventProductIndex++);
 
-                if (eventProductIndex >= eventProducts.size()) {
-                    break;
-                }
+            Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
 
-                Product product = eventProducts.get(eventProductIndex++);
+            if (productEvent.isEmpty()) {
+                continue;
+            }
 
-                Optional<Product> optionalProduct = productRepository.findByProductUUID(product.getProductUUID());
-                if (optionalProduct.isEmpty()) {
-                    continue;
-                }
+            List<ProductMediaList> byProductUUID = productMediaListRepository
+                    .findByProductUUID(productEvent.get().getProductUUID());
 
+            for (ProductMediaList productMediaList : byProductUUID) {
                 EventMedia eventMedia = EventMedia.builder()
-                        .event(event)
-                        .mediaId(media.getId())
-                        .productId(optionalProduct.get().getId())
+                        .eventId(event.getId())
+                        .mediaId(productMediaList.getMediaId())
+                        .productId(productEvent.get().getId())
                         .build();
-
                 eventMediaRepository.save(eventMedia);
-                mediaCount++;
-                eventIndex = (eventIndex + 1) % events.size();
             }
 
             for (int i = 0; i < 5; i++) {
@@ -475,10 +452,10 @@ public class CrawlingInit {
                     break;
                 }
 
-                Product product = eventProducts.get(productIndex++);
+                Product eventProduct = eventProducts.get(productIndex++);
 
                 ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
-                        .product(product)
+                        .product(eventProduct)
                         .event(event)
                         .build();
 
@@ -536,26 +513,30 @@ public class CrawlingInit {
 
     }
 
-    public List<Media> parseProductDescriptionMedia(String description) {
+    public List<Media> parseProductDescriptionMedia(String description, List<Media> mediaList) {
 
         List<String> mediaUrls = Arrays.stream(description.split(","))
                 .map(String::trim) // 각 URL에서 공백 제거
                 .toList();
 
-        List<Media> mediaList = new ArrayList<>();
-
-        int count = 0;
+        int count = mediaList.size();
         for (String mediaUrl : mediaUrls) {
             Media media = Media.builder()
                     .mediaUrl(mediaUrl)
                     .thumbChecked(Boolean.FALSE)
                     .mediaType(MediaType.IMAGE)
                     .mediaKind(MediaKind.PRODUCT)
-                    .mediaSeq(count++)
+                    .mediaSeq(count)
                     .build();
+            count++;
             mediaList.add(media);
 
         }
+        for (Media media : mediaList) {
+            log.info("size: {} , id : {}, seq : {}, url : {}", mediaUrls.size(), media.getId(), media.getMediaSeq(), media.getMediaUrl());
+        }
+
+
         return mediaList;
 
     }
@@ -576,7 +557,8 @@ public class CrawlingInit {
         return productMediaLists;
     }
 
-    public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
+    //리뷰 이미지
+    public List<Media> parseMedia(String thumbnailMedia, String mainMedia, MediaKind mediaKind) {
         List<Media> mediaList = new ArrayList<>();
 
         // thumbnailMedia를 Media 객체로 변환
@@ -584,7 +566,7 @@ public class CrawlingInit {
                 .mediaUrl(thumbnailMedia)
                 .thumbChecked(true)
                 .mediaType(MediaType.IMAGE)
-                .mediaKind(MediaKind.PRODUCT)
+                .mediaKind(mediaKind)
                 .mediaSeq(1) // 썸네일의 seq는 1로 설정
                 .build();
 
@@ -597,11 +579,15 @@ public class CrawlingInit {
 
         // 나머지 이미지들은 thumbChecked = false로 설정하여 Media 객체로 추가
         for (int i = 0; i < mediaUrls.size(); i++) {
+            Boolean thumbChecked = false;
+            if (mediaKind == MediaKind.PRODUCT) {
+                thumbChecked = true;
+            }
             Media detailMedia = Media.builder()
                     .mediaUrl(mediaUrls.get(i))
-                    .thumbChecked(false)
+                    .thumbChecked(thumbChecked)
                     .mediaType(MediaType.IMAGE)
-                    .mediaKind(MediaKind.PRODUCT)
+                    .mediaKind(mediaKind)
                     .mediaSeq(i + 2) // seq는 2부터 시작
                     .build();
 

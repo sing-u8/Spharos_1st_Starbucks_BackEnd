@@ -45,4 +45,5 @@ public class ProductMediaListController {
 			ProductMediaListResponseDto::toVo).toList()
 		);
 	}
+
 }

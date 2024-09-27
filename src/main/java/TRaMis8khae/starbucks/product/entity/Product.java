@@ -43,4 +43,11 @@ public class Product extends BaseEntity {
 
     private Integer minOrderCount;
 
+    private long viewCount;
+
+
+    public void plusViewCount() {
+        this.viewCount = viewCount+1;
+    }
+
 }
