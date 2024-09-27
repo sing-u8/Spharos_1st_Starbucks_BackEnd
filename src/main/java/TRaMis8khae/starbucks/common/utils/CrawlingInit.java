@@ -467,18 +467,6 @@ public class CrawlingInit {
         file.close();
     }
 
-    private String getTopCode(TopCategoryRequestDto dto) {
-        return categoryService.addTopCategory(dto);
-    }
-
-    private String getMiddleCode(MiddleCategoryRequestDto dto) {
-        return categoryService.addMiddleCategory(dto);
-    }
-
-    private String getBottomCode(BottomCategoryRequestDto dto) {
-        return categoryService.addBottomCategory(dto);
-    }
-
     private String getCellValue(Cell cell) {
         return cell == null ? "" : cell.getStringCellValue();
     }
@@ -678,28 +666,14 @@ public class CrawlingInit {
         volumeService.addVolume(dto);
     }
 
-    private void saveTopCategory(TopCategory topCategory) {
-        topCategoryRepository.save(topCategory);
-    }
-
-
-    private void saveBottomCategory(BottomCategory bottomCategory) {
-        bottomCategoryRepository.save(bottomCategory);
-
-    }
-
-
     private void saveProductOption(ProductOptionRequestDto dto) {
         productOptionService.addProductOption(dto);
-    }
-
-    private void saveMiddleCategory(MiddleCategory middleCategory) {
-        middleCategoryRepository.save(middleCategory);
     }
 
     private void saveProductCategoryList(ProductCategoryListRequestDto dto) {
         productCategoryListService.addProductByCategory(dto);
     }
+
     private String saveProduct(ProductRequestDto dto) {
         return productService.addProduct(dto);
     }
@@ -757,6 +731,17 @@ public class CrawlingInit {
 
     }
 
+    private String getTopCode(TopCategoryRequestDto dto) {
+        return categoryService.addTopCategory(dto);
+    }
+
+    private String getMiddleCode(MiddleCategoryRequestDto dto) {
+        return categoryService.addMiddleCategory(dto);
+    }
+
+    private String getBottomCode(BottomCategoryRequestDto dto) {
+        return categoryService.addBottomCategory(dto);
+    }
 
     private void saveMenuCategory(MenuCategoryRequestDto dto) {
         menuCategoryService.addMenuCategory(dto);
