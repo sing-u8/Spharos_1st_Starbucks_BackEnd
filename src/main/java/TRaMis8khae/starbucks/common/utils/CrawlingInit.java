@@ -269,15 +269,14 @@ public class CrawlingInit {
                 String readReview = getCellValue(row.getCell(9));
 
                 // media 객체 생성
-                List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia);
-                saveMedia(mediaList);
+                List<Media> mediaList = parseMedia(thumbNailMedia, mainMedia, MediaKind.PRODUCT);
 
                 // product 객체 생성
                 ProductRequestDto parsedProduct = parseProduct(productName, Double.parseDouble(price), descriptionImage, descriptionTag);
                 String productUUID = saveProduct(parsedProduct);
 
                 //product media 객체 생성
-                List<Media> productMedia = parseProductDescriptionMedia(descriptionImage);
+                List<Media> productMedia = parseProductDescriptionMedia(descriptionImage, mediaList);
                 saveMedia(productMedia);
 
                 //product media list 객체 생성
@@ -372,12 +371,12 @@ public class CrawlingInit {
                     if (reviewImages != null && !reviewImages.isEmpty()) {
                         if (reviewImages.size() == 1) {
                             // 이미지가 1개일 때
-                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0));  // 썸네일만 전달, mainMedia는 null
+                            reviewMediaList = parseMedia(reviewImages.get(0), reviewImages.get(0), MediaKind.REVIEW);  // 썸네일만 전달, mainMedia는 null
                         } else {
                             // 이미지가 2개 이상일 때
                             String thumbnailMedia = reviewImages.get(0);  // 첫 번째 이미지를 썸네일로
                             String reviewMedia = String.join(", ", reviewImages.subList(1, reviewImages.size()));  // 나머지를 mainMedia로
-                            reviewMediaList = parseMedia(thumbnailMedia, reviewMedia);  // 썸네일과 나머지 이미지를 함께 전달
+                            reviewMediaList = parseMedia(thumbnailMedia, reviewMedia, MediaKind.REVIEW);  // 썸네일과 나머지 이미지를 함께 전달
                         }
                     }
 
@@ -517,26 +516,30 @@ public class CrawlingInit {
 
     }
 
-    public List<Media> parseProductDescriptionMedia(String description) {
+    public List<Media> parseProductDescriptionMedia(String description, List<Media> mediaList) {
 
         List<String> mediaUrls = Arrays.stream(description.split(","))
                 .map(String::trim) // 각 URL에서 공백 제거
                 .toList();
 
-        List<Media> mediaList = new ArrayList<>();
-
-        int count = 0;
+        int count = mediaList.size();
         for (String mediaUrl : mediaUrls) {
             Media media = Media.builder()
                     .mediaUrl(mediaUrl)
                     .thumbChecked(Boolean.FALSE)
                     .mediaType(MediaType.IMAGE)
                     .mediaKind(MediaKind.PRODUCT)
-                    .mediaSeq(count++)
+                    .mediaSeq(count)
                     .build();
+            count++;
             mediaList.add(media);
 
         }
+        for (Media media : mediaList) {
+            log.info("size: {} , id : {}, seq : {}, url : {}", mediaUrls.size(), media.getId(), media.getMediaSeq(), media.getMediaUrl());
+        }
+
+
         return mediaList;
 
     }
@@ -557,7 +560,8 @@ public class CrawlingInit {
         return productMediaLists;
     }
 
-    public List<Media> parseMedia(String thumbnailMedia, String mainMedia) {
+    //리뷰 이미지
+    public List<Media> parseMedia(String thumbnailMedia, String mainMedia, MediaKind mediaKind) {
         List<Media> mediaList = new ArrayList<>();
 
         // thumbnailMedia를 Media 객체로 변환
@@ -565,7 +569,7 @@ public class CrawlingInit {
                 .mediaUrl(thumbnailMedia)
                 .thumbChecked(true)
                 .mediaType(MediaType.IMAGE)
-                .mediaKind(MediaKind.PRODUCT)
+                .mediaKind(mediaKind)
                 .mediaSeq(1) // 썸네일의 seq는 1로 설정
                 .build();
 
@@ -578,11 +582,15 @@ public class CrawlingInit {
 
         // 나머지 이미지들은 thumbChecked = false로 설정하여 Media 객체로 추가
         for (int i = 0; i < mediaUrls.size(); i++) {
+            Boolean thumbChecked = false;
+            if (mediaKind == MediaKind.PRODUCT) {
+                thumbChecked = true;
+            }
             Media detailMedia = Media.builder()
                     .mediaUrl(mediaUrls.get(i))
-                    .thumbChecked(false)
+                    .thumbChecked(thumbChecked)
                     .mediaType(MediaType.IMAGE)
-                    .mediaKind(MediaKind.PRODUCT)
+                    .mediaKind(mediaKind)
                     .mediaSeq(i + 2) // seq는 2부터 시작
                     .build();
 

@@ -3,7 +3,13 @@ package TRaMis8khae.starbucks.product.application;
 import TRaMis8khae.starbucks.common.entity.BaseResponseStatus;
 import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
+
+import TRaMis8khae.starbucks.common.utils.CursorPage;
+import TRaMis8khae.starbucks.event.dto.in.EventProductRequestDto;
+import TRaMis8khae.starbucks.media.application.MediaService;
+
 import TRaMis8khae.starbucks.media.entity.Media;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.out.EventProductResponseDto;
@@ -29,6 +35,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepositoryCustom productRepositoryCustom;
     private final ProductMediaListRepository productMediaListRepository;
     private final MediaRepository mediaRepository;
+    private final MediaService mediaService;
 
     @Override
     @Transactional
@@ -86,7 +93,6 @@ public class ProductServiceImpl implements ProductService{
     public Slice<EventProductResponseDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
 
         boolean hasNext = false;
-        Long mediaId = 0L;
 
         List<EventProductResponseDto> eventProductResponseDtos = new ArrayList<>();
         List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
@@ -119,12 +125,34 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public ProductDetailResponseDto findDetailProduct(String productUUID) {
 
         Product product = productRepository.findByProductUUID(productUUID)
             .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
+        List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(productUUID);
+        List<Long> productDetailImageIds = new ArrayList<>();
+        List<Long> productThumbImageIds = new ArrayList<>();
+
+        product.plusViewCount();
+        productRepository.save(product);
+
+        for (ProductMediaList productMediaList : productMediaLists) {
+            Media media = mediaRepository.findById(productMediaList.getMediaId()).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
+            );
+
+            if (media.getThumbChecked()) {
+                productThumbImageIds.add(media.getId());
+            }
+            else productDetailImageIds.add(media.getId());
+
+//            productDetailImageIds.add(media.getId());
+            log.info("productImageUrl : {} ", media.getMediaUrl() );
 
 
-        return ProductDetailResponseDto.toDto(product);
+        }
+
+        return ProductDetailResponseDto.toDto(product, productThumbImageIds, productDetailImageIds);
     }
 }
