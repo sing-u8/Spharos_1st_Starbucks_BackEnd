@@ -21,8 +21,6 @@ public class EventProductResponseDto {
 
 	private Long productMediaId;
 
-	private String productUUID;
-
 	public static EventProductResponseDto toDto(Product product, Media media) {
 
 		return EventProductResponseDto.builder()

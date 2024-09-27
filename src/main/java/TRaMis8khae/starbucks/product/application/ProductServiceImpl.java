@@ -5,7 +5,6 @@ import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 
 import TRaMis8khae.starbucks.common.utils.CursorPage;
-import TRaMis8khae.starbucks.event.dto.in.EventProductRequestDto;
 import TRaMis8khae.starbucks.media.application.MediaService;
 
 import TRaMis8khae.starbucks.media.entity.Media;
