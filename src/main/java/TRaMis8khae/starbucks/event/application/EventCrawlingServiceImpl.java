@@ -1,8 +1,10 @@
 package TRaMis8khae.starbucks.event.application;
 
+import TRaMis8khae.starbucks.event.dto.in.EventMediaRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.EventRequestDto;
 import TRaMis8khae.starbucks.event.dto.in.ProductEventListRequestDto;
 import TRaMis8khae.starbucks.event.entity.Event;
+import TRaMis8khae.starbucks.event.entity.EventMedia;
 import TRaMis8khae.starbucks.event.entity.ProductEventList;
 import TRaMis8khae.starbucks.event.infrastructure.EventMediaRepository;
 import TRaMis8khae.starbucks.event.infrastructure.EventRepository;
@@ -39,13 +41,20 @@ public class EventCrawlingServiceImpl implements EventCrawlingService {
                 requestDto.getProduct().getProductUUID())
                 .orElseThrow();
 
-        log.info("TEST!!!!product: {}", requestDto.getEvent());
-
         ProductEventList productEventList = requestDto
                 .toEntity(requestDto.getEvent(), product);
 
         eventProductListRepository.save(productEventList);
 
     }
+
+    @Override
+    public void addCrawlEventMedia(EventMediaRequestDto requestDto) {
+
+            EventMedia eventMedia = requestDto.toEntity(requestDto);
+
+            eventMediaRepository.save(eventMedia);
+    }
+
 
 }

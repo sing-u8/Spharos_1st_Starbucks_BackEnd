@@ -3,9 +3,11 @@ package TRaMis8khae.starbucks.product.presentation;
 import TRaMis8khae.starbucks.common.entity.BaseResponse;
 import TRaMis8khae.starbucks.product.application.ProductService;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.ProductDetailResponseDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.Product;
 import TRaMis8khae.starbucks.product.vo.in.ProductRequestVo;
+import TRaMis8khae.starbucks.product.vo.out.ProductDetailResponseVo;
 import TRaMis8khae.starbucks.product.vo.out.ProductResponseVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -63,14 +65,6 @@ public class ProductController {
         return new BaseResponse<>(productResponseDto.toVo());
     }
 
-//    @GetMapping("/productList")
-//    public BaseResponse<List<ProductResponseVo>> getProducts() {
-//        return new BaseResponse<>(productService.findProducts().stream().map(
-//            ProductResponseDto::toVo).toList());
-//    }
-//
-
-
     @Operation(summary = "상품 가격별 분류", description = "상품을 가격별로 분류합니다", tags = {"Product Service"})
     @GetMapping("/price")
     public BaseResponse<List<ProductResponseVo>> getProductsWithPrice(@RequestParam Double minPrice, @RequestParam Double maxPrice) {
@@ -78,17 +72,14 @@ public class ProductController {
         return new BaseResponse<>(productService.findByPrice(minPrice, maxPrice)
             .stream().map(ProductResponseDto::toVo).toList());
     }
+    //이름, 가격, 썸네일(prouct media id)
+    @Operation(summary = "상품 상세 조회하기", description = "상품 상세를 조회합니다", tags = {"Product Service"})
+    @GetMapping("detail/{productUUID}")
+    public BaseResponse<ProductDetailResponseVo> getDetailProduct(@PathVariable String productUUID) {
 
-    @Operation(summary = "상품 uuid 리스트로 상품 페이지 조회", description = "상품 uuid 리스트로 상품 페이지를 분류합니다", tags = {"Product Service"})
-    @GetMapping
-    public BaseResponse<Slice<Product>> getProductsWithUUID(
-        @RequestParam List<String> productUUID,
-        @RequestParam(required = false, defaultValue = "10") int pageSize,
-        @RequestParam(required = false, defaultValue = "0") int pageNumber) {
+        ProductDetailResponseDto productDetailResponseDto = productService.findDetailProduct(productUUID);
 
-        return new BaseResponse<>(productService.findProductsByProductUUID(
-            productUUID, PageRequest.of(pageNumber, pageSize)
-        ));
+        return new BaseResponse<>(productDetailResponseDto.toVo());
     }
 
 }

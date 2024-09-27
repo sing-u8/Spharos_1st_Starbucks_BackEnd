@@ -19,16 +19,15 @@ public class EventMedia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Event event;
+    private Long eventId;
 
     private Long mediaId;
 
     private Long productId;
 
     @Builder
-    public EventMedia(Event event, Long mediaId, Long productId) {
-        this.event = event;
+    public EventMedia(Long eventId, Long mediaId, Long productId) {
+        this.eventId = eventId;
         this.mediaId = mediaId;
         this.productId = productId;
     }

@@ -7,10 +7,6 @@ import TRaMis8khae.starbucks.admin.dto.in.BottomCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MenuCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.MiddleCategoryRequestDto;
 import TRaMis8khae.starbucks.admin.dto.in.TopCategoryRequestDto;
-import TRaMis8khae.starbucks.admin.dto.out.MenuCategoryResponseDto;
-import TRaMis8khae.starbucks.admin.entity.BottomCategory;
-import TRaMis8khae.starbucks.admin.entity.MiddleCategory;
-import TRaMis8khae.starbucks.admin.entity.TopCategory;
 import TRaMis8khae.starbucks.admin.infrastructure.BottomCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.MiddleCategoryRepository;
 import TRaMis8khae.starbucks.admin.infrastructure.TopCategoryRepository;
@@ -52,7 +48,6 @@ import TRaMis8khae.starbucks.vendor.application.VolumeService;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductCategoryListRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.ProductOptionRequestDto;
 import TRaMis8khae.starbucks.vendor.dto.in.VolumeRequestDto;
-import TRaMis8khae.starbucks.vendor.entity.ProductCategoryList;
 import TRaMis8khae.starbucks.vendor.infrastructure.ProductCategoryListRepository;
 
 import com.amazonaws.regions.Regions;
@@ -126,6 +121,8 @@ public class CrawlingInit {
         String excelFilePath = "C:\\Users\\ssginc53\\Documents\\starbucks_products.xlsx";
         //String excelFilePath = "/Users/starbucks_products.xlsx";
 
+//        String excelFilePath = "/Users/starbucks_products.xlsx";
+//        String excelFilePath = "D:\\starbucks_products5.xlsx";
 
         // 엑셀 데이터 파싱 및 DB 저장
         try {
@@ -431,45 +428,27 @@ public class CrawlingInit {
         // event
         int productIndex = 0;
         int eventProductIndex = 0;
-        int eventIndex = 0;
-
-        List<Optional<Media>> thumbCheckedTrue = mediaRepository
-                .findByThumbCheckedIsTrue();
-
-        List<Media> eventMediaList = new ArrayList<>();
-
-        for (Optional<Media> media : thumbCheckedTrue) {
-            eventMediaList.add(media.get());
-        }
 
         for (Event event : events) {
-            int mediaCount = 0;
 
-            for (Media media : eventMediaList) {
-                if (mediaCount >= 5) {
-                    break;
-                }
+            Product product = eventProducts.get(eventProductIndex++);
 
-                if (eventProductIndex >= eventProducts.size()) {
-                    break;
-                }
+            Optional<Product> productEvent = productRepository.findByProductUUID(product.getProductUUID());
 
-                Product product = eventProducts.get(eventProductIndex++);
+            if (productEvent.isEmpty()) {
+                continue;
+            }
 
-                Optional<Product> optionalProduct = productRepository.findByProductUUID(product.getProductUUID());
-                if (optionalProduct.isEmpty()) {
-                    continue;
-                }
+            List<ProductMediaList> byProductUUID = productMediaListRepository
+                    .findByProductUUID(productEvent.get().getProductUUID());
 
+            for (ProductMediaList productMediaList : byProductUUID) {
                 EventMedia eventMedia = EventMedia.builder()
-                        .event(event)
-                        .mediaId(media.getId())
-                        .productId(optionalProduct.get().getId())
+                        .eventId(event.getId())
+                        .mediaId(productMediaList.getMediaId())
+                        .productId(productEvent.get().getId())
                         .build();
-
                 eventMediaRepository.save(eventMedia);
-                mediaCount++;
-                eventIndex = (eventIndex + 1) % events.size();
             }
 
             for (int i = 0; i < 5; i++) {
@@ -477,10 +456,10 @@ public class CrawlingInit {
                     break;
                 }
 
-                Product product = eventProducts.get(productIndex++);
+                Product eventProduct = eventProducts.get(productIndex++);
 
                 ProductEventListRequestDto requestDto = ProductEventListRequestDto.builder()
-                        .product(product)
+                        .product(eventProduct)
                         .event(event)
                         .build();
 

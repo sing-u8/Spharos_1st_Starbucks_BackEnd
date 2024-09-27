@@ -11,14 +11,21 @@ import static TRaMis8khae.starbucks.event.entity.QEvent.event;
 @Builder
 public class EventMediaRequestDto {
 
-    private Event event;
+    private Long eventId;
 
     private Long mediaId;
 
-    public EventMedia toEntity() {
-        return EventMedia.builder()
-                .event(event)
+    public static EventMediaRequestDto toDto(Long eventId, Long mediaId) {
+        return EventMediaRequestDto.builder()
+                .eventId(eventId)
                 .mediaId(mediaId)
+                .build();
+    }
+
+    public EventMedia toEntity(EventMediaRequestDto requestDto) {
+        return EventMedia.builder()
+                .eventId(requestDto.getEventId())
+                .mediaId(requestDto.getMediaId())
                 .build();
     }
 
