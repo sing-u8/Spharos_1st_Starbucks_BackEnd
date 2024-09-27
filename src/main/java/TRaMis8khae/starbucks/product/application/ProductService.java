@@ -1,6 +1,7 @@
 package TRaMis8khae.starbucks.product.application;
 
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
+import TRaMis8khae.starbucks.product.dto.out.EventProductResponseDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductDetailResponseDto;
 import TRaMis8khae.starbucks.product.dto.out.ProductResponseDto;
 import TRaMis8khae.starbucks.product.entity.Product;
@@ -21,7 +22,7 @@ public interface ProductService {
 
     List<ProductResponseDto> findByPrice(Double MinPrice, Double MaxPrice);
 
-    Slice<Product> findProductsByProductUUID(List<String> productUUID, Pageable pageable);
+    Slice<EventProductResponseDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable);
 
     ProductDetailResponseDto findDetailProduct(String productUUID);
 

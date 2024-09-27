@@ -85,19 +85,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Slice<EventProductRequestDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
+    public Slice<EventProductResponseDto> findProductsByProductUUID(List<String> productUUID, Pageable pageable) {
 
         boolean hasNext = false;
         Long mediaId = 0L;
 
         List<EventProductResponseDto> eventProductResponseDtos = null;
+        List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
+        Media media = null;
 
-        for (String uuid : productUUID) {
-            List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(uuid);
-            Product product = productRepository.findByProductUUID(uuid).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT)
-            );
-            Media media = null;
+        for (Product product : products) {
+            List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(product.getProductUUID());
+
             for (ProductMediaList productMediaList : productMediaLists) {
                 media = mediaRepository.findById(productMediaList.getMediaId()).orElseThrow(
                     () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
@@ -110,10 +109,7 @@ public class ProductServiceImpl implements ProductService{
             eventProductResponseDtos.add(EventProductResponseDto.toDto(product, media));
         }
 
-
-        List<Product> products = productRepository.findByProductUUIDIn(productUUID, pageable);
-
-        if (products.size() == pageable.getPageSize()) {
+        if (eventProductResponseDtos.size() == pageable.getPageSize()) {
             hasNext = true;
         }
 
