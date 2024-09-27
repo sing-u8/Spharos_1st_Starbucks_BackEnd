@@ -5,7 +5,9 @@ import TRaMis8khae.starbucks.common.exception.BaseException;
 import TRaMis8khae.starbucks.common.utils.CodeGenerator;
 import TRaMis8khae.starbucks.common.utils.CursorPage;
 import TRaMis8khae.starbucks.event.dto.in.EventProductRequestDto;
+import TRaMis8khae.starbucks.media.application.MediaService;
 import TRaMis8khae.starbucks.media.entity.Media;
+import TRaMis8khae.starbucks.media.entity.MediaKind;
 import TRaMis8khae.starbucks.media.infrastructure.MediaRepository;
 import TRaMis8khae.starbucks.product.dto.in.ProductRequestDto;
 import TRaMis8khae.starbucks.product.dto.out.EventProductResponseDto;
@@ -32,6 +34,7 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepositoryCustom productRepositoryCustom;
     private final ProductMediaListRepository productMediaListRepository;
     private final MediaRepository mediaRepository;
+    private final MediaService mediaService;
 
     @Override
     @Transactional
@@ -117,29 +120,34 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public ProductDetailResponseDto findDetailProduct(String productUUID) {
 
         Product product = productRepository.findByProductUUID(productUUID)
             .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_PRODUCT));
         List<ProductMediaList> productMediaLists = productMediaListRepository.findByProductUUID(productUUID);
-
         List<Long> productDetailImageIds = new ArrayList<>();
-        Long productThumbImageId = null;
+        List<Long> productThumbImageIds = new ArrayList<>();
+
+        product.plusViewCount();
+        productRepository.save(product);
 
         for (ProductMediaList productMediaList : productMediaLists) {
-            Media media = mediaRepository.findById(productMediaList.getId()).orElseThrow(
+            Media media = mediaRepository.findById(productMediaList.getMediaId()).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.NO_EXIST_MEDIA)
             );
 
             if (media.getThumbChecked()) {
-                productThumbImageId = media.getId();
-                continue;
+                productThumbImageIds.add(media.getId());
             }
-            productDetailImageIds.add(media.getId());
+            else productDetailImageIds.add(media.getId());
+
+//            productDetailImageIds.add(media.getId());
+            log.info("productImageUrl : {} ", media.getMediaUrl() );
 
 
         }
 
-        return ProductDetailResponseDto.toDto(product, productThumbImageId, productDetailImageIds);
+        return ProductDetailResponseDto.toDto(product, productThumbImageIds, productDetailImageIds);
     }
 }

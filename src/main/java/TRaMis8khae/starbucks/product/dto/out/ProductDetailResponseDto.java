@@ -25,12 +25,12 @@ public class ProductDetailResponseDto {
 
 	private Integer maxOrderCount;
 
-	private Long thumbId;
+	private List<Long> thumbIds;
 
 	private List<Long> detailIds;
 
 
-	public static ProductDetailResponseDto toDto(Product product, Long thumbId, List<Long> detailIds) {
+	public static ProductDetailResponseDto toDto(Product product, List<Long> thumbId, List<Long> detailIds) {
 
 		return ProductDetailResponseDto.builder()
 			.price(product.getPrice())
@@ -39,7 +39,7 @@ public class ProductDetailResponseDto {
 			.isAdditionalTogether(product.getIsAdditionalTogether())
 			.additionalChecked(product.getAdditionalChecked())
 			.maxOrderCount(product.getMaxOrderCount())
-			.thumbId(thumbId)
+			.thumbIds(thumbId)
 			.detailIds(detailIds)
 			.build();
 	}
@@ -54,7 +54,7 @@ public class ProductDetailResponseDto {
 			.isAdditionalTogether(isAdditionalTogether)
 			.additionalChecked(additionalChecked)
 			.maxOrderCount(maxOrderCount)
-			.thumbId(thumbId)
+			.thumbIds(thumbIds)
 			.detailIds(detailIds)
 			.build();
 	}

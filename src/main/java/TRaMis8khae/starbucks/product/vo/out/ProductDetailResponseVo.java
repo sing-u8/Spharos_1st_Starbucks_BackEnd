@@ -23,7 +23,7 @@ public class ProductDetailResponseVo {
 
 	private Integer maxOrderCount;
 
-	private Long thumbId;
+	private List<Long> thumbIds;
 
 	private List<Long> detailIds;
 }
