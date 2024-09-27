@@ -16,7 +16,6 @@ import lombok.ToString;
 public class ProductEventListRequestDto {
 
     private Event event;
-
     private Product product;
 
     public static ProductEventListRequestDto toDto(Event event, Product product) {

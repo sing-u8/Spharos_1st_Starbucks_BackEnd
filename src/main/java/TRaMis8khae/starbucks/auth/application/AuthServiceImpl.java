@@ -51,7 +51,14 @@ public class AuthServiceImpl implements AuthService{
             throw new BaseException(BaseResponseStatus.DUPLICATED_USER);
         }
 
-        Member newMember = signUpRequestDto.toEntity(passwordEncoder);
+        String loginId = signUpRequestDto.getLoginId();
+
+        // loginId 첫글자 부터 3글자를 제외한 나머지를 *로 마스킹
+        String memberMaskingId = loginId.substring(0, 3) + "*".repeat(loginId.length() - 3);
+
+        log.info("^^^^^^memberMaskingId: " + memberMaskingId);
+
+        Member newMember = signUpRequestDto.toEntity(passwordEncoder, memberMaskingId);
 
         authRepository.save(newMember);
 

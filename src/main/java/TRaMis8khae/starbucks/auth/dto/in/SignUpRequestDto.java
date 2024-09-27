@@ -23,6 +23,7 @@ public class SignUpRequestDto {
     private String nickname;
     private String address;
     private String paymentPassword;
+    private String memberMaskingId;
     private Boolean EmailMarketingConsent;
     private Boolean SMSMarketingConsent;
 
@@ -39,7 +40,7 @@ public class SignUpRequestDto {
     }
 
 
-    public Member toEntity(PasswordEncoder passwordEncoder) {
+    public Member toEntity(PasswordEncoder passwordEncoder, String memberMaskingId) {
         return Member.builder()
                 .name(name)
                 .loginId(loginId)
@@ -49,6 +50,7 @@ public class SignUpRequestDto {
                 .email(email)
                 .nickname(nickname)
                 .memberStatus(Boolean.TRUE)
+                .memberMaskingId(memberMaskingId)
                 .build();
     }
 

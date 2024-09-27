@@ -13,10 +13,8 @@ public class EventProductResponseVo {
 
     private String productName;
 
-    private Integer discountRate;
-
     private Integer price;
 
-    private String description;
+    private String media;
 
 }
