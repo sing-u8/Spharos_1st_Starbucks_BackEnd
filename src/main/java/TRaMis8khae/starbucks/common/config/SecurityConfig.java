@@ -45,37 +45,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(
-                    authorizeRequests -> authorizeRequests
-                            .requestMatchers(
-                                    "/api/v1/auth/**",
-                                    "/api/v1/product/**",
-                                    "/api/v1/member/**",
-                                    "/swagger-ui/**",
-                                    "/v3/api-docs/**",
-                                    "/error",
-                                    "/api/v1/category/**",
-                                    "/purchase/**",
-                                "/review/**",
-                                "/voucher/**",
-                                "/wish/**",
-                                "/media/**",
-                                    "/api/v1/event/**",
-                                "/api/v1/**"
-
-
-                            )
-                            .permitAll()
-                            .anyRequest()
-                            .authenticated()
-            )
-            .sessionManagement(
-                    sessionManagement -> sessionManagement
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilter(corsFilter());
+                .authorizeHttpRequests(
+                        authorizeRequests -> authorizeRequests
+                                .requestMatchers(
+                                        "/api/v1/auth/**",   // 로그인과 회원가입 관련 경로만 허용
+                                        "/swagger-ui/**",    // Swagger UI는 인증 없이 허용 (필요 없으면 이 부분도 제한 가능)
+                                        "/v3/api-docs/**",
+                                        "/error"            // 에러 페이지는 인증 없이 허용
+                                ).permitAll()
+                                .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
+                )
+                .sessionManagement(
+                        sessionManagement -> sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 기반 세션 관리
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilter(corsFilter());
 
         return http.build();
     }
