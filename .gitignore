@@ -6,6 +6,10 @@ build/
 !**/src/test/**/build/
 /src/main/resources/application.yml
 /src/main/resources/
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
 
 ### STS ###
 .apt_generated
@@ -37,3 +41,5 @@ out/
 
 ### VS Code ###
 .vscode/
+.yaml
+.yml
