@@ -51,7 +51,7 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().subject(authentication.getName()).build();
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + env.getProperty("jwt.access-expire-time", Long.class).longValue());
+        Date expiration = new Date(now.getTime() + env.getProperty("jwt.refresh-expire-time", Long.class).longValue());
 
         return Jwts.builder()
                 .signWith(getSignKey())
